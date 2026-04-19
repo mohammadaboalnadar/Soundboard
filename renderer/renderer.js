@@ -875,7 +875,7 @@ function createSoundItem(sound) {
   const stopBtn = document.createElement("button");
   stopBtn.type = "button";
   stopBtn.className = "sound-item-icon-btn stop-sound-btn";
-  stopBtn.textContent = "⏹";
+  stopBtn.textContent = "⬜";
   stopBtn.setAttribute("aria-label", "Stop sound");
   stopBtn.title = "Stop";
   stopBtn.addEventListener("click", (event) => {
@@ -889,7 +889,7 @@ function createSoundItem(sound) {
   const removeBtn = document.createElement("button");
   removeBtn.type = "button";
   removeBtn.className = "sound-item-icon-btn remove-btn";
-  removeBtn.textContent = "🗑";
+  removeBtn.textContent = "🗑️";
   removeBtn.setAttribute("aria-label", "Remove sound");
   removeBtn.title = "Remove";
   removeBtn.addEventListener("click", async (event) => {
