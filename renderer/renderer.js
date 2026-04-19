@@ -811,10 +811,15 @@ function renderSoundList() {
     renameFolderInput.value = folder.name || "New Folder";
     renameFolderInput.placeholder = "Folder name";
     renameFolderInput.setAttribute("aria-label", "Folder name");
+    let cancelFolderRename = false;
     const saveFolderName = async () => {
+      if (cancelFolderRename) {
+        cancelFolderRename = false;
+        return;
+      }
       const trimmedName = renameFolderInput.value.trim();
       const nextName = trimmedName || "New Folder";
-      if (nextName === (folder.name || "")) {
+      if (nextName === (folder.name || "New Folder")) {
         return;
       }
       folder.name = nextName;
@@ -828,6 +833,8 @@ function renderSoundList() {
         renameFolderInput.blur();
       }
       if (event.key === "Escape") {
+        event.preventDefault();
+        cancelFolderRename = true;
         renameFolderInput.value = folder.name || "New Folder";
         renameFolderInput.blur();
       }
