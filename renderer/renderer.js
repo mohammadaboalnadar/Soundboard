@@ -805,6 +805,33 @@ function renderSoundList() {
 
     const actions = document.createElement("div");
     actions.className = "folder-actions";
+    const renameFolderInput = document.createElement("input");
+    renameFolderInput.type = "text";
+    renameFolderInput.className = "folder-name-input";
+    renameFolderInput.value = folder.name || "New Folder";
+    renameFolderInput.placeholder = "Folder name";
+    renameFolderInput.setAttribute("aria-label", "Folder name");
+    const saveFolderName = async () => {
+      const trimmedName = renameFolderInput.value.trim();
+      const nextName = trimmedName || "New Folder";
+      if (nextName === (folder.name || "")) {
+        return;
+      }
+      folder.name = nextName;
+      await persist();
+      renderAll();
+    };
+    renameFolderInput.addEventListener("blur", saveFolderName);
+    renameFolderInput.addEventListener("keydown", async (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        renameFolderInput.blur();
+      }
+      if (event.key === "Escape") {
+        renameFolderInput.value = folder.name || "New Folder";
+        renameFolderInput.blur();
+      }
+    });
     const removeFolderBtn = document.createElement("button");
     removeFolderBtn.type = "button";
     removeFolderBtn.className = "folder-remove-btn";
@@ -819,6 +846,7 @@ function renderSoundList() {
       await persist();
       renderAll();
     });
+    actions.appendChild(renameFolderInput);
     actions.appendChild(removeFolderBtn);
     body.appendChild(actions);
     renderSoundGroup(body, folder.id);

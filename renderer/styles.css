@@ -134,7 +134,14 @@ body {
   margin-top: -6px;
   margin-bottom: 8px;
   display: flex;
+  align-items: center;
+  gap: 8px;
   justify-content: flex-end;
+}
+
+.folder-name-input {
+  min-width: 0;
+  flex: 1;
 }
 
 .folder-remove-btn {
