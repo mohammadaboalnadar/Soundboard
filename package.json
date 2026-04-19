@@ -1,0 +1,14 @@
+{
+  "name": "soundboard-app",
+  "version": "1.0.0",
+  "description": "Lightweight desktop soundboard",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^31.0.0"
+  }
+}

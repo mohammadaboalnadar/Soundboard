@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Soundboard</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <h1>Soundboard</h1>
+      <div class="top-controls">
+        <button id="add-sounds-btn" type="button">Add Sounds</button>
+        <button id="stop-all-btn" type="button">Stop All</button>
+        <label>
+          Output Device
+          <select id="output-device-select"></select>
+        </label>
+        <div class="volume-control">
+          <label class="volume-label">
+            <span>Local Volume: <strong id="local-volume-value">100</strong>%</span>
+            <input id="local-volume-slider" type="range" min="0" max="1" step="0.01" value="1" />
+          </label>
+        </div>
+        <div class="volume-control">
+          <label class="volume-label">
+            <span>Soundboard Volume: <strong id="soundboard-volume-value">100</strong>%</span>
+            <input id="soundboard-volume-slider" type="range" min="0" max="1" step="0.01" value="1" />
+          </label>
+        </div>
+        <div class="stopall-group">
+          <span>Stop All Keybind: <strong id="stopall-keybind-label">None</strong></span>
+          <button id="set-stopall-keybind-btn" type="button">Set</button>
+          <button id="clear-stopall-keybind-btn" type="button">Clear</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel sound-list-panel">
+        <h2>Sounds</h2>
+        <div id="sound-list" class="sound-list"></div>
+      </section>
+
+      <section class="panel preview-panel">
+        <h2>Preview</h2>
+        <div id="preview-empty">Select a sound to edit trim and preview.</div>
+        <div id="preview-content" class="hidden">
+          <div class="row buttons-row top-buttons-row">
+            <button id="play-selected-btn" type="button">Play</button>
+            <button id="stop-top-btn" type="button">Stop All Playing</button>
+          </div>
+
+          <div class="row">
+            <label>
+              Display Name
+              <input id="display-name-input" type="text" />
+            </label>
+          </div>
+
+          <div class="row">
+            <label class="grow">
+              <span class="inline-label">Fade In: <span id="fadein-value">0.00</span>s</span>
+              <input id="fadein-slider" type="range" min="0" max="5" step="0.01" value="0" />
+            </label>
+          </div>
+
+          <div class="row">
+            <label class="grow">
+              <span class="inline-label">Fade Out: <span id="fadeout-value">0.00</span>s</span>
+              <input id="fadeout-slider" type="range" min="0" max="5" step="0.01" value="0" />
+            </label>
+          </div>
+
+          <div class="timeline-wrap">
+            <canvas id="timeline" width="700" height="120"></canvas>
+            <input id="start-slider" class="overlay-slider start" type="range" min="0" max="1" step="0.01" value="0" />
+            <input id="end-slider" class="overlay-slider end" type="range" min="0" max="1" step="0.01" value="0" />
+          </div>
+
+          <div class="row">
+            <div class="grow metric-inline">Start: <span id="start-value">0.00</span>s</div>
+            <div class="grow metric-inline">End: <span id="end-value">0.00</span>s</div>
+          </div>
+
+          <div class="row">
+            <label class="grow">
+              <span class="inline-label">Volume: <span id="volume-value">100</span>%</span>
+              <input id="volume-slider" type="range" min="0" max="1" step="0.01" value="1" />
+            </label>
+          </div>
+
+          <div class="row buttons-row preview-buttons-row">
+            <button id="preview-btn" type="button">Preview</button>
+            <button id="stop-bottom-btn" type="button">Stop All Playing</button>
+          </div>
+
+          <canvas id="spectrum" width="700" height="160"></canvas>
+
+          <div class="row keybind-row">
+            <span>Keybind: <strong id="keybind-label">None</strong></span>
+            <button id="set-keybind-btn" type="button">Set Keybind</button>
+            <button id="clear-keybind-btn" type="button">Clear Keybind</button>
+            <span id="capture-hint" class="muted hidden">Press your key combination now...</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="renderer.js"></script>
+  </body>
+</html>
