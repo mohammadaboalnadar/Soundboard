@@ -240,7 +240,6 @@ body {
   font-size: 0.72rem;
   color: var(--text-secondary);
   flex: 0 0 auto;
-  transform: translateY(1px);
 }
 
 .sound-folder[open] summary::before {
