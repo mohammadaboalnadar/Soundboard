@@ -179,7 +179,7 @@ body {
   margin: 0;
   padding: 1px 3px;
   box-sizing: border-box;
-  border: 1px solid transparent;
+  border: none;
   border-radius: 4px;
   background: transparent;
   color: var(--text-primary);
@@ -197,6 +197,7 @@ body {
 }
 
 .preview-title-input:focus {
+  border: 1px solid var(--input-focus-border);
   border-color: var(--input-focus-border);
   background: var(--bg-secondary);
   outline: none;
@@ -250,7 +251,7 @@ body {
 .folder-summary-name-input {
   flex: 1;
   min-width: 0;
-  border: 1px solid transparent;
+  border: none;
   border-radius: 4px;
   padding: 1px 2px;
   background: transparent;
@@ -263,6 +264,7 @@ body {
 }
 
 .folder-summary-name-input:focus {
+  border: 1px solid var(--input-focus-border);
   border-color: var(--input-focus-border);
   background: var(--bg-secondary);
   outline: none;
@@ -378,14 +380,27 @@ body {
 }
 
 button,
-select,
-input[type="text"] {
+select {
   font: inherit;
   background: var(--bg-secondary);
   color: var(--text-primary);
   border: 1px solid var(--border-color);
   border-radius: 4px;
   padding: 4px 6px;
+}
+
+:where(input[type="text"]) {
+  font: inherit;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 4px 6px;
+}
+
+:where(input[type="text"]):focus {
+  border-color: var(--input-focus-border);
+  outline: none;
 }
 
 button {
