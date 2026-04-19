@@ -831,8 +831,7 @@ function renderSoundList() {
       if (event.key === "Enter") {
         event.preventDefault();
         renameFolderInput.blur();
-      }
-      if (event.key === "Escape") {
+      } else if (event.key === "Escape") {
         event.preventDefault();
         cancelFolderRename = true;
         renameFolderInput.value = folder.name || "New Folder";
