@@ -18,13 +18,13 @@
         </label>
         <div class="volume-control">
           <label class="volume-label">
-            <span>Local Volume: <strong id="local-volume-value">100</strong>%</span>
+            <span>Local Volume: <input id="local-volume-input" class="inline-value-input" type="text" inputmode="decimal" value="100" aria-label="Local volume percent" />%</span>
             <input id="local-volume-slider" type="range" min="0" max="1" step="0.01" value="1" />
           </label>
         </div>
         <div class="volume-control">
           <label class="volume-label">
-            <span>Soundboard Volume: <strong id="soundboard-volume-value">100</strong>%</span>
+            <span>Soundboard Volume: <input id="soundboard-volume-input" class="inline-value-input" type="text" inputmode="decimal" value="100" aria-label="Soundboard volume percent" />%</span>
             <input id="soundboard-volume-slider" type="range" min="0" max="1" step="0.01" value="1" />
           </label>
         </div>
@@ -46,31 +46,29 @@
       </section>
 
       <section class="panel preview-panel">
-        <h2>Preview</h2>
+        <div class="panel-heading">
+          <div>
+            <input id="preview-title-input" class="preview-title-input" type="text" value="Preview" aria-label="Sound display name" />
+            <div id="preview-file-path" class="preview-file-path"></div>
+          </div>
+        </div>
         <div id="preview-empty">Select a sound to edit trim and preview.</div>
         <div id="preview-content" class="hidden">
           <div class="row buttons-row top-buttons-row">
             <button id="play-selected-btn" type="button">Play</button>
-            <button id="stop-top-btn" type="button">Stop All Playing</button>
-          </div>
-
-          <div class="row">
-            <label>
-              Display Name
-              <input id="display-name-input" type="text" />
-            </label>
+            <button id="stop-top-btn" type="button">Stop</button>
           </div>
 
           <div class="row">
             <label class="grow">
-              <span class="inline-label">Fade In: <span id="fadein-value">0.00</span>s</span>
+              <span class="inline-label">Fade In: <input id="fadein-input" class="inline-value-input" type="text" inputmode="decimal" value="0.00" aria-label="Fade in seconds" />s</span>
               <input id="fadein-slider" type="range" min="0" max="5" step="0.01" value="0" />
             </label>
           </div>
 
           <div class="row">
             <label class="grow">
-              <span class="inline-label">Fade Out: <span id="fadeout-value">0.00</span>s</span>
+              <span class="inline-label">Fade Out: <input id="fadeout-input" class="inline-value-input" type="text" inputmode="decimal" value="0.00" aria-label="Fade out seconds" />s</span>
               <input id="fadeout-slider" type="range" min="0" max="5" step="0.01" value="0" />
             </label>
           </div>
@@ -82,20 +80,20 @@
           </div>
 
           <div class="row">
-            <div class="grow metric-inline">Start: <span id="start-value">0.00</span>s</div>
-            <div class="grow metric-inline">End: <span id="end-value">0.00</span>s</div>
+            <div class="grow metric-inline">Start: <input id="start-input" class="inline-value-input" type="text" inputmode="decimal" value="0.00" aria-label="Start time seconds" />s</div>
+            <div class="grow metric-inline">End: <input id="end-input" class="inline-value-input" type="text" inputmode="decimal" value="0.00" aria-label="End time seconds" />s</div>
           </div>
 
           <div class="row">
             <label class="grow">
-              <span class="inline-label">Volume: <span id="volume-value">100</span>%</span>
+              <span class="inline-label">Volume: <input id="volume-input" class="inline-value-input" type="text" inputmode="decimal" value="100" aria-label="Volume percent" />%</span>
               <input id="volume-slider" type="range" min="0" max="1" step="0.01" value="1" />
             </label>
           </div>
 
           <div class="row buttons-row preview-buttons-row">
             <button id="preview-btn" type="button">Preview</button>
-            <button id="stop-bottom-btn" type="button">Stop All Playing</button>
+            <button id="stop-bottom-btn" type="button">Stop</button>
           </div>
 
           <canvas id="spectrum" width="700" height="160"></canvas>

@@ -31,7 +31,7 @@ function loadSettings() {
           localVolume: Number.isFinite(parsed.localVolume) ? parsed.localVolume : 1,
           soundboardVolume: Number.isFinite(parsed.soundboardVolume) ? parsed.soundboardVolume : 1,
           folders: Array.isArray(parsed.folders) ? parsed.folders : [],
-          sounds: Array.isArray(parsed.sounds) ? parsed.sounds : []
+          sounds: Array.isArray(parsed.sounds) ? parsed.sounds.map(normalizeSound) : []
         };
       }
     }
@@ -55,6 +55,9 @@ function generateId() {
 }
 
 function normalizeSound(sound) {
+  const fadeIn = Number(sound.fadeIn);
+  const fadeOut = Number(sound.fadeOut);
+
   return {
     id: String(sound.id || generateId()),
     filePath: String(sound.filePath || ""),
@@ -62,6 +65,8 @@ function normalizeSound(sound) {
     start: Number.isFinite(sound.start) ? sound.start : 0,
     end: Number.isFinite(sound.end) ? sound.end : 0,
     volume: Number.isFinite(sound.volume) ? Math.min(Math.max(sound.volume, 0), 1) : 1,
+    fadeIn: Number.isFinite(fadeIn) ? Math.max(fadeIn, 0) : 0,
+    fadeOut: Number.isFinite(fadeOut) ? Math.max(fadeOut, 0) : 0,
     folderId: String(sound.folderId || ""),
     keybind: sound.keybind ? String(sound.keybind) : ""
   };
@@ -206,3 +211,5 @@ ipcMain.handle("util:pathToFileUrl", async (_event, filePath) => {
     return "";
   }
 });
+
+

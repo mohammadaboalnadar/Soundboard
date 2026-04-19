@@ -32,26 +32,26 @@ const els = {
   stopAllBtn: document.getElementById("stop-all-btn"),
   outputDeviceSelect: document.getElementById("output-device-select"),
   localVolumeSlider: document.getElementById("local-volume-slider"),
-  localVolumeValue: document.getElementById("local-volume-value"),
+  localVolumeInput: document.getElementById("local-volume-input"),
   soundboardVolumeSlider: document.getElementById("soundboard-volume-slider"),
-  soundboardVolumeValue: document.getElementById("soundboard-volume-value"),
+  soundboardVolumeInput: document.getElementById("soundboard-volume-input"),
   stopAllKeybindLabel: document.getElementById("stopall-keybind-label"),
   setStopAllKeybindBtn: document.getElementById("set-stopall-keybind-btn"),
   clearStopAllKeybindBtn: document.getElementById("clear-stopall-keybind-btn"),
   soundList: document.getElementById("sound-list"),
   previewEmpty: document.getElementById("preview-empty"),
   previewContent: document.getElementById("preview-content"),
-  displayNameInput: document.getElementById("display-name-input"),
+  previewTitleInput: document.getElementById("preview-title-input"),
   startSlider: document.getElementById("start-slider"),
   endSlider: document.getElementById("end-slider"),
   fadeInSlider: document.getElementById("fadein-slider"),
   fadeOutSlider: document.getElementById("fadeout-slider"),
   volumeSlider: document.getElementById("volume-slider"),
-  startValue: document.getElementById("start-value"),
-  endValue: document.getElementById("end-value"),
-  fadeInValue: document.getElementById("fadein-value"),
-  fadeOutValue: document.getElementById("fadeout-value"),
-  volumeValue: document.getElementById("volume-value"),
+  startInput: document.getElementById("start-input"),
+  endInput: document.getElementById("end-input"),
+  fadeInInput: document.getElementById("fadein-input"),
+  fadeOutInput: document.getElementById("fadeout-input"),
+  volumeInput: document.getElementById("volume-input"),
   playSelectedBtn: document.getElementById("play-selected-btn"),
   stopTopBtn: document.getElementById("stop-top-btn"),
   previewBtn: document.getElementById("preview-btn"),
@@ -61,7 +61,8 @@ const els = {
   keybindLabel: document.getElementById("keybind-label"),
   setKeybindBtn: document.getElementById("set-keybind-btn"),
   clearKeybindBtn: document.getElementById("clear-keybind-btn"),
-  captureHint: document.getElementById("capture-hint")
+  captureHint: document.getElementById("capture-hint"),
+  previewFilePath: document.getElementById("preview-file-path")
 };
 
 function uid() {
@@ -101,17 +102,77 @@ function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
+function updateInlineInputWidth(input, minChars = 2, maxChars = 10) {
+  if (!input) {
+    return;
+  }
+
+  const text = (input.value || "").trim();
+  const charCount = text.length > 0 ? text.length : 1;
+  const widthChars = clamp(charCount, minChars, maxChars);
+  input.style.width = `${widthChars}ch`;
+}
+
+function syncAllInlineInputWidths() {
+  updateInlineInputWidth(els.localVolumeInput, 2, 5);
+  updateInlineInputWidth(els.soundboardVolumeInput, 2, 5);
+  updateInlineInputWidth(els.startInput, 3, 9);
+  updateInlineInputWidth(els.endInput, 3, 9);
+  updateInlineInputWidth(els.fadeInInput, 3, 9);
+  updateInlineInputWidth(els.fadeOutInput, 3, 9);
+  updateInlineInputWidth(els.volumeInput, 2, 5);
+}
+
 function clampSound(sound) {
   const duration = Number.isFinite(sound.duration) && sound.duration > 0 ? sound.duration : 1;
   sound.start = Number.isFinite(sound.start) ? clamp(sound.start, 0, duration) : 0;
   sound.end = Number.isFinite(sound.end) ? clamp(sound.end, 0, duration) : duration;
   sound.volume = Number.isFinite(sound.volume) ? clamp(sound.volume, 0, 1) : 1;
-  sound.fadeIn = Number.isFinite(sound.fadeIn) ? clamp(sound.fadeIn, 0, 5) : 0;
-  sound.fadeOut = Number.isFinite(sound.fadeOut) ? clamp(sound.fadeOut, 0, 5) : 0;
+  sound.fadeIn = Number.isFinite(sound.fadeIn) ? Math.max(sound.fadeIn, 0) : 0;
+  sound.fadeOut = Number.isFinite(sound.fadeOut) ? Math.max(sound.fadeOut, 0) : 0;
   if (sound.end <= sound.start) {
     sound.end = clamp(sound.start + 0.05, 0.05, duration);
     sound.start = clamp(sound.end - 0.05, 0, sound.end - 0.01);
   }
+
+  const segment = Math.max(0, sound.end - sound.start);
+  sound.fadeIn = clamp(sound.fadeIn, 0, segment);
+  sound.fadeOut = clamp(sound.fadeOut, 0, Math.max(0, segment - sound.fadeIn));
+}
+
+function parseNonNegative(value, fallback = 0) {
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? Math.max(0, numeric) : fallback;
+}
+
+function applyFadeConstraints(sound, preferredFade = "fadeIn") {
+  const segment = Math.max(0, Number(sound.end) - Number(sound.start));
+  let fadeIn = parseNonNegative(sound.fadeIn, 0);
+  let fadeOut = parseNonNegative(sound.fadeOut, 0);
+
+  if (preferredFade === "fadeOut") {
+    fadeOut = clamp(fadeOut, 0, segment);
+    fadeIn = clamp(fadeIn, 0, Math.max(0, segment - fadeOut));
+  } else {
+    fadeIn = clamp(fadeIn, 0, segment);
+    fadeOut = clamp(fadeOut, 0, Math.max(0, segment - fadeIn));
+  }
+
+  sound.fadeIn = fadeIn;
+  sound.fadeOut = fadeOut;
+}
+
+function updateFadeSliderLimits(sound) {
+  const segment = Math.max(0, Number(sound.end) - Number(sound.start));
+  const maxFadeIn = Math.max(0, segment - parseNonNegative(sound.fadeOut, 0));
+  const maxFadeOut = Math.max(0, segment - parseNonNegative(sound.fadeIn, 0));
+  const sliderMaxIn = Math.min(5, maxFadeIn);
+  const sliderMaxOut = Math.min(5, maxFadeOut);
+
+  els.fadeInSlider.max = String(sliderMaxIn);
+  els.fadeOutSlider.max = String(sliderMaxOut);
+  els.fadeInSlider.value = String(clamp(parseNonNegative(sound.fadeIn, 0), 0, sliderMaxIn));
+  els.fadeOutSlider.value = String(clamp(parseNonNegative(sound.fadeOut, 0), 0, sliderMaxOut));
 }
 
 async function persist() {
@@ -132,8 +193,8 @@ async function persist() {
       start: Number(sound.start) || 0,
       end: Number(sound.end) || 0,
       volume: Number.isFinite(sound.volume) ? clamp(sound.volume, 0, 1) : 1,
-      fadeIn: Number.isFinite(sound.fadeIn) ? clamp(sound.fadeIn, 0, 5) : 0,
-      fadeOut: Number.isFinite(sound.fadeOut) ? clamp(sound.fadeOut, 0, 5) : 0,
+      fadeIn: Number.isFinite(sound.fadeIn) ? Math.max(sound.fadeIn, 0) : 0,
+      fadeOut: Number.isFinite(sound.fadeOut) ? Math.max(sound.fadeOut, 0) : 0,
       folderId: sound.folderId || "",
       keybind: sound.keybind || ""
     }))
@@ -259,6 +320,43 @@ function drawTimeline() {
   ctx.moveTo(endX, 0);
   ctx.lineTo(endX, h);
   ctx.stroke();
+
+  const fadeInEndX = (clamp(sound.start + sound.fadeIn, sound.start, sound.end) / duration) * w;
+  const fadeOutStartX = (clamp(sound.end - sound.fadeOut, sound.start, sound.end) / duration) * w;
+
+  if (fadeInEndX > startX) {
+    ctx.fillStyle = "rgba(255, 168, 102, 0.18)";
+    ctx.beginPath();
+    ctx.moveTo(startX, h - 4);
+    ctx.lineTo(fadeInEndX, 4);
+    ctx.lineTo(fadeInEndX, h - 4);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.strokeStyle = "rgba(255, 168, 102, 0.98)";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(startX, h - 4);
+    ctx.lineTo(fadeInEndX, 4);
+    ctx.stroke();
+  }
+
+  if (endX > fadeOutStartX) {
+    ctx.fillStyle = "rgba(255, 168, 102, 0.18)";
+    ctx.beginPath();
+    ctx.moveTo(fadeOutStartX, 4);
+    ctx.lineTo(endX, h - 4);
+    ctx.lineTo(fadeOutStartX, h - 4);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.strokeStyle = "rgba(255, 168, 102, 0.98)";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(fadeOutStartX, 4);
+    ctx.lineTo(endX, h - 4);
+    ctx.stroke();
+  }
 
   ctx.strokeStyle = "#ffffff";
   ctx.lineWidth = 1.5;
@@ -418,6 +516,14 @@ function stopPreview() {
   }
 
   state.analyser = null;
+  
+  // Reset preview cursor to the sound's start time
+  const sound = selectedSound();
+  if (sound) {
+    state.timelineCursorTime = Number(sound.start) || 0;
+    drawTimeline();
+  }
+  
   updatePreviewControls();
 }
 
@@ -964,25 +1070,31 @@ function updatePreviewPane() {
   els.stopAllKeybindLabel.textContent = state.stopAllKeybind || "None";
 
   if (!sound) {
+    els.previewTitleInput.value = "Preview";
+    els.previewTitleInput.disabled = true;
+    els.previewFilePath.textContent = "";
     updatePreviewControls();
     return;
   }
 
+  els.previewTitleInput.disabled = false;
+  els.previewTitleInput.value = displayTitle(sound);
+  els.previewFilePath.textContent = sound.filePath || "";
+
   const duration = Math.max(0.05, Number(sound.duration) || 1);
   state.timelineCursorTime = clamp(state.timelineCursorTime, 0, duration);
-  els.displayNameInput.value = sound.displayName || "";
   els.startSlider.max = String(duration);
   els.endSlider.max = String(duration);
   els.startSlider.value = String(sound.start);
   els.endSlider.value = String(sound.end);
-  els.fadeInSlider.value = String(sound.fadeIn);
-  els.fadeOutSlider.value = String(sound.fadeOut);
   els.volumeSlider.value = String(sound.volume);
-  els.startValue.textContent = formatTime(sound.start);
-  els.endValue.textContent = formatTime(sound.end);
-  els.fadeInValue.textContent = formatTime(sound.fadeIn);
-  els.fadeOutValue.textContent = formatTime(sound.fadeOut);
-  els.volumeValue.textContent = formatPercent(parseUnitValue(sound.volume, 1));
+  els.startInput.value = formatTime(sound.start);
+  els.endInput.value = formatTime(sound.end);
+  updateFadeSliderLimits(sound);
+  els.fadeInInput.value = formatTime(sound.fadeIn);
+  els.fadeOutInput.value = formatTime(sound.fadeOut);
+  els.volumeInput.value = formatPercent(parseUnitValue(sound.volume, 1));
+  syncAllInlineInputWidths();
   els.keybindLabel.textContent = sound.keybind || "None";
   drawTimeline();
   updatePreviewControls();
@@ -990,9 +1102,10 @@ function updatePreviewPane() {
 
 function renderAll() {
   els.localVolumeSlider.value = String(state.localVolume);
-  els.localVolumeValue.textContent = formatPercent(state.localVolume);
+  els.localVolumeInput.value = formatPercent(state.localVolume);
   els.soundboardVolumeSlider.value = String(state.soundboardVolume);
-  els.soundboardVolumeValue.textContent = formatPercent(state.soundboardVolume);
+  els.soundboardVolumeInput.value = formatPercent(state.soundboardVolume);
+  syncAllInlineInputWidths();
   renderSoundList();
   updatePreviewPane();
 }
@@ -1142,19 +1255,77 @@ async function onAddFolder() {
   renderAll();
 }
 
-async function applySelectedSettings() {
+async function applySelectedSettings(source = "all") {
   const sound = selectedSound();
   if (!sound) {
     return;
   }
 
-  sound.displayName = els.displayNameInput.value;
-  sound.start = Number(els.startSlider.value);
-  sound.end = Number(els.endSlider.value);
-  sound.volume = parseUnitValue(els.volumeSlider.value, 1);
-  sound.fadeIn = Number(els.fadeInSlider.value);
-  sound.fadeOut = Number(els.fadeOutSlider.value);
+  if (source === "displayName") {
+    sound.displayName = String(els.previewTitleInput.value || "").trim();
+  }
+
+  const duration = Math.max(0.05, Number(sound.duration) || 1);
+  let nextStart = Number(els.startSlider.value);
+  let nextEnd = Number(els.endSlider.value);
+
+  if (source === "startInput") {
+    nextStart = parseNonNegative(els.startInput.value, sound.start);
+  } else if (source === "endInput") {
+    nextEnd = parseNonNegative(els.endInput.value, sound.end);
+  } else if (source === "startSlider") {
+    nextStart = Number(els.startSlider.value);
+  } else if (source === "endSlider") {
+    nextEnd = Number(els.endSlider.value);
+  }
+
+  nextStart = clamp(nextStart, 0, duration);
+  nextEnd = clamp(nextEnd, 0, duration);
+  if (nextEnd <= nextStart) {
+    if (source === "startInput" || source === "startSlider") {
+      nextStart = clamp(nextEnd - 0.05, 0, duration - 0.05);
+    } else {
+      nextEnd = clamp(nextStart + 0.05, 0.05, duration);
+    }
+  }
+
+  sound.start = nextStart;
+  sound.end = nextEnd;
+
   clampSound(sound);
+
+  if (source === "fadeInInput") {
+    sound.fadeIn = parseNonNegative(els.fadeInInput.value, sound.fadeIn);
+    applyFadeConstraints(sound, "fadeIn");
+  } else if (source === "fadeOutInput") {
+    sound.fadeOut = parseNonNegative(els.fadeOutInput.value, sound.fadeOut);
+    applyFadeConstraints(sound, "fadeOut");
+  } else if (source === "fadeInSlider") {
+    const sliderValue = clamp(Number(els.fadeInSlider.value), 0, Number(els.fadeInSlider.max) || 5);
+    sound.fadeIn = sliderValue;
+    applyFadeConstraints(sound, "fadeIn");
+  } else if (source === "fadeOutSlider") {
+    const sliderValue = clamp(Number(els.fadeOutSlider.value), 0, Number(els.fadeOutSlider.max) || 5);
+    sound.fadeOut = sliderValue;
+    applyFadeConstraints(sound, "fadeOut");
+  } else {
+    sound.fadeIn = parseNonNegative(els.fadeInSlider.value, sound.fadeIn);
+    sound.fadeOut = parseNonNegative(els.fadeOutSlider.value, sound.fadeOut);
+    applyFadeConstraints(sound, "fadeIn");
+  }
+
+  if (source === "volumeInput") {
+    const requestedPercent = Number(els.volumeInput.value);
+    const safePercent = Number.isFinite(requestedPercent)
+      ? clamp(requestedPercent, 0, 100)
+      : Math.round(sound.volume * 100);
+    sound.volume = clamp(safePercent / 100, 0, 1);
+  } else {
+    sound.volume = parseUnitValue(els.volumeSlider.value, sound.volume);
+  }
+
+  clampSound(sound);
+  updateFadeSliderLimits(sound);
   await persist();
   updatePreviewPane();
   renderSoundList();
@@ -1266,8 +1437,9 @@ async function startPreviewWithSpectrum(startAtTime = null) {
   }
 
   state.previewTick = setInterval(() => {
+    const liveEnd = Number(sound.end) || Number(sound.duration) || 0;
     const elapsed = Math.max(0, audio.currentTime - initialTime);
-    const remaining = Math.max(0, end - audio.currentTime);
+    const remaining = Math.max(0, liveEnd - audio.currentTime);
     const liveSoundVolume = parseUnitValue(sound.volume, targetVolume);
     const liveLocalVolume = parseUnitValue(state.localVolume, localVolume);
     let gain = liveSoundVolume * liveLocalVolume;
@@ -1280,7 +1452,7 @@ async function startPreviewWithSpectrum(startAtTime = null) {
 
     setTimelineCursorTime(audio.currentTime);
 
-    if (end > 0 && audio.currentTime >= end) {
+    if (liveEnd > 0 && audio.currentTime >= liveEnd) {
       stopPreview();
     } else {
       audio.volume = clamp(gain, 0, 1);
@@ -1354,50 +1526,129 @@ async function installEvents() {
 
   els.localVolumeSlider.addEventListener("input", async () => {
     state.localVolume = clamp(Number(els.localVolumeSlider.value), 0, 1);
-    els.localVolumeValue.textContent = formatPercent(state.localVolume);
+    els.localVolumeInput.value = formatPercent(state.localVolume);
+    updateInlineInputWidth(els.localVolumeInput, 2, 5);
     await persist();
   });
 
   els.soundboardVolumeSlider.addEventListener("input", async () => {
     state.soundboardVolume = clamp(Number(els.soundboardVolumeSlider.value), 0, 1);
-    els.soundboardVolumeValue.textContent = formatPercent(state.soundboardVolume);
+    els.soundboardVolumeInput.value = formatPercent(state.soundboardVolume);
+    updateInlineInputWidth(els.soundboardVolumeInput, 2, 5);
     await persist();
   });
 
-  els.displayNameInput.addEventListener("input", applySelectedSettings);
+  const commitGlobalVolumeInput = (input, slider, assign) => {
+    input.addEventListener("input", () => {
+      updateInlineInputWidth(input, 2, 5);
+    });
+
+    const commit = async () => {
+      const requested = Number(input.value);
+      const safePercent = Number.isFinite(requested) ? clamp(requested, 0, 100) : Math.round(assign() * 100);
+      const unitValue = safePercent / 100;
+      slider.value = String(unitValue);
+      input.value = String(Math.round(safePercent));
+      updateInlineInputWidth(input, 2, 5);
+      assign(unitValue);
+      await persist();
+    };
+
+    input.addEventListener("keydown", async (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        await commit();
+        input.blur();
+      }
+    });
+
+    input.addEventListener("blur", async () => {
+      await commit();
+    });
+  };
+
+  commitGlobalVolumeInput(els.localVolumeInput, els.localVolumeSlider, (value) => {
+    if (typeof value === "number") {
+      state.localVolume = clamp(value, 0, 1);
+    }
+    return state.localVolume;
+  });
+
+  commitGlobalVolumeInput(els.soundboardVolumeInput, els.soundboardVolumeSlider, (value) => {
+    if (typeof value === "number") {
+      state.soundboardVolume = clamp(value, 0, 1);
+    }
+    return state.soundboardVolume;
+  });
+
+  els.previewTitleInput.addEventListener("input", () => {
+    // Keep native full-width sizing for title input.
+  });
+  els.previewTitleInput.addEventListener("keydown", async (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      await applySelectedSettings("displayName");
+      els.previewTitleInput.blur();
+    }
+  });
+  els.previewTitleInput.addEventListener("blur", async () => {
+    await applySelectedSettings("displayName");
+  });
 
   els.startSlider.addEventListener("input", async () => {
-    const sound = selectedSound();
-    if (!sound) {
-      return;
-    }
-    if (Number(els.startSlider.value) >= Number(els.endSlider.value)) {
-      els.startSlider.value = String(Math.max(0, Number(els.endSlider.value) - 0.05));
-    }
-    await applySelectedSettings();
+    await applySelectedSettings("startSlider");
   });
 
   els.endSlider.addEventListener("input", async () => {
-    const sound = selectedSound();
-    if (!sound) {
-      return;
-    }
-    if (Number(els.endSlider.value) <= Number(els.startSlider.value)) {
-      els.endSlider.value = String(Number(els.startSlider.value) + 0.05);
-    }
-    await applySelectedSettings();
+    await applySelectedSettings("endSlider");
   });
 
-  els.volumeSlider.addEventListener("input", applySelectedSettings);
-  els.fadeInSlider.addEventListener("input", applySelectedSettings);
-  els.fadeOutSlider.addEventListener("input", applySelectedSettings);
+  els.volumeSlider.addEventListener("input", async () => {
+    await applySelectedSettings("volumeSlider");
+  });
+  els.fadeInSlider.addEventListener("input", async () => {
+    await applySelectedSettings("fadeInSlider");
+  });
+  els.fadeOutSlider.addEventListener("input", async () => {
+    await applySelectedSettings("fadeOutSlider");
+  });
+
+  const commitTextInput = (input, source) => {
+    input.addEventListener("input", () => {
+      updateInlineInputWidth(input, 2, 10);
+    });
+
+    input.addEventListener("keydown", async (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        await applySelectedSettings(source);
+        input.blur();
+      }
+    });
+
+    input.addEventListener("blur", async () => {
+      await applySelectedSettings(source);
+    });
+  };
+
+  commitTextInput(els.fadeInInput, "fadeInInput");
+  commitTextInput(els.fadeOutInput, "fadeOutInput");
+  commitTextInput(els.volumeInput, "volumeInput");
+  commitTextInput(els.startInput, "startInput");
+  commitTextInput(els.endInput, "endInput");
 
   els.playSelectedBtn.addEventListener("click", async () => {
     await playSound(selectedSound());
   });
 
   els.previewBtn.addEventListener("click", onTogglePreview);
-  els.stopTopBtn.addEventListener("click", () => stopAllPlayback(true));
+  els.stopTopBtn.addEventListener("click", () => {
+    const sound = selectedSound();
+    if (sound) {
+      stopPlaybacksForSound(sound.id, true);
+      stopPreview();
+    }
+  });
   els.stopBottomBtn.addEventListener("click", onResetPreviewCursor);
 
   const onTimelinePointerMove = async (event) => {
