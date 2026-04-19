@@ -291,6 +291,12 @@ body {
   background: transparent;
 }
 
+.sound-item-icon-btn::before,
+.folder-remove-btn::before {
+  content: "";
+  display: block;
+}
+
 .sound-item {
   border: 1px solid var(--border-color);
   border-radius: 6px;
@@ -395,11 +401,36 @@ button:hover {
   background: var(--input-hover-bg);
 }
 
-.sound-item-icon-btn.remove-btn {
+.play-sound-btn::before {
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 9px solid currentColor;
+  margin-left: 2px;
+}
+
+.sound-item-icon-btn.stop-sound-btn::before {
+  width: 9px;
+  height: 9px;
+  border-radius: 1px;
+  background: currentColor;
+}
+
+.remove-btn::before {
+  width: 11px;
+  height: 11px;
+  background:
+    linear-gradient(currentColor, currentColor) center/2px 100% no-repeat,
+    linear-gradient(currentColor, currentColor) center/100% 2px no-repeat;
+  transform: rotate(45deg);
+}
+
+.remove-btn {
   color: var(--remove-btn-text);
 }
 
-.sound-item-icon-btn.stop-sound-btn {
+.stop-sound-btn {
   color: var(--stop-btn-text);
 }
 
