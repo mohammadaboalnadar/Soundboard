@@ -3,8 +3,10 @@ const state = {
   stopAllKeybind: "",
   localVolume: 1,
   soundboardVolume: 1,
+  folders: [],
   sounds: [],
   selectedSoundId: "",
+  draggingSoundId: "",
   activePlaybacks: [],
   previewAudio: null,
   previewSource: null,
@@ -25,6 +27,7 @@ const state = {
 
 const els = {
   addSoundsBtn: document.getElementById("add-sounds-btn"),
+  addFolderBtn: document.getElementById("add-folder-btn"),
   stopAllBtn: document.getElementById("stop-all-btn"),
   outputDeviceSelect: document.getElementById("output-device-select"),
   localVolumeSlider: document.getElementById("local-volume-slider"),
@@ -116,6 +119,11 @@ async function persist() {
     stopAllKeybind: state.stopAllKeybind,
     localVolume: parseUnitValue(state.localVolume, 1),
     soundboardVolume: parseUnitValue(state.soundboardVolume, 1),
+    folders: state.folders.map((folder) => ({
+      id: folder.id,
+      name: folder.name || "New Folder",
+      collapsed: Boolean(folder.collapsed)
+    })),
     sounds: state.sounds.map((sound) => ({
       id: sound.id,
       filePath: sound.filePath,
@@ -125,6 +133,7 @@ async function persist() {
       volume: Number.isFinite(sound.volume) ? clamp(sound.volume, 0, 1) : 1,
       fadeIn: Number.isFinite(sound.fadeIn) ? clamp(sound.fadeIn, 0, 5) : 0,
       fadeOut: Number.isFinite(sound.fadeOut) ? clamp(sound.fadeOut, 0, 5) : 0,
+      folderId: sound.folderId || "",
       keybind: sound.keybind || ""
     }))
   };
@@ -578,10 +587,185 @@ async function playSound(sound) {
   }
 }
 
+async function selectSoundById(soundId) {
+  const sound = state.sounds.find((item) => item.id === soundId);
+  if (!sound) {
+    return;
+  }
+  if (state.selectedSoundId && state.selectedSoundId !== sound.id) {
+    stopPreview();
+  }
+  state.selectedSoundId = sound.id;
+  state.timelineCursorTime = Number(sound.start) || 0;
+  await ensureEnvelope(sound);
+  renderAll();
+}
+
+function soundsInFolder(folderId) {
+  return state.sounds.filter((sound) => (sound.folderId || "") === folderId);
+}
+
+function createDropZone(folderId, index) {
+  const zone = document.createElement("div");
+  zone.className = "sound-drop-zone";
+  zone.addEventListener("dragover", (event) => {
+    if (!state.draggingSoundId) {
+      return;
+    }
+    event.preventDefault();
+    zone.classList.add("active");
+  });
+  zone.addEventListener("dragleave", () => {
+    zone.classList.remove("active");
+  });
+  zone.addEventListener("drop", async (event) => {
+    event.preventDefault();
+    zone.classList.remove("active");
+    await moveDraggedSound(folderId, index);
+  });
+  return zone;
+}
+
+async function moveDraggedSound(targetFolderId, targetIndex) {
+  const draggingSoundId = state.draggingSoundId;
+  state.draggingSoundId = "";
+  if (!draggingSoundId) {
+    return;
+  }
+  const sourceIndex = state.sounds.findIndex((item) => item.id === draggingSoundId);
+  if (sourceIndex < 0) {
+    return;
+  }
+
+  const draggingSound = state.sounds[sourceIndex];
+  const fromFolderId = draggingSound.folderId || "";
+  const original = state.sounds.slice();
+  const moving = original.splice(sourceIndex, 1)[0];
+  moving.folderId = targetFolderId || "";
+
+  const beforeTarget = original.filter((sound) => (sound.folderId || "") === (targetFolderId || ""));
+  const boundedIndex = clamp(Number(targetIndex) || 0, 0, beforeTarget.length);
+  let insertAt = original.length;
+  if (boundedIndex < beforeTarget.length) {
+    insertAt = original.findIndex((sound) => sound.id === beforeTarget[boundedIndex].id);
+  }
+
+  original.splice(insertAt, 0, moving);
+  state.sounds = original;
+  if (fromFolderId !== moving.folderId || sourceIndex !== insertAt) {
+    await persist();
+  }
+  renderAll();
+}
+
+function createSoundItem(sound) {
+  const item = document.createElement("div");
+  item.className = `sound-item${sound.id === state.selectedSoundId ? " active" : ""}`;
+  item.draggable = true;
+
+  item.addEventListener("dragstart", (event) => {
+    state.draggingSoundId = sound.id;
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.setData("text/plain", sound.id);
+    }
+  });
+  item.addEventListener("dragend", () => {
+    state.draggingSoundId = "";
+  });
+  item.addEventListener("click", async (event) => {
+    const target = event.target;
+    if (target instanceof Element && target.closest("button")) {
+      return;
+    }
+    await selectSoundById(sound.id);
+  });
+
+  const head = document.createElement("div");
+  head.className = "sound-item-head";
+
+  const title = document.createElement("div");
+  title.className = "sound-item-title";
+  title.textContent = displayTitle(sound);
+
+  head.appendChild(title);
+
+  const meta = document.createElement("div");
+  meta.className = "sound-item-meta";
+  const keyText = sound.keybind ? `Key: ${sound.keybind}` : "Key: None";
+  const volText = `Vol: ${formatPercent(sound.volume)}%`;
+  const fadeText = `Fades: ${formatTime(sound.fadeIn)}s/${formatTime(sound.fadeOut)}s`;
+  meta.textContent = `${formatTime(sound.start)}s - ${formatTime(sound.end)}s | ${volText} | ${fadeText} | ${keyText}`;
+
+  const buttons = document.createElement("div");
+  buttons.className = "sound-item-buttons";
+
+  const playBtn = document.createElement("button");
+  playBtn.type = "button";
+  playBtn.textContent = "Play";
+  playBtn.addEventListener("click", (event) => {
+    event.stopPropagation();
+    playSound(sound);
+  });
+
+  const stopBtn = document.createElement("button");
+  stopBtn.type = "button";
+  stopBtn.className = "stop-sound-btn";
+  stopBtn.textContent = "Stop";
+  stopBtn.addEventListener("click", (event) => {
+    event.stopPropagation();
+    stopPlaybacksForSound(sound.id, true);
+    if (state.selectedSoundId === sound.id) {
+      stopPreview();
+    }
+  });
+
+  const removeBtn = document.createElement("button");
+  removeBtn.type = "button";
+  removeBtn.className = "remove-btn";
+  removeBtn.textContent = "Remove";
+  removeBtn.addEventListener("click", async (event) => {
+    event.stopPropagation();
+    stopPlaybacksForSound(sound.id, false);
+    if (state.selectedSoundId === sound.id) {
+      stopPreview();
+      if (state.animationFrame) {
+        cancelAnimationFrame(state.animationFrame);
+        state.animationFrame = 0;
+      }
+    }
+
+    state.sounds = state.sounds.filter((item) => item.id !== sound.id);
+    if (state.selectedSoundId === sound.id) {
+      state.selectedSoundId = state.sounds[0]?.id || "";
+    }
+    await persist();
+    renderAll();
+  });
+
+  buttons.appendChild(playBtn);
+  buttons.appendChild(stopBtn);
+  buttons.appendChild(removeBtn);
+
+  item.appendChild(head);
+  item.appendChild(meta);
+  item.appendChild(buttons);
+  return item;
+}
+
+function renderSoundGroup(container, folderId) {
+  const sounds = soundsInFolder(folderId);
+  container.appendChild(createDropZone(folderId, 0));
+  sounds.forEach((sound, index) => {
+    container.appendChild(createSoundItem(sound));
+    container.appendChild(createDropZone(folderId, index + 1));
+  });
+}
+
 function renderSoundList() {
   els.soundList.innerHTML = "";
 
-  if (state.sounds.length === 0) {
+  if (state.sounds.length === 0 && state.folders.length === 0) {
     const empty = document.createElement("div");
     empty.className = "muted";
     empty.textContent = "No sounds added yet.";
@@ -589,90 +773,58 @@ function renderSoundList() {
     return;
   }
 
-  for (const sound of state.sounds) {
-    const item = document.createElement("div");
-    item.className = `sound-item${sound.id === state.selectedSoundId ? " active" : ""}`;
+  const rootGroup = document.createElement("div");
+  renderSoundGroup(rootGroup, "");
+  els.soundList.appendChild(rootGroup);
 
-    const head = document.createElement("div");
-    head.className = "sound-item-head";
-
-    const title = document.createElement("div");
-    title.className = "sound-item-title";
-    title.textContent = displayTitle(sound);
-
-    const selectBtn = document.createElement("button");
-    selectBtn.type = "button";
-    selectBtn.textContent = "Select";
-    selectBtn.addEventListener("click", async () => {
-      if (state.selectedSoundId && state.selectedSoundId !== sound.id) {
-        stopPreview();
-      }
-      state.selectedSoundId = sound.id;
-      state.timelineCursorTime = Number(sound.start) || 0;
-      await ensureEnvelope(sound);
-      renderAll();
+  for (const folder of state.folders) {
+    const details = document.createElement("details");
+    details.className = "sound-folder";
+    details.open = !folder.collapsed;
+    details.addEventListener("toggle", async () => {
+      folder.collapsed = !details.open;
+      await persist();
     });
 
-    head.appendChild(title);
-    head.appendChild(selectBtn);
-
-    const meta = document.createElement("div");
-    meta.className = "sound-item-meta";
-    const keyText = sound.keybind ? `Key: ${sound.keybind}` : "Key: None";
-    const volText = `Vol: ${formatPercent(sound.volume)}%`;
-    const fadeText = `Fades: ${formatTime(sound.fadeIn)}s/${formatTime(sound.fadeOut)}s`;
-    meta.textContent = `${formatTime(sound.start)}s - ${formatTime(sound.end)}s | ${volText} | ${fadeText} | ${keyText}`;
-
-    const buttons = document.createElement("div");
-    buttons.className = "sound-item-buttons";
-
-    const playBtn = document.createElement("button");
-    playBtn.type = "button";
-    playBtn.textContent = "Play";
-    playBtn.addEventListener("click", () => playSound(sound));
-
-    const stopBtn = document.createElement("button");
-    stopBtn.type = "button";
-    stopBtn.className = "stop-sound-btn";
-    stopBtn.textContent = "Stop";
-    stopBtn.addEventListener("click", () => {
-      stopPlaybacksForSound(sound.id, true);
-      if (state.selectedSoundId === sound.id) {
-        stopPreview();
+    const summary = document.createElement("summary");
+    summary.textContent = folder.name || "Folder";
+    summary.addEventListener("dragover", (event) => {
+      if (!state.draggingSoundId) {
+        return;
       }
+      event.preventDefault();
+    });
+    summary.addEventListener("drop", async (event) => {
+      event.preventDefault();
+      await moveDraggedSound(folder.id, soundsInFolder(folder.id).length);
     });
 
-    const removeBtn = document.createElement("button");
-    removeBtn.type = "button";
-    removeBtn.className = "remove-btn";
-    removeBtn.textContent = "Remove";
-    removeBtn.addEventListener("click", async () => {
-      stopPlaybacksForSound(sound.id, false);
-      if (state.selectedSoundId === sound.id) {
-        stopPreview();
-        if (state.animationFrame) {
-          cancelAnimationFrame(state.animationFrame);
-          state.animationFrame = 0;
+    const body = document.createElement("div");
+    body.className = "sound-folder-body";
+
+    const actions = document.createElement("div");
+    actions.className = "folder-actions";
+    const removeFolderBtn = document.createElement("button");
+    removeFolderBtn.type = "button";
+    removeFolderBtn.className = "folder-remove-btn";
+    removeFolderBtn.textContent = "Remove Folder";
+    removeFolderBtn.addEventListener("click", async () => {
+      state.folders = state.folders.filter((item) => item.id !== folder.id);
+      state.sounds.forEach((sound) => {
+        if ((sound.folderId || "") === folder.id) {
+          sound.folderId = "";
         }
-      }
-
-      state.sounds = state.sounds.filter((item) => item.id !== sound.id);
-      if (state.selectedSoundId === sound.id) {
-        state.selectedSoundId = state.sounds[0]?.id || "";
-      }
+      });
       await persist();
       renderAll();
     });
+    actions.appendChild(removeFolderBtn);
+    body.appendChild(actions);
+    renderSoundGroup(body, folder.id);
 
-    buttons.appendChild(playBtn);
-    buttons.appendChild(stopBtn);
-    buttons.appendChild(removeBtn);
-
-    item.appendChild(head);
-    item.appendChild(meta);
-    item.appendChild(buttons);
-
-    els.soundList.appendChild(item);
+    details.appendChild(summary);
+    details.appendChild(body);
+    els.soundList.appendChild(details);
   }
 }
 
@@ -828,6 +980,7 @@ async function onAddSounds() {
       volume: 1,
       fadeIn: 0,
       fadeOut: 0,
+      folderId: "",
       keybind: "",
       envelope: []
     };
@@ -841,6 +994,21 @@ async function onAddSounds() {
     await ensureEnvelope(state.sounds[0]);
   }
 
+  await persist();
+  renderAll();
+}
+
+async function onAddFolder() {
+  const name = window.prompt("Folder name", "New Folder");
+  if (name == null) {
+    return;
+  }
+  const trimmed = name.trim();
+  state.folders.push({
+    id: uid(),
+    name: trimmed || "New Folder",
+    collapsed: false
+  });
   await persist();
   renderAll();
 }
@@ -1047,6 +1215,7 @@ function onResetPreviewCursor() {
 
 async function installEvents() {
   els.addSoundsBtn.addEventListener("click", onAddSounds);
+  els.addFolderBtn.addEventListener("click", onAddFolder);
   els.stopAllBtn.addEventListener("click", () => stopAllPlayback(true));
 
   els.outputDeviceSelect.addEventListener("change", async () => {
@@ -1250,6 +1419,13 @@ async function bootstrap() {
   state.stopAllKeybind = settings.stopAllKeybind ? String(settings.stopAllKeybind) : "";
   state.localVolume = parseUnitValue(settings.localVolume, 1);
   state.soundboardVolume = parseUnitValue(settings.soundboardVolume, 1);
+  const folders = Array.isArray(settings.folders) ? settings.folders : [];
+  state.folders = folders.map((folder) => ({
+    id: String(folder.id || uid()),
+    name: String(folder.name || "New Folder"),
+    collapsed: Boolean(folder.collapsed)
+  }));
+  const folderIds = new Set(state.folders.map((folder) => folder.id));
 
   const sounds = Array.isArray(settings.sounds) ? settings.sounds : [];
   state.sounds = [];
@@ -1265,6 +1441,7 @@ async function bootstrap() {
       volume: Number.isFinite(sound.volume) ? Number(sound.volume) : 1,
       fadeIn: Number.isFinite(sound.fadeIn) ? Number(sound.fadeIn) : 0,
       fadeOut: Number.isFinite(sound.fadeOut) ? Number(sound.fadeOut) : 0,
+      folderId: folderIds.has(String(sound.folderId || "")) ? String(sound.folderId || "") : "",
       keybind: String(sound.keybind || ""),
       envelope: []
     };

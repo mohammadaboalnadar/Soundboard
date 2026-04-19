@@ -10,6 +10,7 @@ let settings = {
   stopAllKeybind: "",
   localVolume: 1,
   soundboardVolume: 1,
+  folders: [],
   sounds: []
 };
 
@@ -29,6 +30,7 @@ function loadSettings() {
           stopAllKeybind: parsed.stopAllKeybind ? String(parsed.stopAllKeybind) : "",
           localVolume: Number.isFinite(parsed.localVolume) ? parsed.localVolume : 1,
           soundboardVolume: Number.isFinite(parsed.soundboardVolume) ? parsed.soundboardVolume : 1,
+          folders: Array.isArray(parsed.folders) ? parsed.folders : [],
           sounds: Array.isArray(parsed.sounds) ? parsed.sounds : []
         };
       }
@@ -56,7 +58,16 @@ function normalizeSound(sound) {
     start: Number.isFinite(sound.start) ? sound.start : 0,
     end: Number.isFinite(sound.end) ? sound.end : 0,
     volume: Number.isFinite(sound.volume) ? Math.min(Math.max(sound.volume, 0), 1) : 1,
+    folderId: sound.folderId ? String(sound.folderId) : "",
     keybind: sound.keybind ? String(sound.keybind) : ""
+  };
+}
+
+function normalizeFolder(folder) {
+  return {
+    id: String(folder.id || Date.now()),
+    name: String(folder.name || "New Folder"),
+    collapsed: Boolean(folder.collapsed)
   };
 }
 
@@ -154,6 +165,9 @@ ipcMain.handle("settings:save", async (_event, nextSettings) => {
     soundboardVolume: nextSettings && Number.isFinite(nextSettings.soundboardVolume)
       ? nextSettings.soundboardVolume
       : 1,
+    folders: Array.isArray(nextSettings && nextSettings.folders)
+      ? nextSettings.folders.map(normalizeFolder)
+      : [],
     sounds: Array.isArray(nextSettings && nextSettings.sounds)
       ? nextSettings.sounds.map(normalizeSound)
       : []
