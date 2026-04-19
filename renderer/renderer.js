@@ -812,6 +812,7 @@ function renderSoundList() {
     renameFolderInput.value = folder.name || defaultFolderName;
     renameFolderInput.placeholder = "Folder name";
     renameFolderInput.setAttribute("aria-label", "Folder name");
+    let skipNextBlurSave = false;
     const saveFolderName = async () => {
       const trimmedName = renameFolderInput.value.trim();
       const nextName = trimmedName || defaultFolderName;
@@ -823,19 +824,22 @@ function renderSoundList() {
       renderAll();
     };
     const onRenameBlur = async () => {
+      if (skipNextBlurSave) {
+        skipNextBlurSave = false;
+        return;
+      }
       await saveFolderName();
     };
     renameFolderInput.addEventListener("blur", onRenameBlur);
-    renameFolderInput.addEventListener("keydown", (event) => {
+    renameFolderInput.addEventListener("keydown", async (event) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        renameFolderInput.blur();
+        await saveFolderName();
       } else if (event.key === "Escape") {
         event.preventDefault();
         renameFolderInput.value = folder.name || defaultFolderName;
-        renameFolderInput.removeEventListener("blur", onRenameBlur);
+        skipNextBlurSave = true;
         renameFolderInput.blur();
-        renameFolderInput.addEventListener("blur", onRenameBlur);
       }
     });
     const removeFolderBtn = document.createElement("button");
