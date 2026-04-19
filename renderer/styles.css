@@ -418,12 +418,10 @@ button:hover {
 }
 
 .remove-btn::before {
-  width: 11px;
-  height: 11px;
-  background:
-    linear-gradient(currentColor, currentColor) center/2px 100% no-repeat,
-    linear-gradient(currentColor, currentColor) center/100% 2px no-repeat;
-  transform: rotate(45deg);
+  content: "×";
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 600;
 }
 
 .remove-btn {
