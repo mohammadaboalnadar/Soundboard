@@ -827,7 +827,7 @@ function renderSoundList() {
       renderAll();
     };
     renameFolderInput.addEventListener("blur", saveFolderName);
-    renameFolderInput.addEventListener("keydown", async (event) => {
+    renameFolderInput.addEventListener("keydown", (event) => {
       if (event.key === "Enter") {
         event.preventDefault();
         renameFolderInput.blur();
