@@ -1000,14 +1000,16 @@ async function onAddSounds() {
 }
 
 async function onAddFolder() {
-  const name = window.prompt("Folder name", "New Folder");
-  if (name == null) {
-    return;
+  const existingNames = new Set(state.folders.map((folder) => folder.name));
+  let nextName = "New Folder";
+  let suffix = 2;
+  while (existingNames.has(nextName)) {
+    nextName = `New Folder ${suffix}`;
+    suffix += 1;
   }
-  const trimmed = name.trim();
   state.folders.push({
     id: uid(),
-    name: trimmed || "New Folder",
+    name: nextName,
     collapsed: false
   });
   await persist();
