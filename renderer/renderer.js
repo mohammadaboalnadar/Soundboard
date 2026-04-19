@@ -805,37 +805,37 @@ function renderSoundList() {
 
     const actions = document.createElement("div");
     actions.className = "folder-actions";
+    const defaultFolderName = "New Folder";
     const renameFolderInput = document.createElement("input");
     renameFolderInput.type = "text";
     renameFolderInput.className = "folder-name-input";
-    renameFolderInput.value = folder.name || "New Folder";
+    renameFolderInput.value = folder.name || defaultFolderName;
     renameFolderInput.placeholder = "Folder name";
     renameFolderInput.setAttribute("aria-label", "Folder name");
-    let cancelFolderRename = false;
     const saveFolderName = async () => {
-      if (cancelFolderRename) {
-        cancelFolderRename = false;
-        return;
-      }
       const trimmedName = renameFolderInput.value.trim();
-      const nextName = trimmedName || "New Folder";
-      if (nextName === (folder.name || "New Folder")) {
+      const nextName = trimmedName || defaultFolderName;
+      if (nextName === (folder.name || defaultFolderName)) {
         return;
       }
       folder.name = nextName;
       await persist();
       renderAll();
     };
-    renameFolderInput.addEventListener("blur", saveFolderName);
+    const onRenameBlur = async () => {
+      await saveFolderName();
+    };
+    renameFolderInput.addEventListener("blur", onRenameBlur);
     renameFolderInput.addEventListener("keydown", (event) => {
       if (event.key === "Enter") {
         event.preventDefault();
         renameFolderInput.blur();
       } else if (event.key === "Escape") {
         event.preventDefault();
-        cancelFolderRename = true;
-        renameFolderInput.value = folder.name || "New Folder";
+        renameFolderInput.value = folder.name || defaultFolderName;
+        renameFolderInput.removeEventListener("blur", onRenameBlur);
         renameFolderInput.blur();
+        renameFolderInput.addEventListener("blur", onRenameBlur);
       }
     });
     const removeFolderBtn = document.createElement("button");
