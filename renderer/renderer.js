@@ -62,7 +62,8 @@ const els = {
   setKeybindBtn: document.getElementById("set-keybind-btn"),
   clearKeybindBtn: document.getElementById("clear-keybind-btn"),
   captureHint: document.getElementById("capture-hint"),
-  previewFilePath: document.getElementById("preview-file-path")
+  previewFilePath: document.getElementById("preview-file-path"),
+  darkModeToggle: document.getElementById("dark-mode-toggle")
 };
 
 function uid() {
@@ -1515,6 +1516,33 @@ function onResetPreviewCursor() {
 }
 
 async function installEvents() {
+  // Initialize dark mode
+  const initializeDarkMode = () => {
+    const savedTheme = localStorage.getItem("theme");
+    const theme = savedTheme || "dark";
+    applyTheme(theme);
+  };
+
+  const applyTheme = (theme) => {
+    if (theme === "light") {
+      document.documentElement.setAttribute("data-theme", "light");
+      localStorage.setItem("theme", "light");
+      els.darkModeToggle.innerHTML = '<span class="dark-mode-icon">☀️</span>';
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+      localStorage.setItem("theme", "dark");
+      els.darkModeToggle.innerHTML = '<span class="dark-mode-icon">🌙</span>';
+    }
+  };
+
+  initializeDarkMode();
+
+  els.darkModeToggle.addEventListener("click", () => {
+    const currentTheme = document.documentElement.getAttribute("data-theme");
+    const newTheme = currentTheme === "light" ? "dark" : "light";
+    applyTheme(newTheme);
+  });
+
   els.addSoundsBtn.addEventListener("click", onAddSounds);
   els.addFolderBtn.addEventListener("click", onAddFolder);
   els.stopAllBtn.addEventListener("click", () => stopAllPlayback(true));
