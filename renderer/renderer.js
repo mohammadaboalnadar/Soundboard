@@ -836,12 +836,11 @@ function renderSoundList() {
         renameFolderInput.blur();
       }
     });
-    renameFolderInput.addEventListener("click", (event) => {
+    const stopSummaryToggle = (event) => {
       event.stopPropagation();
-    });
-    renameFolderInput.addEventListener("mousedown", (event) => {
-      event.stopPropagation();
-    });
+    };
+    renameFolderInput.addEventListener("click", stopSummaryToggle);
+    renameFolderInput.addEventListener("mousedown", stopSummaryToggle);
     summary.appendChild(renameFolderInput);
 
     const body = document.createElement("div");
