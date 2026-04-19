@@ -401,7 +401,7 @@ button:hover {
   background: var(--input-hover-bg);
 }
 
-.play-sound-btn::before {
+.sound-item-icon-btn.play-sound-btn::before {
   width: 0;
   height: 0;
   border-top: 5px solid transparent;
