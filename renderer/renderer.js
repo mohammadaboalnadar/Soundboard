@@ -648,6 +648,13 @@ function createFolderDropZone(index) {
   return zone;
 }
 
+async function persistAndRender(shouldPersist) {
+  if (shouldPersist) {
+    await persist();
+  }
+  renderAll();
+}
+
 async function moveDraggedSound(targetFolderId, targetIndex) {
   const draggingSoundId = state.draggingSoundId;
   state.draggingSoundId = "";
@@ -675,10 +682,7 @@ async function moveDraggedSound(targetFolderId, targetIndex) {
 
   original.splice(insertAt, 0, moving);
   state.sounds = original;
-  if (fromFolderId !== moving.folderId || sourceIndex !== insertAt) {
-    await persist();
-  }
-  renderAll();
+  await persistAndRender(fromFolderId !== moving.folderId || sourceIndex !== insertAt);
 }
 
 async function moveDraggedFolder(targetIndex) {
@@ -691,8 +695,8 @@ async function moveDraggedFolder(targetIndex) {
   if (sourceIndex < 0) {
     return;
   }
-  const maxIndex = state.folders.length;
-  let insertIndex = clamp(Number(targetIndex) || 0, 0, maxIndex);
+  const folderCount = state.folders.length;
+  let insertIndex = clamp(Number(targetIndex) || 0, 0, folderCount);
   if (insertIndex > sourceIndex) {
     insertIndex -= 1;
   }
@@ -703,8 +707,7 @@ async function moveDraggedFolder(targetIndex) {
   const moving = updated.splice(sourceIndex, 1)[0];
   updated.splice(insertIndex, 0, moving);
   state.folders = updated;
-  await persist();
-  renderAll();
+  await persistAndRender(true);
 }
 
 function createSoundItem(sound) {
