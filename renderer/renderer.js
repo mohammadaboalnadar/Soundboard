@@ -836,11 +836,11 @@ function renderSoundList() {
         renameFolderInput.blur();
       }
     });
-    const stopSummaryToggle = (event) => {
+    const preventSummaryToggle = (event) => {
       event.stopPropagation();
     };
-    renameFolderInput.addEventListener("click", stopSummaryToggle);
-    renameFolderInput.addEventListener("mousedown", stopSummaryToggle);
+    renameFolderInput.addEventListener("click", preventSummaryToggle);
+    renameFolderInput.addEventListener("mousedown", preventSummaryToggle);
     summary.appendChild(renameFolderInput);
 
     const body = document.createElement("div");
