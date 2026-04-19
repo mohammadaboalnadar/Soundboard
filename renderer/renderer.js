@@ -701,11 +701,11 @@ async function moveDraggedFolder(targetIndex) {
   if (sourceIndex < 0) {
     return;
   }
-  const clampedTargetIndex = clamp(Number(targetIndex) || 0, 0, state.folders.length);
+  const targetIndexValue = Number(targetIndex) || 0;
   const updated = state.folders.slice();
   const moving = updated.splice(sourceIndex, 1)[0];
   const maxInsertIndex = updated.length;
-  let insertIndex = clampedTargetIndex;
+  let insertIndex = targetIndexValue;
   if (insertIndex > sourceIndex) {
     insertIndex -= 1;
   }
