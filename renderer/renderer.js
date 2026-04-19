@@ -631,7 +631,10 @@ function createFolderDropZone(index) {
   const zone = document.createElement("div");
   zone.className = "folder-drop-zone";
   zone.addEventListener("dragover", (event) => {
-    if (!state.draggingFolderId || state.draggingSoundId) {
+    if (state.draggingSoundId) {
+      return;
+    }
+    if (!state.draggingFolderId) {
       return;
     }
     event.preventDefault();
@@ -651,7 +654,7 @@ function createFolderDropZone(index) {
   return zone;
 }
 
-async function persistAndRender(shouldPersist) {
+async function conditionallyPersistAndRender(shouldPersist) {
   if (shouldPersist) {
     await persist();
   }
@@ -685,7 +688,7 @@ async function moveDraggedSound(targetFolderId, targetIndex) {
 
   original.splice(insertAt, 0, moving);
   state.sounds = original;
-  await persistAndRender(fromFolderId !== moving.folderId || sourceIndex !== insertAt);
+  await conditionallyPersistAndRender(fromFolderId !== moving.folderId || sourceIndex !== insertAt);
 }
 
 async function moveDraggedFolder(targetIndex) {
@@ -708,12 +711,12 @@ async function moveDraggedFolder(targetIndex) {
   }
   insertIndex = clamp(insertIndex, 0, maxInsertIndex);
   if (insertIndex === sourceIndex) {
-    await persistAndRender(false);
+    await conditionallyPersistAndRender(false);
     return;
   }
   updated.splice(insertIndex, 0, moving);
   state.folders = updated;
-  await persistAndRender(true);
+  await conditionallyPersistAndRender(true);
 }
 
 function createSoundItem(sound) {
