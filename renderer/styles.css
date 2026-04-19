@@ -11,6 +11,7 @@
   --input-focus-border: #4a7ba7;
   --accent-color: #4a9fd8;
   --accent-light: #2a5a7a;
+  --icon-white: #fff;
   --remove-btn-border: #a04545;
   --remove-btn-bg: #3a2020;
   --remove-btn-text: #ff6b6b;
@@ -414,7 +415,7 @@ button:hover {
   width: 11px;
   height: 11px;
   border-radius: 1px;
-  background: #fff;
+  background: var(--icon-white);
 }
 
 .remove-btn::before {
