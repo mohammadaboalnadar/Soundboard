@@ -698,16 +698,17 @@ async function moveDraggedFolder(targetIndex) {
   if (sourceIndex < 0) {
     return;
   }
-  const requestedIndex = clamp(Number(targetIndex) || 0, 0, state.folders.length);
+  const clampedTargetIndex = clamp(Number(targetIndex) || 0, 0, state.folders.length);
   const updated = state.folders.slice();
   const moving = updated.splice(sourceIndex, 1)[0];
   const maxInsertIndex = updated.length;
-  let insertIndex = requestedIndex;
+  let insertIndex = clampedTargetIndex;
   if (insertIndex > sourceIndex) {
     insertIndex -= 1;
   }
   insertIndex = clamp(insertIndex, 0, maxInsertIndex);
   if (insertIndex === sourceIndex) {
+    await persistAndRender(false);
     return;
   }
   updated.splice(insertIndex, 0, moving);
