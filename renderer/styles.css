@@ -273,21 +273,22 @@ body {
 
 .folder-remove-btn {
   margin-left: auto;
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   padding: 0;
-  font-size: 0.78rem;
+  font-size: 0.95rem;
   line-height: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-color: var(--remove-btn-border);
-  background: var(--remove-btn-bg);
+  border: none;
+  background: transparent;
   color: var(--remove-btn-text);
+  border-radius: 4px;
 }
 
 .folder-remove-btn:hover {
-  background: var(--remove-btn-hover-bg);
+  background: transparent;
 }
 
 .sound-item {
@@ -333,14 +334,22 @@ body {
 }
 
 .sound-item-icon-btn {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   padding: 0;
-  font-size: 0.76rem;
+  font-size: 0.95rem;
   line-height: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  border-radius: 4px;
+}
+
+.sound-item-icon-btn:hover {
+  background: transparent;
 }
 
 .sound-drop-zone {
@@ -386,24 +395,12 @@ button:hover {
   background: var(--input-hover-bg);
 }
 
-.remove-btn {
-  border-color: var(--remove-btn-border);
-  background: var(--remove-btn-bg);
+.sound-item-icon-btn.remove-btn {
   color: var(--remove-btn-text);
 }
 
-.remove-btn:hover {
-  background: var(--remove-btn-hover-bg);
-}
-
-.stop-sound-btn {
-  border-color: var(--stop-btn-border);
-  background: var(--stop-btn-bg);
+.sound-item-icon-btn.stop-sound-btn {
   color: var(--stop-btn-text);
-}
-
-.stop-sound-btn:hover {
-  background: var(--stop-btn-hover-bg);
 }
 
 .row {
