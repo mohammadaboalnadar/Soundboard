@@ -128,7 +128,6 @@ body {
 
 .folder-summary-name-input {
   width: min(320px, calc(100% - 24px));
-  max-width: 100%;
   display: inline-block;
   vertical-align: middle;
   border: 1px solid transparent;
