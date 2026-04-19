@@ -7,6 +7,7 @@ const state = {
   sounds: [],
   selectedSoundId: "",
   draggingSoundId: "",
+  draggingFolderId: "",
   activePlaybacks: [],
   previewAudio: null,
   previewSource: null,
@@ -626,6 +627,27 @@ function createDropZone(folderId, index) {
   return zone;
 }
 
+function createFolderDropZone(index) {
+  const zone = document.createElement("div");
+  zone.className = "folder-drop-zone";
+  zone.addEventListener("dragover", (event) => {
+    if (!state.draggingFolderId) {
+      return;
+    }
+    event.preventDefault();
+    zone.classList.add("active");
+  });
+  zone.addEventListener("dragleave", () => {
+    zone.classList.remove("active");
+  });
+  zone.addEventListener("drop", async (event) => {
+    event.preventDefault();
+    zone.classList.remove("active");
+    await moveDraggedFolder(index);
+  });
+  return zone;
+}
+
 async function moveDraggedSound(targetFolderId, targetIndex) {
   const draggingSoundId = state.draggingSoundId;
   state.draggingSoundId = "";
@@ -656,6 +678,32 @@ async function moveDraggedSound(targetFolderId, targetIndex) {
   if (fromFolderId !== moving.folderId || sourceIndex !== insertAt) {
     await persist();
   }
+  renderAll();
+}
+
+async function moveDraggedFolder(targetIndex) {
+  const draggingFolderId = state.draggingFolderId;
+  state.draggingFolderId = "";
+  if (!draggingFolderId) {
+    return;
+  }
+  const sourceIndex = state.folders.findIndex((folder) => folder.id === draggingFolderId);
+  if (sourceIndex < 0) {
+    return;
+  }
+  const maxIndex = state.folders.length;
+  let insertIndex = clamp(Number(targetIndex) || 0, 0, maxIndex);
+  if (insertIndex > sourceIndex) {
+    insertIndex -= 1;
+  }
+  if (insertIndex === sourceIndex) {
+    return;
+  }
+  const updated = state.folders.slice();
+  const moving = updated.splice(sourceIndex, 1)[0];
+  updated.splice(insertIndex, 0, moving);
+  state.folders = updated;
+  await persist();
   renderAll();
 }
 
@@ -778,7 +826,11 @@ function renderSoundList() {
   renderSoundGroup(rootGroup, "");
   els.soundList.appendChild(rootGroup);
 
-  for (const folder of state.folders) {
+  if (state.folders.length > 0) {
+    els.soundList.appendChild(createFolderDropZone(0));
+  }
+
+  state.folders.forEach((folder, folderIndex) => {
     const details = document.createElement("details");
     details.className = "sound-folder";
     details.open = !folder.collapsed;
@@ -788,6 +840,17 @@ function renderSoundList() {
     });
 
     const summary = document.createElement("summary");
+    summary.draggable = true;
+    summary.addEventListener("dragstart", (event) => {
+      state.draggingFolderId = folder.id;
+      if (event.dataTransfer) {
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("text/plain", folder.id);
+      }
+    });
+    summary.addEventListener("dragend", () => {
+      state.draggingFolderId = "";
+    });
     summary.addEventListener("dragover", (event) => {
       if (!state.draggingSoundId) {
         return;
@@ -841,6 +904,9 @@ function renderSoundList() {
     };
     renameFolderInput.addEventListener("click", preventSummaryToggle);
     renameFolderInput.addEventListener("mousedown", preventSummaryToggle);
+    renameFolderInput.addEventListener("dragstart", (event) => {
+      event.preventDefault();
+    });
     summary.appendChild(renameFolderInput);
 
     const body = document.createElement("div");
@@ -869,7 +935,8 @@ function renderSoundList() {
     details.appendChild(summary);
     details.appendChild(body);
     els.soundList.appendChild(details);
-  }
+    els.soundList.appendChild(createFolderDropZone(folderIndex + 1));
+  });
 }
 
 function updatePreviewPane() {

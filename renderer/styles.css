@@ -127,7 +127,10 @@ body {
 }
 
 .folder-summary-name-input {
-  width: 100%;
+  width: min(320px, calc(100% - 24px));
+  max-width: 100%;
+  display: inline-block;
+  vertical-align: middle;
   border: 1px solid transparent;
   border-radius: 4px;
   padding: 1px 2px;
@@ -209,6 +212,15 @@ body {
 }
 
 .sound-drop-zone.active {
+  background: #b4dbf5;
+}
+
+.folder-drop-zone {
+  height: 8px;
+  border-radius: 4px;
+}
+
+.folder-drop-zone.active {
   background: #b4dbf5;
 }
 
