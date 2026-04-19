@@ -637,13 +637,14 @@ async function moveDraggedSound(targetFolderId, targetIndex) {
     return;
   }
 
+  const normalizedTargetFolderId = targetFolderId || "";
   const draggingSound = state.sounds[sourceIndex];
   const fromFolderId = draggingSound.folderId || "";
   const original = state.sounds.slice();
   const moving = original.splice(sourceIndex, 1)[0];
-  moving.folderId = targetFolderId || "";
+  moving.folderId = normalizedTargetFolderId;
 
-  const beforeTarget = original.filter((sound) => (sound.folderId || "") === (targetFolderId || ""));
+  const beforeTarget = original.filter((sound) => (sound.folderId || "") === normalizedTargetFolderId);
   const boundedIndex = clamp(Number(targetIndex) || 0, 0, beforeTarget.length);
   let insertAt = original.length;
   if (boundedIndex < beforeTarget.length) {
@@ -1431,6 +1432,7 @@ async function bootstrap() {
   state.sounds = [];
   for (const sound of sounds) {
     const duration = await getDuration(sound.filePath);
+    const soundFolderId = String(sound.folderId || "");
     const next = {
       id: String(sound.id || uid()),
       filePath: String(sound.filePath || ""),
@@ -1441,7 +1443,7 @@ async function bootstrap() {
       volume: Number.isFinite(sound.volume) ? Number(sound.volume) : 1,
       fadeIn: Number.isFinite(sound.fadeIn) ? Number(sound.fadeIn) : 0,
       fadeOut: Number.isFinite(sound.fadeOut) ? Number(sound.fadeOut) : 0,
-      folderId: folderIds.has(String(sound.folderId || "")) ? String(sound.folderId || "") : "",
+      folderId: folderIds.has(soundFolderId) ? soundFolderId : "",
       keybind: String(sound.keybind || ""),
       envelope: []
     };

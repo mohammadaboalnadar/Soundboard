@@ -50,22 +50,26 @@ function saveSettings() {
   }
 }
 
+function generateId() {
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
 function normalizeSound(sound) {
   return {
-    id: String(sound.id || Date.now()),
+    id: String(sound.id || generateId()),
     filePath: String(sound.filePath || ""),
     displayName: String(sound.displayName || ""),
     start: Number.isFinite(sound.start) ? sound.start : 0,
     end: Number.isFinite(sound.end) ? sound.end : 0,
     volume: Number.isFinite(sound.volume) ? Math.min(Math.max(sound.volume, 0), 1) : 1,
-    folderId: sound.folderId ? String(sound.folderId) : "",
+    folderId: String(sound.folderId || ""),
     keybind: sound.keybind ? String(sound.keybind) : ""
   };
 }
 
 function normalizeFolder(folder) {
   return {
-    id: String(folder.id || Date.now()),
+    id: String(folder.id || generateId()),
     name: String(folder.name || "New Folder"),
     collapsed: Boolean(folder.collapsed)
   };
