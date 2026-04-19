@@ -225,12 +225,14 @@ body {
   padding: 8px 10px;
   font-weight: 600;
   color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .folder-summary-name-input {
-  width: min(320px, calc(100% - 24px));
-  display: inline-block;
-  vertical-align: middle;
+  flex: 1;
+  min-width: 0;
   border: 1px solid transparent;
   border-radius: 4px;
   padding: 1px 2px;
@@ -253,18 +255,23 @@ body {
   padding: 0 8px 8px;
 }
 
-.folder-actions {
-  margin-top: -6px;
-  margin-bottom: 8px;
-  display: flex;
+.folder-remove-btn {
+  margin-left: auto;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  font-size: 0.78rem;
+  line-height: 1;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  justify-content: flex-end;
+  justify-content: center;
+  border-color: var(--remove-btn-border);
+  background: var(--remove-btn-bg);
+  color: var(--remove-btn-text);
 }
 
-.folder-remove-btn {
-  padding: 2px 8px;
-  font-size: 0.8rem;
+.folder-remove-btn:hover {
+  background: var(--remove-btn-hover-bg);
 }
 
 .sound-item {
@@ -290,9 +297,11 @@ body {
 
 .sound-item-title {
   font-weight: 600;
+  font-size: 0.88rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  min-width: 0;
 }
 
 .sound-item-meta {
@@ -302,9 +311,20 @@ body {
 }
 
 .sound-item-buttons {
-  margin-top: 8px;
   display: flex;
-  gap: 6px;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.sound-item-icon-btn {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  font-size: 0.76rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sound-drop-zone {
@@ -351,8 +371,6 @@ button:hover {
 }
 
 .remove-btn {
-  padding: 3px 8px;
-  font-size: 0.82rem;
   border-color: var(--remove-btn-border);
   background: var(--remove-btn-bg);
   color: var(--remove-btn-text);
@@ -363,8 +381,6 @@ button:hover {
 }
 
 .stop-sound-btn {
-  padding: 4px 8px;
-  font-size: 0.82rem;
   border-color: var(--stop-btn-border);
   background: var(--stop-btn-bg);
   color: var(--stop-btn-text);

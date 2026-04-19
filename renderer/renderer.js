@@ -858,19 +858,15 @@ function createSoundItem(sound) {
 
   head.appendChild(title);
 
-  const meta = document.createElement("div");
-  meta.className = "sound-item-meta";
-  const keyText = sound.keybind ? `Key: ${sound.keybind}` : "Key: None";
-  const volText = `Vol: ${formatPercent(sound.volume)}%`;
-  const fadeText = `Fades: ${formatTime(sound.fadeIn)}s/${formatTime(sound.fadeOut)}s`;
-  meta.textContent = `${formatTime(sound.start)}s - ${formatTime(sound.end)}s | ${volText} | ${fadeText} | ${keyText}`;
-
   const buttons = document.createElement("div");
   buttons.className = "sound-item-buttons";
 
   const playBtn = document.createElement("button");
   playBtn.type = "button";
-  playBtn.textContent = "Play";
+  playBtn.className = "sound-item-icon-btn";
+  playBtn.textContent = "▶";
+  playBtn.setAttribute("aria-label", "Play sound");
+  playBtn.title = "Play";
   playBtn.addEventListener("click", (event) => {
     event.stopPropagation();
     playSound(sound);
@@ -878,8 +874,10 @@ function createSoundItem(sound) {
 
   const stopBtn = document.createElement("button");
   stopBtn.type = "button";
-  stopBtn.className = "stop-sound-btn";
-  stopBtn.textContent = "Stop";
+  stopBtn.className = "sound-item-icon-btn stop-sound-btn";
+  stopBtn.textContent = "⏹";
+  stopBtn.setAttribute("aria-label", "Stop sound");
+  stopBtn.title = "Stop";
   stopBtn.addEventListener("click", (event) => {
     event.stopPropagation();
     stopPlaybacksForSound(sound.id, true);
@@ -890,8 +888,10 @@ function createSoundItem(sound) {
 
   const removeBtn = document.createElement("button");
   removeBtn.type = "button";
-  removeBtn.className = "remove-btn";
-  removeBtn.textContent = "Remove";
+  removeBtn.className = "sound-item-icon-btn remove-btn";
+  removeBtn.textContent = "🗑";
+  removeBtn.setAttribute("aria-label", "Remove sound");
+  removeBtn.title = "Remove";
   removeBtn.addEventListener("click", async (event) => {
     event.stopPropagation();
     stopPlaybacksForSound(sound.id, false);
@@ -916,8 +916,7 @@ function createSoundItem(sound) {
   buttons.appendChild(removeBtn);
 
   item.appendChild(head);
-  item.appendChild(meta);
-  item.appendChild(buttons);
+  head.appendChild(buttons);
   return item;
 }
 
@@ -1032,16 +1031,15 @@ function renderSoundList() {
     });
     summary.appendChild(renameFolderInput);
 
-    const body = document.createElement("div");
-    body.className = "sound-folder-body";
-
-    const actions = document.createElement("div");
-    actions.className = "folder-actions";
     const removeFolderBtn = document.createElement("button");
     removeFolderBtn.type = "button";
     removeFolderBtn.className = "folder-remove-btn";
-    removeFolderBtn.textContent = "Remove Folder";
-    removeFolderBtn.addEventListener("click", async () => {
+    removeFolderBtn.textContent = "🗑";
+    removeFolderBtn.setAttribute("aria-label", "Remove folder");
+    removeFolderBtn.title = "Remove folder";
+    removeFolderBtn.addEventListener("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
       state.folders = state.folders.filter((item) => item.id !== folder.id);
       state.sounds.forEach((sound) => {
         if ((sound.folderId || "") === folder.id) {
@@ -1051,8 +1049,10 @@ function renderSoundList() {
       await persist();
       renderAll();
     });
-    actions.appendChild(removeFolderBtn);
-    body.appendChild(actions);
+    summary.appendChild(removeFolderBtn);
+
+    const body = document.createElement("div");
+    body.className = "sound-folder-body";
     renderSoundGroup(body, folder.id);
 
     details.appendChild(summary);
