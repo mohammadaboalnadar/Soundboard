@@ -281,14 +281,14 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: none;
-  background: transparent;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
   color: var(--remove-btn-text);
   border-radius: 4px;
 }
 
 .folder-remove-btn:hover {
-  background: transparent;
+  background: var(--input-hover-bg);
 }
 
 .sound-item-icon-btn::before,
@@ -348,14 +348,14 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: none;
-  background: transparent;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
   color: var(--text-primary);
   border-radius: 4px;
 }
 
 .sound-item-icon-btn:hover {
-  background: transparent;
+  background: var(--input-hover-bg);
 }
 
 .sound-drop-zone {
@@ -419,7 +419,7 @@ button:hover {
 
 .remove-btn::before {
   content: "×";
-  font-size: 14px;
+  font-size: 17px;
   line-height: 1;
   font-weight: 600;
 }
