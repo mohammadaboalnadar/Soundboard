@@ -228,6 +228,22 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
+  list-style: none;
+}
+
+.sound-folder summary::-webkit-details-marker {
+  display: none;
+}
+
+.sound-folder summary::before {
+  content: "▸";
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  flex: 0 0 auto;
+}
+
+.sound-folder[open] summary::before {
+  content: "▾";
 }
 
 .folder-summary-name-input {
