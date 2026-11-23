@@ -21,3 +21,8 @@ release/
 .DS_Store
 Thumbs.db
 .vscode/
+
+# Tauri / tooling
+src-tauri/target/
+src-tauri/gen/
+.superpowers/

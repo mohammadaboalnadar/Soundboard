@@ -4,11 +4,13 @@
   "description": "Lightweight desktop soundboard",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "test": "node --test \"tests/*.test.mjs\""
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
     "electron": "^31.0.0"
-  }
+  },
+  "type": "module"
 }
