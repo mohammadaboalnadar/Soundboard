@@ -22,7 +22,7 @@ const NORMAL_MIN: (f64, f64) = (900.0, 600.0);
 struct AppState {
     close_to_tray: AtomicBool,
     normal_size: Mutex<Option<LogicalSize<f64>>>,
-    ptt_keys: Mutex<Option<Vec<ptt::Input>>>,
+    ptt: Mutex<ptt::Ptt>,
 }
 
 fn settings_path(app: &AppHandle) -> Result<PathBuf, String> {
@@ -38,7 +38,7 @@ fn legacy_settings_path(app: &AppHandle) -> Option<PathBuf> {
 
 fn allow(app: &AppHandle, paths: &[String]) {
     let scope = app.asset_protocol_scope();
-    for p in paths {
+    for p in paths.iter().filter(|p| is_audio(p)) {
         let _ = scope.allow_file(Path::new(p));
     }
 }
@@ -141,15 +141,27 @@ fn set_hotkeys(app: AppHandle, map: HashMap<String, String>) -> hotkeys::SetResu
 #[tauri::command]
 fn ptt_configure(state: tauri::State<'_, AppState>, key: String) -> Result<(), String> {
     let parsed = if key.is_empty() { None } else { Some(ptt::parse(&key).ok_or("That key can't be pressed automatically")?) };
-    *state.ptt_keys.lock().unwrap() = parsed;
-    Ok(())
+    let held = state.ptt.lock().unwrap().configure(parsed);
+    match held {
+        Some(keys) => ptt::send(&keys, false),
+        None => Ok(()),
+    }
 }
 
 #[tauri::command]
 fn ptt_set(state: tauri::State<'_, AppState>, down: bool) -> Result<(), String> {
-    match state.ptt_keys.lock().unwrap().as_deref() {
-        Some(keys) => ptt::send(keys, down),
+    let step = state.ptt.lock().unwrap().set(down);
+    match step {
+        Some((keys, d)) => ptt::send(&keys, d),
         None => Ok(()),
+    }
+}
+
+fn release_ptt(app: &AppHandle) {
+    if let Some(state) = app.try_state::<AppState>() {
+        if let Some(keys) = state.ptt.lock().unwrap().release_all() {
+            let _ = ptt::send(&keys, false);
+        }
     }
 }
 
@@ -194,12 +206,12 @@ fn autostart_set(app: AppHandle, on: bool) -> Result<bool, String> {
 
 // ---------- phone remote ----------
 
-#[tauri::command]
+#[tauri::command(async)]
 fn remote_start(app: AppHandle, remote: tauri::State<'_, remote::Remote>, port: u16, pin: String) -> Result<remote::RemoteInfo, String> {
     remote.start(app.clone(), port, pin)
 }
 
-#[tauri::command]
+#[tauri::command(async)]
 fn remote_stop(remote: tauri::State<'_, remote::Remote>) {
     remote.stop();
 }
@@ -223,7 +235,10 @@ fn build_tray(app: &tauri::App) -> tauri::Result<()> {
             "stop" => {
                 let _ = app.emit("tray", "stop-all");
             }
-            "quit" => app.exit(0),
+            "quit" => {
+                release_ptt(app);
+                app.exit(0);
+            }
             _ => {}
         })
         .on_tray_icon_event(|tray, event| {
@@ -290,6 +305,15 @@ pub fn run() {
             remote_stop,
             remote_sync
         ])
-        .run(tauri::generate_context!())
-        .expect("error while running Sonic Dominion");
+        .build(tauri::generate_context!())
+        .expect("error while building Sonic Dominion")
+        .run(|app, event| {
+            // Never leave the voice app's push-to-talk key held down after we go away.
+            if let tauri::RunEvent::Exit = event {
+                release_ptt(app);
+                if let Some(r) = app.try_state::<remote::Remote>() {
+                    r.stop();
+                }
+            }
+        });
 }

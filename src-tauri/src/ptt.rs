@@ -129,9 +129,65 @@ pub fn send(_inputs: &[Input], _down: bool) -> Result<(), String> {
     Err("Auto push-to-talk is only available on Windows".into())
 }
 
+/// Owns what is physically held, so a key that was pressed is always the key
+/// that gets released, even if the configured key changes mid-press or the app quits.
+#[derive(Default)]
+pub struct Ptt {
+    configured: Option<Vec<Input>>,
+    pressed: Option<Vec<Input>>,
+}
+
+impl Ptt {
+    /// Change the key. Anything currently held is returned for release first.
+    pub fn configure(&mut self, keys: Option<Vec<Input>>) -> Option<Vec<Input>> {
+        self.configured = keys;
+        self.pressed.take()
+    }
+
+    /// Returns the inputs to send for this transition, if any.
+    pub fn set(&mut self, down: bool) -> Option<(Vec<Input>, bool)> {
+        if down {
+            if self.pressed.is_some() {
+                return None;
+            }
+            let keys = self.configured.clone()?;
+            self.pressed = Some(keys.clone());
+            Some((keys, true))
+        } else {
+            self.pressed.take().map(|k| (k, false))
+        }
+    }
+
+    /// Release on exit.
+    pub fn release_all(&mut self) -> Option<Vec<Input>> {
+        self.pressed.take()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn releases_what_was_pressed_even_after_reconfigure() {
+        let mut p = Ptt::default();
+        p.configure(parse("F13"));
+        assert_eq!(p.set(true), Some((vec![Input::Key(0x7C)], true)));
+        assert_eq!(p.set(true), None, "no double press");
+        // key changed while held: the old key comes back for release
+        assert_eq!(p.configure(parse("F14")), Some(vec![Input::Key(0x7C)]));
+        assert_eq!(p.set(false), None, "nothing held any more");
+        p.set(true);
+        assert_eq!(p.release_all(), Some(vec![Input::Key(0x7D)]));
+        assert_eq!(p.release_all(), None);
+    }
+
+    #[test]
+    fn unconfigured_presses_nothing() {
+        let mut p = Ptt::default();
+        assert_eq!(p.set(true), None);
+        assert_eq!(p.set(false), None);
+    }
 
     #[test]
     fn parses_keys_modifiers_and_mouse() {
