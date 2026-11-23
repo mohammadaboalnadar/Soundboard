@@ -98,6 +98,7 @@ export function createPads(root, app) {
       h(
         "div",
         { class: "pad-foot" },
+        h("span", { class: "pip", "aria-hidden": "true" }),
         missing
           ? h("span", { class: "warn" }, "File missing")
           : h("span", { class: "dur num" }, fmtDuration(snd.end - snd.start)),

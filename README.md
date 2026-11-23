@@ -73,4 +73,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
-MIT. Geist fonts are under the SIL Open Font License (`src/fonts/OFL.txt`).
+MIT. Schibsted Grotesk and Martian Mono are under the SIL Open Font License (`src/fonts/OFL-*.txt`).

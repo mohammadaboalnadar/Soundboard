@@ -1,19 +1,20 @@
 /* Hallmark · component: desktop app shell · genre: atmospheric · tone: technical ("a sampler on your desk")
  * theme: custom-tuned graphite + signal amber · paper oklch(16% 0.008 60) · accent oklch(77% 0.155 64)
- * fonts: Geist (UI) + Geist Mono (numbers, keys, times) · axes: dark / grotesk-sans + mono / warm
+ * fonts: Schibsted Grotesk (UI) + Martian Mono (numbers, keys, times) · axes: dark / grotesk-sans + mono / warm
  * states: default · hover · focus · active · disabled · loading · error · success
  */
 
 @font-face {
-  font-family: "Geist";
-  src: url("../fonts/Geist-Variable.woff2") format("woff2");
-  font-weight: 100 900;
+  font-family: "Schibsted Grotesk";
+  src: url("../fonts/SchibstedGrotesk-Variable.woff2") format("woff2");
+  font-weight: 400 900;
   font-display: swap;
 }
 @font-face {
-  font-family: "Geist Mono";
-  src: url("../fonts/GeistMono-Variable.woff2") format("woff2");
-  font-weight: 100 900;
+  font-family: "Martian Mono";
+  src: url("../fonts/MartianMono-Variable.woff2") format("woff2");
+  font-weight: 100 800;
+  font-stretch: 75% 112.5%;
   font-display: swap;
 }
 
@@ -58,8 +59,8 @@
   --led-sand: oklch(80% 0.06 85);
 
   /* type */
-  --font-body: "Geist", "Segoe UI Variable Text", system-ui, sans-serif;
-  --font-mono: "Geist Mono", "Cascadia Mono", ui-monospace, monospace;
+  --font-body: "Schibsted Grotesk", "Segoe UI Variable Text", system-ui, sans-serif;
+  --font-mono: "Martian Mono", "Cascadia Mono", ui-monospace, monospace;
   --text-2xs: 0.6875rem;
   --text-xs: 0.75rem;
   --text-sm: 0.8125rem;
