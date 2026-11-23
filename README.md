@@ -1,72 +1,76 @@
 # Soundboard
 
-A lightweight Electron-based desktop soundboard for playing and previewing audio clips with trim controls, fades, keybinds, and dual-output routing.
+A small, fast desktop soundboard for streaming and voice chat. Fire clips from global hotkeys while you're in a game, and send them to your headphones and a virtual audio cable at the same time.
 
-## Table of Contents
-
-- [Introduction](#introduction)
-- [Features](#features)
-- [Installation](#installation)
-- [Running the App](#running-the-app)
-- [Project Structure](#project-structure)
-- [Contributing](#contributing)
-- [License](#license)
-
-## Introduction
-
-Soundboard is a desktop tool built with Electron for quickly managing and triggering sound clips. It includes both playback controls and editing/preview controls so you can adjust trims, fades, and levels before playback.
+Built with [Tauri 2](https://tauri.app) and the Web Audio API. It runs on the WebView2 that ships with Windows instead of bundling Chromium, so it starts quickly and stays light on memory.
 
 ## Features
 
-- Add and manage multiple sound files
-- Per-sound trim start/end controls
-- Per-sound volume and fade in/out
-- Global local and soundboard output volume controls
-- Stop-all and per-sound stop behavior
-- Timeline cursor scrubbing and preview playback
-- Keyboard keybind support, including numpad mappings
-- Settings persistence between app launches
+- **Pad grid or list.** Each pad shows its hotkey, its length and play mode, plus a progress bar while it plays. Three pad sizes.
+- **Two outputs.** *Monitor* (your headphones) and *Cable* (for example VB-Audio Cable into Discord or OBS), each with its own device, level and meter.
+- **Mic to cable.** Optionally mix your microphone into the cable output so your voice and the sounds share one input.
+- **Global hotkeys**, including the numpad and press/release handling. A key that's already taken by another app is flagged on the pad.
+- **Play modes per sound:** restart, overlap, toggle, loop, or hold (plays only while the key is down).
+- **Editor:** drag the trim handles and fade handles on the waveform, or type exact values. Volume runs from −30 dB to +6 dB, with a limiter on each output.
+- **Auto-level** matches loudness across clips (−16 dB RMS target, peaks kept under −1 dBFS).
+- **Boards** (folders) with drag-and-drop for pads and boards.
+- **Ctrl+K command palette**, search, drag files in from Explorer, and Undo for removals.
+- Dark and light themes.
 
-## Installation
+## Keyboard
 
-### Prerequisites
+| Key | Action |
+| --- | --- |
+| `Ctrl K` | Command palette (Enter plays, Alt+Enter selects) |
+| `Ctrl F` | Search |
+| `Ctrl O` | Add sounds |
+| `Esc` | Stop everything (in the window) |
+| `Delete` | Remove the selected sound (with Undo) |
+| Arrow keys, `Enter` / `Space` | Move between pads and play the focused one |
 
-- [Node.js](https://nodejs.org/) 18+ (LTS recommended)
-- npm (bundled with Node.js)
+## Memory
 
-### Steps
+- The audio engine keeps only the **trimmed part** of each clip, decoded once, in a cache with a byte budget (64 MB by default). When the budget is full, the least recently played clips are dropped first. Clips that are playing are never dropped.
+- Clips over about 12 MB decoded (roughly a minute of stereo audio) **stream** from disk instead of being cached.
+- The cache is pre-warmed with the sounds that have hotkeys, so they fire instantly.
+- Waveforms are stored as 256-byte summaries in the settings file, so no files are decoded at launch.
+- Audio devices suspend after 30 seconds of silence, and the UI draws frames only while something is playing.
 
-1. Clone the repository.
-2. Install dependencies:
+The status bar shows how full the cache is.
+
+## Development
+
+Prerequisites (Windows): [Rust](https://rustup.rs), the Visual Studio C++ Build Tools, and Node.js 18+.
 
 ```bash
 npm install
+npm run dev        # run the app with live reload of src/
+npm run build      # release build + NSIS installer in src-tauri/target/release/bundle
+npm test           # JS unit tests (keys, settings migration, cache, analysis)
+npm run test:rust  # Rust unit tests (settings file, hotkey parsing)
+npm run ui         # UI only, in a normal browser: http://localhost:5174/?demo
 ```
 
-## Running the App
+## Project layout
 
-Start the Electron app:
-
-```bash
-npm start
+```
+src/                 frontend (plain ES modules, no bundler)
+  js/engine.js       audio engine: outputs, cache, fades, play modes
+  js/model.js        settings schema + migration from the old Electron version
+  js/store.js        state + debounced saving
+  js/keys.js         hotkey capture and formatting
+  js/ui/*.js         transport, rail, pads, inspector, palette
+  styles/tokens.css  colour, type, spacing, motion tokens
+src-tauri/           Rust: settings file, file dialog, asset scope, global hotkeys
+tests/               node --test suites
 ```
 
-## Project Structure
-
-- [main.js](main.js): Electron main process, IPC handlers, and settings persistence
-- [preload.js](preload.js): Secure API bridge from main process to renderer
-- [renderer/index.html](renderer/index.html): Renderer UI markup
-- [renderer/styles.css](renderer/styles.css): Application styles
-- [renderer/renderer.js](renderer/renderer.js): Renderer logic (audio controls, preview, timeline, UI events)
+Settings from the previous Electron version (`%APPDATA%\soundboard-app\settings.json`) are imported automatically on first launch.
 
 ## Contributing
 
-Contributions are welcome.
-
-- Read the full contribution guide: [CONTRIBUTING.md](CONTRIBUTING.md)
-- Jump directly to setup and workflow: [Contributing Workflow](CONTRIBUTING.md#contributing-workflow)
-- Review reporting guidelines: [Issue Reports](CONTRIBUTING.md#issue-reports)
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
-This project is licensed under the MIT License.
+MIT. Geist fonts are under the SIL Open Font License (`src/fonts/OFL.txt`).
