@@ -389,7 +389,7 @@ select.field {
 }
 .pads[data-size="s"] .pad-name { -webkit-line-clamp: 1; font-size: var(--text-sm); }
 .pad .kbd { margin-top: 1px; }
-.pad .kbd.conflict { border-color: var(--color-danger); color: var(--color-danger); }
+.kbd.conflict { border-color: var(--color-danger); color: var(--color-danger); }
 .pad-foot { display: flex; align-items: center; gap: var(--space-2); color: var(--color-neutral); font-size: var(--text-2xs); }
 .pad-foot .dur { flex: 1; }
 .pad-foot .i { width: 14px; height: 14px; }

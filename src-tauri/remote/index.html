@@ -83,8 +83,9 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   };
 
   async function api(path, method = "GET") {
-    const r = await fetch(path, { method, headers: { "X-Pin": pin } });
+    const r = await fetch(path, { method, headers: { "X-Pin": pin }, signal: AbortSignal.timeout(4000) });
     if (r.status === 401) throw Object.assign(new Error("pin"), { pin: true });
+    if (r.status === 429) throw Object.assign(new Error("locked"), { locked: true });
     if (!r.ok) throw new Error("http");
     return r.json();
   }
@@ -96,7 +97,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     const go = async () => {
       pin = input.value.trim();
       try { await refresh(); try { localStorage.setItem("sd.pin", pin); } catch {} }
-      catch (e) { err.textContent = e.pin ? "That PIN didn't match. Check Settings > Phone remote." : "Can't reach Sonic Dominion."; }
+      catch (e) { err.textContent = e.pin ? "That PIN didn't match. Check Settings > Phone remote." : e.locked ? "Too many wrong PINs. Wait a minute, then try again." : "Can't reach Sonic Dominion."; }
     };
     input.addEventListener("keydown", (e) => e.key === "Enter" && go());
     root.replaceChildren(el("div", { class: "gate" },
@@ -133,7 +134,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   async function refresh() {
     clearTimeout(timer);
     try { state = await api("/api/state"); offline = false; render(); }
-    catch (e) { if (e.pin) { if (state) gate("PIN changed. Enter the new one."); throw e; } offline = true; if (state) render(); }
+    catch (e) { if (e.pin || e.locked) { if (state) gate(e.locked ? "Too many wrong PINs. Wait a minute." : "PIN changed. Enter the new one."); throw e; } offline = true; if (state) render(); }
     timer = setTimeout(() => { if (!document.hidden) refresh().catch(() => {}); }, 1500);
   }
   document.addEventListener("visibilitychange", () => { if (!document.hidden && state) refresh().catch(() => {}); });

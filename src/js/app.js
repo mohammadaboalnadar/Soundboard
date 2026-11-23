@@ -2,9 +2,10 @@
 // push-to-talk, the phone remote bridge and the frame loop.
 import { platform } from "./platform.js";
 import { createStore } from "./store.js";
-import { createEngine } from "./engine.js";
+import { createEngine, ANALYZE_MAX_SECONDS } from "./engine.js";
 import { newSound, uid, baseName, bankLetter, slotSounds, cycleBank, SLOT_COUNT } from "./model.js";
 import { acceleratorFromEvent, assignKey } from "./keys.js";
+import { resolveBindings } from "./bindings.js";
 import { autoLevelGain } from "./peaks.js";
 import { toast } from "./ui/dom.js";
 import { createTransport } from "./ui/transport.js";
@@ -26,7 +27,6 @@ const SLOT_MAP = {
   [BANK_NEXT]: "NumpadAdd",
   [BANK_PREV]: "NumpadSubtract"
 };
-const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function main() {
   const store = createStore(platform);
@@ -66,9 +66,10 @@ async function main() {
   // push-to-talk: press before the first cable voice, release shortly after the last
   let pttDown = false;
   let pttRelease = 0;
+  let firesInFlight = 0; // a release must never land while a start is still loading
   async function pttEngage() {
-    if (!S().ptt.key || !S().outputs.cableId || pttDown) return false;
     clearTimeout(pttRelease);
+    if (!S().ptt.key || !S().outputs.cableId || pttDown) return false;
     pttDown = true;
     try {
       await platform.pttSet(true);
@@ -82,7 +83,7 @@ async function main() {
   function pttScheduleRelease() {
     clearTimeout(pttRelease);
     pttRelease = setTimeout(() => {
-      if (pttDown && !engine.isCableActive()) {
+      if (pttDown && !engine.isCableActive() && firesInFlight === 0) {
         pttDown = false;
         platform.pttSet(false).catch(() => {});
       }
@@ -96,11 +97,20 @@ async function main() {
       if (state === "down") toast(`“${snd.name || baseName(snd.path)}” can’t play: the file is missing.`, { error: true });
       return;
     }
-    if (state === "down" && !opts.monitorOnly && (await pttEngage())) await wait(S().ptt.leadMs);
-    await engine.trigger(snd, { state, ...opts });
+    firesInFlight++;
+    try {
+      // the lead-in runs inside the engine, so a release or Stop all during it cancels the start
+      const delayMs = state === "down" && !opts.monitorOnly && (await pttEngage()) ? S().ptt.leadMs : 0;
+      await engine.trigger(snd, { state, ...opts, delayMs });
+    } finally {
+      firesInFlight--;
+    }
     if (pttDown && !engine.isCableActive()) pttScheduleRelease();
     if (state === "down" && engine.isPlaying(snd.id)) noteRecent(snd.id);
   };
+
+  // which sound each slot key started, so its release reaches that sound even after a bank switch
+  const heldSlots = new Map();
 
   function noteRecent(id) {
     const r = S().recent;
@@ -453,17 +463,8 @@ async function main() {
   let lastKeyMap = "";
   async function syncHotkeys(force = false) {
     if (ui.capture) return;
-    const s = S();
-    const map = {};
-    const reserved = new Set(s.slotKeys ? Object.values(SLOT_MAP) : []);
-    const blocked = new Set();
-    for (const snd of s.sounds) {
-      if (!snd.key) continue;
-      if (reserved.has(snd.key) || snd.key === s.ptt.key) blocked.add(snd.id);
-      else map[snd.id] = snd.key;
-    }
-    if (s.stopAllKey) map[STOP_ALL] = s.stopAllKey;
-    if (s.slotKeys) Object.assign(map, SLOT_MAP);
+    const { map, blocked, pttConflict } = resolveBindings(S(), SLOT_MAP);
+    app.pttConflict = pttConflict;
     const sig = JSON.stringify(map);
     if (!force && sig === lastKeyMap) return;
     lastKeyMap = sig;
@@ -478,7 +479,7 @@ async function main() {
     }
   }
   store.subscribe((hint) => {
-    if (hint === "sounds" || hint === "keys" || hint === "all") syncHotkeys();
+    if (hint === "sounds" || hint === "keys" || hint === "all" || hint === "settings") syncHotkeys();
   });
 
   await platform.onHotkey(({ id, state }) => {
@@ -486,7 +487,13 @@ async function main() {
     if (id === BANK_NEXT || id === BANK_PREV) return state === "down" && A.cycleBank(id === BANK_NEXT ? 1 : -1);
     const slot = SLOT_IDS.indexOf(id);
     if (slot >= 0) {
+      if (state === "up") {
+        const held = byId(heldSlots.get(id));
+        heldSlots.delete(id);
+        return held && A.fire(held, "up");
+      }
       const snd = slotSounds(S(), S().activeBank)[slot];
+      if (snd) heldSlots.set(id, snd.id);
       return snd && A.fire(snd, state);
     }
     const snd = byId(id);
@@ -565,6 +572,10 @@ async function main() {
     else if (e.scope === "mic") toast(`Microphone: ${e.message}`, { error: true });
     else if (e.scope === "play") {
       const snd = byId(e.id);
+      if (snd && e.missing && !app.missing.has(snd.id)) {
+        app.missing.add(snd.id);
+        store.emit("sound");
+      }
       toast(`Couldn’t play “${snd ? snd.name || baseName(snd.path) : "sound"}”. ${e.message}`, { error: true });
     }
     transport.render();
@@ -656,7 +667,8 @@ async function main() {
   if (S().ptt.key) platform.pttConfigure(S().ptt.key).catch(() => {});
   if (S().mic.enabled) engine.setMic(S().mic);
   if (S().remote.enabled) A.setRemote(true);
-  for (const s of S().sounds) if (!s.peaks || !(s.duration > 0)) queueAnalysis(s.id);
+  // long files are analyzed once (duration only) and never re-decoded on later launches
+  for (const s of S().sounds) if (!(s.duration > 0) || (!s.peaks && s.duration <= ANALYZE_MAX_SECONDS)) queueAnalysis(s.id);
   if (!queue.length) preloadLikely();
   addEventListener("beforeunload", () => store.flush());
   window.__app = app;

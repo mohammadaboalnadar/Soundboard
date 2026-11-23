@@ -113,3 +113,9 @@ test("slots and bank cycling", async () => {
   assert.equal(cycleBank(s, "a", -1), "b");
   assert.equal(cycleBank(normalizeSettings(null), "", 1), "");
 });
+
+test("future settings versions are kept as v2, not mangled by v1 migration", () => {
+  const s = normalizeSettings({ version: 3, sounds: [{ id: "a", path: "C:/x.wav", name: "X" }] });
+  assert.equal(s.sounds[0].path, "C:/x.wav");
+  assert.equal(s.sounds[0].name, "X");
+});

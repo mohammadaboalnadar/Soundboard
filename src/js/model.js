@@ -131,7 +131,8 @@ export function migrateV1(raw) {
 
 export function normalizeSettings(raw) {
   if (!raw || typeof raw !== "object") return defaultSettings();
-  if (raw.version !== 2) return migrateV1(raw);
+  // v1 (Electron) files have no version; newer files are read as v2, never through v1 field names
+  if (raw.version === undefined || raw.version < 2) return migrateV1(raw);
   const d = defaultSettings();
   const o = raw.outputs || {};
   const m = raw.mic || {};

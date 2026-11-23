@@ -4,7 +4,7 @@ import { LruCache } from "./cache.js";
 import { computePeaks, encodePeaks, measureLoudness } from "./peaks.js";
 
 const STREAM_THRESHOLD = 12 * 1024 * 1024; // decoded bytes above which a segment streams
-const ANALYZE_MAX_SECONDS = 20 * 60;
+export const ANALYZE_MAX_SECONDS = 10 * 60; // longer files are never fully decoded
 const IDLE_SUSPEND_MS = 30_000;
 const START_OFFSET = 0.004;
 
@@ -74,7 +74,7 @@ export function createEngine({ fileUrl, cacheMB = 64 }) {
         emit("error", { scope: "monitor", message: String(e && e.message || e) });
       }
     }
-    if (outputs.cableId && !buses.cable) {
+    if (outputs.cableId && !buses.cable && !cableError) {
       buses.cable = makeBus("cable");
       try {
         await applySink(buses.cable, outputs.cableId);
@@ -144,18 +144,38 @@ export function createEngine({ fileUrl, cacheMB = 64 }) {
     return Math.max(0, sound.end - sound.start) * rate * 2 * 4;
   }
 
+  /** Duration from container metadata only: nothing is decoded. Rejects if unreadable. */
+  function probeDuration(path) {
+    return new Promise((resolve, reject) => {
+      const a = new Audio();
+      const done = (fn, v) => {
+        clearTimeout(timer);
+        a.removeAttribute("src");
+        a.load();
+        fn(v);
+      };
+      const timer = setTimeout(() => done(reject, Object.assign(new Error("Timed out reading the file"), { missing: true })), 10000);
+      a.preload = "metadata";
+      a.onloadedmetadata = () => done(resolve, Number.isFinite(a.duration) ? a.duration : 0);
+      a.onerror = () => done(reject, Object.assign(new Error("The file can’t be read."), { missing: true }));
+      a.src = fileUrl(path);
+    });
+  }
+
   async function getSegment(sound) {
     const key = segKey(sound);
     const hit = cache.get(key);
     if (hit) return hit;
     if (pending.has(key)) return pending.get(key);
     const job = (async () => {
-      if (sound.end > 0 && estimateBytes(sound) > STREAM_THRESHOLD) {
-        return { key, kind: "stream", duration: sound.end - sound.start };
+      let end = sound.end;
+      if (!(end > 0)) end = await probeDuration(sound.path); // not analyzed yet
+      if (end > 0 && estimateBytes({ start: sound.start, end }) > STREAM_THRESHOLD) {
+        return { key, kind: "stream", duration: end - sound.start };
       }
       const full = await fetchAndDecode(sound.path);
-      const end = sound.end > 0 ? Math.min(sound.end, full.duration) : full.duration;
-      const { seg, chans } = sliceBuffer(full, sound.start, end);
+      const segEnd = Math.min(end > 0 ? end : full.duration, full.duration);
+      const { seg, chans } = sliceBuffer(full, sound.start, segEnd);
       const loud = measureLoudness(chans);
       emit("measured", { id: sound.id, ...loud });
       const entry = { key, kind: "buffer", buffer: seg, duration: seg.duration };
@@ -173,6 +193,11 @@ export function createEngine({ fileUrl, cacheMB = 64 }) {
 
   /** Decode a file once to get duration, waveform and loudness. Nothing is cached: the full decode is dropped. */
   async function analyze(sound) {
+    const probed = await probeDuration(sound.path);
+    if (probed > ANALYZE_MAX_SECONDS) {
+      // A full decode of a long file costs hundreds of MB: keep it streaming, no waveform.
+      return { duration: probed, peaks: "", rmsDb: -Infinity, peakDb: -Infinity };
+    }
     const full = await fetchAndDecode(sound.path);
     const duration = full.duration;
     const chans = [];
@@ -278,7 +303,13 @@ export function createEngine({ fileUrl, cacheMB = 64 }) {
         el.preservesPitch = false;
         el.playbackRate = rate;
         src = ctx.createMediaElementSource(el);
-        el.play().catch((e) => emit("error", { scope: "play", id: sound.id, message: String(e) }));
+        const fail = (e) => {
+          if (voice.done) return;
+          finishVoice(voice);
+          emit("error", { scope: "play", id: sound.id, missing: true, message: e?.message || "The file can’t be read." });
+        };
+        el.addEventListener("error", () => fail(el.error), { once: true });
+        el.play().catch(fail);
       }
       src.connect(gain);
       scheduleEnvelope(gain.gain, t0, sound, wallDur, loop, rate);
@@ -335,7 +366,14 @@ export function createEngine({ fileUrl, cacheMB = 64 }) {
     return [...voices.values()].filter((v) => v.id === id && !v.stopping);
   }
 
+  // Starts still in flight (lead-in, resume, decode). Stop, release and toggle cancel them.
+  const inflight = new Map(); // sound id -> Set<{ cancelled }>
+  function cancelPending(id) {
+    for (const t of inflight.get(id) || []) t.cancelled = true;
+  }
+
   function stop(id, { fade = true, seconds } = {}) {
+    cancelPending(id);
     for (const v of voicesOf(id)) stopVoice(v, seconds ?? (fade ? fadeOutFor(v) : 0.012));
   }
 
@@ -345,30 +383,44 @@ export function createEngine({ fileUrl, cacheMB = 64 }) {
   }
 
   function stopAll({ fade = true } = {}) {
+    for (const id of inflight.keys()) cancelPending(id);
     for (const v of voices.values()) stopVoice(v, fade ? fadeOutFor(v) : 0.012);
   }
 
   /**
    * Fire a sound according to its play mode. `state` is "down" or "up" (hotkey release).
    */
-  async function trigger(sound, { state = "down", monitorOnly = false } = {}) {
+  async function trigger(sound, { state = "down", monitorOnly = false, delayMs = 0 } = {}) {
     if (!sound || !sound.path) return;
     fadeTimes.set(sound.id, sound.fadeOut);
     const playing = voicesOf(sound.id).length > 0;
+    const pendingNow = (inflight.get(sound.id)?.size || 0) > 0;
     const mode = sound.mode;
     if (state === "up") {
       if (mode === "hold") stop(sound.id, { fade: true });
       return;
     }
-    if ((mode === "toggle" || mode === "loop") && playing) return stop(sound.id, { fade: true });
-    if (mode === "hold" && playing) return;
+    if ((mode === "toggle" || mode === "loop") && (playing || pendingNow)) return stop(sound.id, { fade: true });
+    if (mode === "hold" && (playing || pendingNow)) return;
     if (mode === "restart" && playing) stop(sound.id, { fade: false });
+    const token = { cancelled: false };
+    if (!inflight.has(sound.id)) inflight.set(sound.id, new Set());
+    inflight.get(sound.id).add(token);
     try {
-      await start(sound, { monitorOnly });
+      if (delayMs > 0) await new Promise((r) => setTimeout(r, delayMs));
+      if (token.cancelled) return;
+      const voice = await start(sound, { monitorOnly });
+      if (token.cancelled) stopVoice(voice, 0.012); // released or stopped while it was loading
     } catch (e) {
-      emit("error", { scope: "play", id: sound.id, message: String(e && e.message || e) });
+      emit("error", { scope: "play", id: sound.id, missing: Boolean(e && e.missing), message: String((e && e.message) || e) });
+    } finally {
+      const set = inflight.get(sound.id);
+      set.delete(token);
+      if (!set.size) inflight.delete(sound.id);
     }
   }
+
+  const hasPending = () => inflight.size > 0;
 
   /** Apply gain edits to voices that are already playing. */
   function refresh(sound) {
@@ -451,7 +503,8 @@ export function createEngine({ fileUrl, cacheMB = 64 }) {
     mic.deviceId = deviceId || "default";
     mic.gain = gain ?? mic.gain;
     if (mic.gainNode) applyDuck();
-    const wantRestart = enabled !== mic.enabled || mic.stream?.__deviceId !== mic.deviceId || !buses.cable;
+    const staleContext = Boolean(mic.node && buses.cable && mic.node.context !== buses.cable.ctx);
+    const wantRestart = enabled !== mic.enabled || mic.stream?.__deviceId !== mic.deviceId || !buses.cable || staleContext;
     mic.enabled = Boolean(enabled);
     if (!wantRestart && mic.stream) return;
     if (mic.stream) {
@@ -542,6 +595,7 @@ export function createEngine({ fileUrl, cacheMB = 64 }) {
     stats,
     setCacheMB,
     hasActivity: () => voices.size > 0 || Boolean(mic.stream),
+    hasPending,
     on
   };
 }

@@ -115,7 +115,7 @@ export function createSettings(dialog, app) {
       ),
       section(
         "Auto push-to-talk",
-        row("Push-to-talk key", "Hold this key for you while a sound plays into the cable. Use the same key as Discord. Mouse 4 and 5 work too.", h("div", { class: "key-pair" }, keyButton("__ptt__", s.ptt.key, "Off"), s.ptt.key ? clearPtt() : null)),
+        row("Push-to-talk key", app.pttConflict ? "This key is also one of your hotkeys here, so that hotkey is switched off. Pick a key nothing else uses." : "Hold this key for you while a sound plays into the cable. Use the same key as Discord. Mouse 4 and 5 work too.", h("div", { class: "key-pair" }, keyButton("__ptt__", s.ptt.key, "Off"), s.ptt.key ? clearPtt() : null)),
         row("Lead-in", "Time for the voice app to open the mic before the sound starts.", seg(LEAD.map((v) => [v, `${v} ms`]), s.ptt.leadMs, (v) => A.setPtt({ leadMs: v }), "Lead-in"))
       ),
       section("Phone remote", ...remoteRows),
