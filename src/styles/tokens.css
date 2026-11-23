@@ -1,0 +1,128 @@
+/* Hallmark · component: desktop app shell · genre: atmospheric · tone: technical ("a sampler on your desk")
+ * theme: custom-tuned graphite + signal amber · paper oklch(16% 0.008 60) · accent oklch(77% 0.155 64)
+ * fonts: Geist (UI) + Geist Mono (numbers, keys, times) · axes: dark / grotesk-sans + mono / warm
+ * states: default · hover · focus · active · disabled · loading · error · success
+ */
+
+@font-face {
+  font-family: "Geist";
+  src: url("../fonts/Geist-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geist Mono";
+  src: url("../fonts/GeistMono-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: dark;
+
+  /* surfaces: each elevation step is ~3.5% lighter */
+  --color-paper: oklch(16% 0.008 60);
+  --color-paper-2: oklch(19.5% 0.009 60);
+  --color-paper-3: oklch(23% 0.010 60);
+  --color-paper-4: oklch(26.5% 0.011 60);
+  --color-paper-5: oklch(30% 0.012 60);
+  --color-well: oklch(13% 0.007 60);
+  --color-rule: oklch(28% 0.010 60);
+  --color-rule-strong: oklch(36% 0.011 60);
+
+  /* text */
+  --color-ink: oklch(94% 0.007 80);
+  --color-muted: oklch(76% 0.008 70);
+  --color-neutral: oklch(62% 0.010 65);
+  --color-faint: oklch(55% 0.010 60);
+
+  /* signal */
+  --color-accent: oklch(77% 0.155 64);
+  --color-accent-ink: oklch(21% 0.030 60);
+  --color-accent-soft: oklch(77% 0.155 64 / 0.14);
+  --color-focus: oklch(82% 0.140 64);
+  --color-danger: oklch(68% 0.170 28);
+  --color-danger-soft: oklch(68% 0.170 28 / 0.14);
+  --color-ok: oklch(74% 0.120 150);
+  --color-shadow: oklch(8% 0.01 60 / 0.55);
+  --color-scrim: oklch(10% 0.01 60 / 0.6);
+
+  /* pad LEDs — user content colours, used on the edge strip and waveform only */
+  --led-amber: oklch(78% 0.14 72);
+  --led-ember: oklch(70% 0.15 42);
+  --led-rose: oklch(72% 0.13 8);
+  --led-violet: oklch(70% 0.12 300);
+  --led-azure: oklch(72% 0.11 245);
+  --led-teal: oklch(75% 0.10 190);
+  --led-moss: oklch(76% 0.12 135);
+  --led-sand: oklch(80% 0.06 85);
+
+  /* type */
+  --font-body: "Geist", "Segoe UI Variable Text", system-ui, sans-serif;
+  --font-mono: "Geist Mono", "Cascadia Mono", ui-monospace, monospace;
+  --text-2xs: 0.6875rem;
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-md: 0.875rem;
+  --text-lg: 1rem;
+  --text-xl: 1.25rem;
+
+  /* 4pt spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+  --dur-long: 420ms;
+
+  --rail-w: 224px;
+  --inspector-w: 340px;
+  --transport-h: 56px;
+  --status-h: 28px;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --color-paper: oklch(95.5% 0.008 75);
+  --color-paper-2: oklch(97.5% 0.006 75);
+  --color-paper-3: oklch(99% 0.004 75);
+  --color-paper-4: oklch(93% 0.009 75);
+  --color-paper-5: oklch(90% 0.010 75);
+  --color-well: oklch(91% 0.010 75);
+  --color-rule: oklch(87% 0.010 70);
+  --color-rule-strong: oklch(78% 0.012 70);
+  --color-ink: oklch(21% 0.012 60);
+  --color-muted: oklch(36% 0.012 60);
+  --color-neutral: oklch(48% 0.012 60);
+  --color-faint: oklch(62% 0.010 60);
+  --color-accent: oklch(64% 0.165 58);
+  --color-accent-ink: oklch(99% 0.004 75);
+  --color-accent-soft: oklch(64% 0.165 58 / 0.14);
+  --color-focus: oklch(56% 0.170 58);
+  --color-danger: oklch(55% 0.190 28);
+  --color-danger-soft: oklch(55% 0.190 28 / 0.12);
+  --color-ok: oklch(52% 0.120 150);
+  --color-shadow: oklch(30% 0.02 60 / 0.16);
+  --color-scrim: oklch(30% 0.02 60 / 0.3);
+  --led-amber: oklch(66% 0.15 68);
+  --led-ember: oklch(60% 0.16 40);
+  --led-rose: oklch(60% 0.15 8);
+  --led-violet: oklch(56% 0.14 300);
+  --led-azure: oklch(56% 0.13 245);
+  --led-teal: oklch(58% 0.10 190);
+  --led-moss: oklch(58% 0.13 135);
+  --led-sand: oklch(64% 0.07 80);
+}

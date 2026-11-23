@@ -222,7 +222,7 @@ export function createEngine({ fileUrl, cacheMB = 64 }) {
     if (voices.size === 0) scheduleIdle();
   }
 
-  async function start(sound) {
+  async function start(sound, { monitorOnly = false } = {}) {
     await ensureBuses();
     const seg = await getSegment(sound);
     const loop = sound.mode === "loop";
@@ -230,7 +230,7 @@ export function createEngine({ fileUrl, cacheMB = 64 }) {
     const voice = { vid, id: sound.id, key: seg.key, nodes: [], loop, segDur: seg.duration, done: false, timer: 0, t0: 0 };
     cache.pin(seg.key);
 
-    for (const bus of activeBuses()) {
+    for (const bus of monitorOnly ? [buses.monitor] : activeBuses()) {
       const ctx = bus.ctx;
       const gain = ctx.createGain();
       gain.connect(bus.input);
@@ -325,7 +325,7 @@ export function createEngine({ fileUrl, cacheMB = 64 }) {
   /**
    * Fire a sound according to its play mode. `state` is "down" or "up" (hotkey release).
    */
-  async function trigger(sound, { state = "down" } = {}) {
+  async function trigger(sound, { state = "down", monitorOnly = false } = {}) {
     if (!sound || !sound.path) return;
     fadeTimes.set(sound.id, sound.fadeOut);
     const playing = voicesOf(sound.id).length > 0;
@@ -338,7 +338,7 @@ export function createEngine({ fileUrl, cacheMB = 64 }) {
     if (mode === "hold" && playing) return;
     if (mode === "restart" && playing) stop(sound.id, { fade: false });
     try {
-      await start(sound);
+      await start(sound, { monitorOnly });
     } catch (e) {
       emit("error", { scope: "play", id: sound.id, message: String(e && e.message || e) });
     }
