@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { defaultSettings, migrateV1, normalizeSettings, newSound, PAD_COLORS, PLAY_MODES } from "../src/js/model.js";
+import { defaultSettings, migrateV1, normalizeSettings, newSound, PAD_COLORS, PLAY_MODES, bankLetter } from "../src/js/model.js";
 
 const v1 = {
   outputDeviceId: "cable-123",
@@ -72,4 +72,44 @@ test("newSound", () => {
   assert.equal(s.name, "air horn");
   assert.equal(s.end, 2.5);
   assert.equal(s.gain, 1);
+});
+
+test("v3 fields: defaults and clamping", () => {
+  const s = normalizeSettings({ version: 2, sounds: [{ id: "a", path: "p", rate: 9, fav: 1 }], ptt: { key: "Mouse4", leadMs: 9999 }, mic: { duck: -99 }, remote: { port: 80, pin: "12" } });
+  assert.equal(s.sounds[0].rate, 2);
+  assert.equal(s.sounds[0].fav, true);
+  assert.equal(s.ptt.key, "Mouse4");
+  assert.equal(s.ptt.leadMs, 500);
+  assert.equal(s.mic.duck, -40);
+  assert.equal(s.remote.enabled, false);
+  assert.equal(s.remote.port, 1024);
+  assert.equal(s.remote.pin, "");
+  assert.equal(s.slotKeys, false);
+  assert.equal(s.closeToTray, true);
+  assert.deepEqual(s.recent, []);
+  assert.equal(s.activeBank, "");
+});
+
+test("activeBank must exist, recent keeps known ids only", () => {
+  const s = normalizeSettings({ version: 2, folders: [{ id: "f1", name: "A" }], activeBank: "nope", recent: ["a", "zzz", "a"], sounds: [{ id: "a", path: "p" }] });
+  assert.equal(s.activeBank, "f1");
+  assert.deepEqual(s.recent, ["a"]);
+});
+
+test("bankLetter", () => {
+  assert.equal(bankLetter(0), "A");
+  assert.equal(bankLetter(25), "Z");
+  assert.equal(bankLetter(26), "AA");
+});
+
+test("slots and bank cycling", async () => {
+  const { slotSounds, cycleBank } = await import("../src/js/model.js");
+  const s = normalizeSettings({ version: 2, folders: [{ id: "a", name: "A" }, { id: "b", name: "B" }],
+    sounds: Array.from({ length: 12 }, (_, i) => ({ id: `s${i}`, path: `p${i}`, folderId: i < 11 ? "a" : "b" })) });
+  assert.deepEqual(slotSounds(s, "a").map((x) => x.id), ["s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"]);
+  assert.deepEqual(slotSounds(s, "b").map((x) => x.id), ["s11"]);
+  assert.equal(cycleBank(s, "a", 1), "b");
+  assert.equal(cycleBank(s, "b", 1), "a");
+  assert.equal(cycleBank(s, "a", -1), "b");
+  assert.equal(cycleBank(normalizeSettings(null), "", 1), "");
 });

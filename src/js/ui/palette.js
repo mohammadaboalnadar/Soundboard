@@ -1,7 +1,7 @@
 // Ctrl+K command palette: fuzzy-ish search over sounds and actions. Enter fires.
 import { h, led } from "./dom.js";
 import { formatKey } from "../keys.js";
-import { baseName } from "../model.js";
+import { baseName, bankLetter } from "../model.js";
 
 function score(text, q) {
   const t = text.toLowerCase();
@@ -31,7 +31,12 @@ export function createPalette(dialog, app) {
       { label: s.theme === "light" ? "Use dark theme" : "Use light theme", meta: "Command", run: () => app.actions.toggleTheme() },
       { label: s.view === "grid" ? "Show as list" : "Show as pads", meta: "Command", run: () => store.update((x) => (x.view = x.view === "grid" ? "list" : "grid"), "view") },
       { label: "Set Stop all hotkey", meta: "Command", run: () => app.actions.captureKey("__stop_all__") },
-      ...s.folders.map((f) => ({ label: `Go to ${f.name}`, meta: "Board", run: () => { app.ui.board = f.id; store.emit("board"); } }))
+      { label: "Record from mic", meta: "Ctrl R", run: () => app.actions.record() },
+      { label: "Open settings", meta: "Ctrl ,", run: () => app.actions.openSettings() },
+      { label: app.ui.compact ? "Leave compact mode" : "Compact mode", meta: "Command", run: () => app.actions.setCompact(!app.ui.compact) },
+      { label: s.slotKeys ? "Turn off Numpad slots" : "Turn on Numpad slots", meta: "Command", run: () => app.actions.setSlotKeys(!s.slotKeys) },
+      { label: s.remote.enabled ? "Turn off phone remote" : "Turn on phone remote", meta: "Command", run: () => app.actions.setRemote(!s.remote.enabled) },
+      ...s.folders.map((f, i) => ({ label: `Bank ${bankLetter(i)}: ${f.name}`, meta: "Bank", run: () => app.actions.setActiveBank(f.id, { show: true }) }))
     ];
   }
 

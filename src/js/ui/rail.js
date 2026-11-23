@@ -1,5 +1,8 @@
-// Left rail: search, "All sounds", "Unsorted", boards (folders) with counts.
+// Left rail: search, library views (All, Favorites, Recent, Unsorted) and banks.
+// Banks carry sampler-style letters; the active bank (the one Numpad slots and the
+// phone remote use) shows a lit LED. Choosing a bank makes it active.
 import { h, icon, openMenu } from "./dom.js";
+import { bankLetter } from "../model.js";
 
 export function createRail(root, app) {
   const { store, ui } = app;
@@ -20,7 +23,7 @@ export function createRail(root, app) {
   });
 
   const list = h("div", { class: "rail-list" });
-  const newBtn = h("button", { class: "btn ghost", type: "button" }, icon("i-plus"), "New board");
+  const newBtn = h("button", { class: "btn ghost", type: "button" }, icon("i-plus"), "New bank");
   newBtn.addEventListener("click", () => app.actions.newBoard());
 
   root.append(
@@ -32,7 +35,7 @@ export function createRail(root, app) {
   let renaming = "";
   let dragBoard = "";
 
-  function item(id, label, iconName, count, { board } = {}) {
+  function view(id, label, iconName, count) {
     const el = h(
       "button",
       { class: "rail-item", type: "button", "aria-current": ui.board === id ? "true" : "false", dataset: { id } },
@@ -44,12 +47,16 @@ export function createRail(root, app) {
       ui.board = id;
       store.emit("board");
     });
-    // sounds dropped onto a board move into it
+    if (id === "") acceptSounds(el, "");
+    return el;
+  }
+
+  function acceptSounds(el, folderId) {
     el.addEventListener("dragover", (e) => {
-      if (app.drag.sound && id !== "all") {
+      if (app.drag.sound) {
         e.preventDefault();
         el.classList.add("drop-target");
-      } else if (dragBoard && board && dragBoard !== id) {
+      } else if (dragBoard && folderId && dragBoard !== folderId) {
         e.preventDefault();
         el.classList.add("insert-before");
       }
@@ -58,31 +65,51 @@ export function createRail(root, app) {
     el.addEventListener("drop", (e) => {
       e.preventDefault();
       el.classList.remove("drop-target", "insert-before");
-      if (app.drag.sound && id !== "all") app.actions.moveToBoard(app.drag.ids(), id);
-      else if (dragBoard && board) app.actions.reorderBoard(dragBoard, id);
+      if (app.drag.sound) app.actions.moveToBoard(app.drag.ids(), folderId);
+      else if (dragBoard && folderId) app.actions.reorderBoard(dragBoard, folderId);
     });
-    if (board) {
-      el.draggable = true;
-      el.addEventListener("dragstart", (e) => {
-        dragBoard = id;
-        el.classList.add("dragging");
-        e.dataTransfer.effectAllowed = "move";
-        e.dataTransfer.setData("text/plain", id);
-      });
-      el.addEventListener("dragend", () => {
-        dragBoard = "";
-        el.classList.remove("dragging");
-      });
-      el.addEventListener("dblclick", () => startRename(id));
-      el.addEventListener("contextmenu", (e) => {
-        e.preventDefault();
-        openMenu(e.clientX, e.clientY, [
-          { label: "Rename", run: () => startRename(id) },
-          "-",
-          { label: "Delete board", danger: true, icon: "i-trash", run: () => app.actions.deleteBoard(id) }
-        ]);
-      });
-    }
+  }
+
+  function bank(f, i, count) {
+    const active = store.state.activeBank === f.id;
+    const el = h(
+      "button",
+      {
+        class: `rail-item bank${active ? " active" : ""}`,
+        type: "button",
+        draggable: "true",
+        "aria-current": ui.board === f.id ? "true" : "false",
+        title: active ? "Active bank: Numpad slots and the phone remote play from here" : "Click to make this the active bank",
+        dataset: { id: f.id }
+      },
+      h("span", { class: "bank-letter num" }, bankLetter(i)),
+      h("span", { class: "label" }, f.name),
+      h("span", { class: "bank-led", "aria-hidden": "true" }),
+      h("span", { class: "count" }, String(count))
+    );
+    el.addEventListener("click", () => app.actions.setActiveBank(f.id, { show: true }));
+    acceptSounds(el, f.id);
+    el.addEventListener("dragstart", (e) => {
+      if (app.drag.sound) return;
+      dragBoard = f.id;
+      el.classList.add("dragging");
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", f.id);
+    });
+    el.addEventListener("dragend", () => {
+      dragBoard = "";
+      el.classList.remove("dragging");
+    });
+    el.addEventListener("dblclick", () => startRename(f.id));
+    el.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      openMenu(e.clientX, e.clientY, [
+        { label: "Make active", run: () => app.actions.setActiveBank(f.id) },
+        { label: "Rename", run: () => startRename(f.id) },
+        "-",
+        { label: "Delete bank", danger: true, icon: "i-trash", run: () => app.actions.deleteBoard(f.id) }
+      ]);
+    });
     return el;
   }
 
@@ -91,15 +118,15 @@ export function createRail(root, app) {
     render();
   }
 
-  function renameField(board) {
-    const input = h("input", { class: "field", value: board.name, "aria-label": "Board name", spellcheck: "false" });
+  function renameField(f, i) {
+    const input = h("input", { class: "field", value: f.name, "aria-label": "Bank name", spellcheck: "false" });
     let done = false;
     const commit = (save) => {
       if (done) return;
       done = true;
       renaming = "";
       const name = input.value.trim();
-      if (save && name && name !== board.name) store.update((s) => (s.folders.find((f) => f.id === board.id).name = name), "folders");
+      if (save && name && name !== f.name) store.update((s) => (s.folders.find((x) => x.id === f.id).name = name), "folders");
       else render();
     };
     input.addEventListener("keydown", (e) => {
@@ -111,19 +138,32 @@ export function createRail(root, app) {
       input.focus();
       input.select();
     });
-    return h("div", { class: "rail-item", "aria-current": "true" }, icon("i-board"), input);
+    return h("div", { class: "rail-item bank", "aria-current": "true" }, h("span", { class: "bank-letter num" }, bankLetter(i)), input);
   }
 
   function render() {
     const s = store.state;
     const counts = new Map();
-    for (const snd of s.sounds) counts.set(snd.folderId, (counts.get(snd.folderId) || 0) + 1);
-    const nodes = [item("all", "All sounds", "i-all", s.sounds.length)];
-    if (counts.get("")) nodes.push(item("", "Unsorted", "i-all", counts.get("")));
-    if (s.folders.length) nodes.push(h("div", { class: "rail-group" }, "Boards"));
-    for (const f of s.folders) {
-      nodes.push(renaming === f.id ? renameField(f) : item(f.id, f.name, "i-board", counts.get(f.id) || 0, { board: true }));
+    let favs = 0;
+    for (const snd of s.sounds) {
+      counts.set(snd.folderId, (counts.get(snd.folderId) || 0) + 1);
+      if (snd.fav) favs++;
     }
+    const nodes = [view("all", "All sounds", "i-all", s.sounds.length)];
+    if (favs) nodes.push(view("fav", "Favorites", "i-star", favs));
+    if (s.recent.length) nodes.push(view("recent", "Recent", "i-clock", s.recent.length));
+    if (counts.get("")) nodes.push(view("", "Unsorted", "i-inbox", counts.get("")));
+    if (s.folders.length) {
+      nodes.push(
+        h(
+          "div",
+          { class: "rail-group" },
+          h("span", {}, "Banks"),
+          s.slotKeys ? h("span", { class: "rail-hint", title: "Numpad 1–9 play the active bank; Num + / − switch" }, "Num 1–9") : null
+        )
+      );
+    }
+    s.folders.forEach((f, i) => nodes.push(renaming === f.id ? renameField(f, i) : bank(f, i, counts.get(f.id) || 0)));
     list.replaceChildren(...nodes);
   }
 

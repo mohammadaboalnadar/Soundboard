@@ -11,6 +11,18 @@ function tauriPlatform(T) {
     checkPaths: (paths) => invoke("check_paths", { paths }),
     setHotkeys: (map) => invoke("set_hotkeys", { map }),
     fileUrl: (path) => convertFileSrc(path),
+    saveRecording: (bytes) => invoke("save_recording", bytes),
+    pttConfigure: (key) => invoke("ptt_configure", { key }),
+    pttSet: (down) => invoke("ptt_set", { down }),
+    setCompact: (on) => invoke("set_compact", { on }),
+    setCloseToTray: (on) => invoke("set_close_to_tray", { on }),
+    autostartGet: () => invoke("autostart_get"),
+    autostartSet: (on) => invoke("autostart_set", { on }),
+    remoteStart: (port, pin) => invoke("remote_start", { port, pin }),
+    remoteStop: () => invoke("remote_stop"),
+    remoteSync: (snapshot) => invoke("remote_sync", { snapshot }),
+    onRemote: (fn) => T.event.listen("remote", (e) => fn(e.payload)),
+    onTray: (fn) => T.event.listen("tray", (e) => fn(e.payload)),
     onHotkey: (fn) => T.event.listen("hotkey", (e) => fn(e.payload)),
     onFileDrop: (fn) =>
       T.webview.getCurrentWebview().onDragDropEvent((e) => {
@@ -55,7 +67,7 @@ const DEMO = [
 
 function mockPlatform() {
   const urls = new Map();
-  const key = "soundboard.mock.settings";
+  const key = "sonicdominion.mock.settings";
   let hotkeyHandler = null;
   let hotkeys = {};
   const demo = new URLSearchParams(location.search).has("demo");
@@ -70,7 +82,10 @@ function mockPlatform() {
       return { id: `d${i}`, path, name, folderId: i < 4 ? "b1" : i < 8 ? "b2" : "", start: 0, end: 0, duration: 0, key: keys[i], mode: modes[i], gain: 1 };
     });
     sounds.push({ id: "dx", path: "C:\\Users\\you\\Sounds\\moved-away.mp3", name: "Moved away", start: 0, end: 2, duration: 2, folderId: "b2" });
-    return { version: 2, outputs: { monitorId: "default", cableId: "", monitorVol: 0.8, cableVol: 1 }, folders, sounds };
+    sounds[0].fav = true;
+    sounds[5].fav = true;
+    sounds[2].rate = 0.8;
+    return { version: 2, outputs: { monitorId: "default", cableId: "", monitorVol: 0.8, cableVol: 1 }, slotKeys: true, activeBank: "b1", recent: ["d1", "d5", "d0"], ptt: { key: "Mouse4", leadMs: 120 }, folders, sounds };
   }
 
   window.addEventListener("keydown", (e) => {
@@ -123,6 +138,28 @@ function mockPlatform() {
       return { failed: [] };
     },
     fileUrl: (path) => urls.get(path) || "about:blank",
+    async saveRecording(bytes) {
+      const p = `C:\\Users\\you\\AppData\\Roaming\\Sonic Dominion\\recordings\\recording-${Date.now()}.webm`;
+      urls.set(p, URL.createObjectURL(new Blob([bytes], { type: "audio/webm" })));
+      return p;
+    },
+    async pttConfigure() {},
+    async pttSet() {},
+    async setCompact() {},
+    async setCloseToTray() {},
+    async autostartGet() {
+      return false;
+    },
+    async autostartSet(on) {
+      return on;
+    },
+    async remoteStart(port) {
+      return { url: `http://192.168.1.20:${port}`, port };
+    },
+    async remoteStop() {},
+    async remoteSync() {},
+    async onRemote() {},
+    async onTray() {},
     async onHotkey(fn) {
       hotkeyHandler = fn;
     },

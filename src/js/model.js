@@ -7,6 +7,17 @@ export const MAX_GAIN = 2; // +6 dB
 
 const MIN_SEGMENT = 0.02;
 
+/** Bank letters like hardware samplers: A..Z, then AA, AB... */
+export function bankLetter(i) {
+  let n = i;
+  let s = "";
+  do {
+    s = String.fromCharCode(65 + (n % 26)) + s;
+    n = Math.floor(n / 26) - 1;
+  } while (n >= 0);
+  return s;
+}
+
 export function uid() {
   return `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
 }
@@ -24,7 +35,14 @@ export function defaultSettings() {
     cacheMB: 64,
     stopAllKey: "",
     outputs: { monitorId: "default", cableId: "", monitorVol: 1, cableVol: 1 },
-    mic: { enabled: false, deviceId: "default", gain: 1 },
+    mic: { enabled: false, deviceId: "default", gain: 1, duck: 0 },
+    ptt: { key: "", leadMs: 120 },
+    remote: { enabled: false, port: 7878, pin: "" },
+    slotKeys: false,
+    closeToTray: true,
+    activeBank: "",
+    recent: [],
+    cableTipDismissed: false,
     folders: [],
     sounds: []
   };
@@ -76,6 +94,8 @@ export function normalizeSound(raw, folderIds) {
     end,
     duration,
     gain: clamp(num(s.gain, 1), 0, MAX_GAIN),
+    rate: clamp(num(s.rate, 1), 0.5, 2),
+    fav: Boolean(s.fav),
     fadeIn,
     fadeOut,
     mode: PLAY_MODES.includes(s.mode) ? s.mode : "restart",
@@ -115,6 +135,9 @@ export function normalizeSettings(raw) {
   const d = defaultSettings();
   const o = raw.outputs || {};
   const m = raw.mic || {};
+  const p = raw.ptt || {};
+  const r = raw.remote || {};
+  const pinOk = /^\d{6}$/.test(str(r.pin));
   const folders = (Array.isArray(raw.folders) ? raw.folders : []).map((f) => ({
     id: str(f && f.id) || uid(),
     name: str(f && f.name, "Board").trim() || "Board",
@@ -145,9 +168,36 @@ export function normalizeSettings(raw) {
     mic: {
       enabled: Boolean(m.enabled),
       deviceId: str(m.deviceId, "default") || "default",
-      gain: clamp(num(m.gain, 1), 0, MAX_GAIN)
+      gain: clamp(num(m.gain, 1), 0, MAX_GAIN),
+      duck: clamp(num(m.duck, 0), -40, 0)
     },
+    ptt: { key: str(p.key), leadMs: clamp(Math.round(num(p.leadMs, 120)), 0, 500) },
+    remote: {
+      enabled: Boolean(r.enabled) && pinOk,
+      port: clamp(Math.round(num(r.port, 7878)), 1024, 65535),
+      pin: pinOk ? str(r.pin) : ""
+    },
+    slotKeys: Boolean(raw.slotKeys),
+    closeToTray: raw.closeToTray === undefined ? true : Boolean(raw.closeToTray),
+    activeBank: folderIds.has(str(raw.activeBank)) ? str(raw.activeBank) : folders[0]?.id || "",
+    recent: [...new Set((Array.isArray(raw.recent) ? raw.recent : []).map((x) => str(x)))].filter((id) => seen.has(id)).slice(0, 16),
+    cableTipDismissed: Boolean(raw.cableTipDismissed),
     folders,
     sounds
   };
+}
+
+export const SLOT_COUNT = 9;
+
+/** The sounds that Numpad 1..9 fire in a bank: its first nine pads, in board order. */
+export function slotSounds(state, bankId) {
+  return state.sounds.filter((s) => s.folderId === bankId).slice(0, SLOT_COUNT);
+}
+
+/** Next/previous bank id, wrapping. With no banks the unsorted pool ("") is the only bank. */
+export function cycleBank(state, currentId, dir) {
+  const ids = state.folders.map((f) => f.id);
+  if (!ids.length) return "";
+  const i = ids.indexOf(currentId);
+  return ids[(((i < 0 ? 0 : i) + dir) % ids.length + ids.length) % ids.length];
 }

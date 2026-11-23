@@ -7,7 +7,7 @@ export function createTransport(root, app) {
   let devices = { outputs: [], inputs: [], labelled: false };
 
   const dot = h("span", { class: "led-dot" });
-  const wordmark = h("div", { class: "wordmark" }, dot, "SOUNDBOARD");
+  const wordmark = h("div", { class: "wordmark", title: "Sonic Dominion" }, dot, h("span", { class: "wm-full" }, "SONIC DOMINION"), h("span", { class: "wm-short" }, "SD"));
 
   function bus(kind, label, iconName) {
     const select = h("select", { class: "field", "aria-label": `${label} device` });
@@ -59,8 +59,10 @@ export function createTransport(root, app) {
     engine.setMic(store.state.mic);
   });
 
-  const themeBtn = h("button", { class: "btn ghost icon", type: "button", title: "Switch theme" });
-  themeBtn.addEventListener("click", () => app.actions.toggleTheme());
+  const compactBtn = h("button", { class: "btn ghost icon", type: "button" }, icon("i-compact"));
+  compactBtn.addEventListener("click", () => app.actions.setCompact(!app.ui.compact));
+  const settingsBtn = h("button", { class: "btn ghost icon", type: "button", title: "Settings (Ctrl ,)", "aria-label": "Settings" }, icon("i-gear"));
+  settingsBtn.addEventListener("click", () => app.actions.openSettings());
 
   const stopKey = h("span", { class: "kbd" });
   const stopBtn = h("button", { class: "btn stop-all", type: "button", title: "Stop every sound (right-click to set a hotkey)" }, icon("i-stop"), "Stop all", stopKey);
@@ -70,7 +72,7 @@ export function createTransport(root, app) {
     app.actions.captureKey("__stop_all__");
   });
 
-  root.append(wordmark, monitor.el, cable.el, h("div", { class: "spacer" }), micWrap, themeBtn, stopBtn);
+  root.append(wordmark, monitor.el, cable.el, h("div", { class: "spacer" }), micWrap, settingsBtn, compactBtn, stopBtn);
 
   function fillSelect(sel, list, value, { allowNone }) {
     sel.replaceChildren();
@@ -94,6 +96,8 @@ export function createTransport(root, app) {
       inputs: all.filter((d) => d.kind === "audioinput"),
       labelled: all.some((d) => d.label)
     };
+    app.devices = devices;
+    app.store.emit("devices");
     render();
   }
 
@@ -123,8 +127,10 @@ export function createTransport(root, app) {
     cable.el.title = st.cableError ? `Cable output unavailable: ${st.cableError}` : "Second output, usually a virtual audio cable";
     micSwitch.checked = s.mic.enabled;
     micWrap.classList.toggle("on", s.mic.enabled);
-    themeBtn.replaceChildren(icon(s.theme === "light" ? "i-moon" : "i-sun"));
-    themeBtn.setAttribute("aria-label", s.theme === "light" ? "Use dark theme" : "Use light theme");
+    const compactLabel = app.ui.compact ? "Leave compact mode" : "Compact mode: small window that stays on top";
+    compactBtn.title = compactLabel;
+    compactBtn.setAttribute("aria-label", compactLabel);
+    compactBtn.setAttribute("aria-pressed", String(app.ui.compact));
     stopKey.textContent = s.stopAllKey ? formatKey(s.stopAllKey) : "No key";
   }
 

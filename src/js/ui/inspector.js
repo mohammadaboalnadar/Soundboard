@@ -213,6 +213,27 @@ export function createInspector(root, app) {
 
     const closeBtn = h("button", { class: "btn ghost icon", type: "button", "aria-label": "Close editor", title: "Close" }, icon("i-close"));
     closeBtn.addEventListener("click", () => app.actions.select(""));
+    const favBtn = h(
+      "button",
+      { class: `btn ghost icon fav${s.fav ? " on" : ""}`, type: "button", "aria-pressed": String(s.fav), "aria-label": s.fav ? "Remove from favorites" : "Add to favorites", title: s.fav ? "Favorite" : "Add to favorites" },
+      icon("i-star")
+    );
+    favBtn.addEventListener("click", () => app.actions.toggleFav(s.id));
+
+    // speed & pitch (they move together, like a turntable)
+    const rateLabel = h("span", { class: "num" }, `${s.rate.toFixed(2)}×`);
+    const rateIn = h("input", { class: "fader", type: "range", min: "0.5", max: "2", step: "0.05", value: String(s.rate), "aria-label": "Speed and pitch" });
+    setFill(rateIn);
+    rateIn.addEventListener("input", () => {
+      setFill(rateIn);
+      rateLabel.textContent = `${Number(rateIn.value).toFixed(2)}×`;
+    });
+    rateIn.addEventListener("change", () => edit((x) => (x.rate = Number(rateIn.value))));
+    rateIn.addEventListener("dblclick", () => {
+      rateIn.value = "1";
+      rateIn.dispatchEvent(new Event("input"));
+      rateIn.dispatchEvent(new Event("change"));
+    });
 
     // waveform
     const canvas = h("canvas");
@@ -315,7 +336,7 @@ export function createInspector(root, app) {
     const missing = app.missing.has(s.id);
 
     root.replaceChildren(
-      h("div", { class: "insp-head" }, nameIn, closeBtn),
+      h("div", { class: "insp-head" }, nameIn, favBtn, closeBtn),
       h("div", { class: "insp-path", title: s.path }, s.path),
       h(
         "div",
@@ -323,6 +344,7 @@ export function createInspector(root, app) {
         missing ? h("p", { class: "hint err" }, "This file is no longer at this path. Remove the pad or put the file back.") : null,
         h("section", { class: "insp-section" }, h("div", { class: "insp-label" }, h("span", {}, "Trim"), lenLabel), wave, h("div", { class: "insp-row" }, start.wrap, end.wrap), h("div", { class: "insp-row" }, fadeIn.wrap, fadeOut.wrap)),
         h("section", { class: "insp-section" }, h("div", { class: "insp-label" }, h("span", {}, "Volume"), gainLabel), gainIn, autoRow),
+        h("section", { class: "insp-section" }, h("div", { class: "insp-label" }, h("span", {}, "Speed and pitch"), rateLabel), rateIn, h("span", { class: "hint" }, "Double-click to reset. Faster sounds higher, like a turntable.")),
         h("section", { class: "insp-section" }, h("div", { class: "insp-label" }, h("span", {}, "Play mode")), seg, modeHelp),
         h("section", { class: "insp-section" }, h("div", { class: "insp-label" }, h("span", {}, "Hotkey")), h("div", { class: "key-capture" }, keyBtn, clearKey), keyHint),
         h("section", { class: "insp-section" }, h("div", { class: "insp-label" }, h("span", {}, "Colour")), swatches),

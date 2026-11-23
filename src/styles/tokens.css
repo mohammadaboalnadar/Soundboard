@@ -92,7 +92,7 @@
   --rail-w: 224px;
   --inspector-w: 340px;
   --transport-h: 56px;
-  --status-h: 28px;
+  --status-h: 34px;
 }
 
 :root[data-theme="light"] {

@@ -2,7 +2,7 @@
 // through `paint()`, which only touches pads that are playing.
 import { h, icon, led, fmtDuration, openMenu, fmtDb } from "./dom.js";
 import { formatKey } from "../keys.js";
-import { baseName } from "../model.js";
+import { baseName, bankLetter, slotSounds } from "../model.js";
 
 const MODE_ICON = { restart: "m-restart", overlap: "m-overlap", toggle: "m-toggle", loop: "m-loop", hold: "m-hold" };
 const MODE_LABEL = { restart: "Restart", overlap: "Overlap", toggle: "Toggle", loop: "Loop", hold: "Hold" };
@@ -13,6 +13,10 @@ export function createPads(root, app) {
   const painted = new Set();
 
   const title = h("h1");
+  const letter = h("span", { class: "title-letter num", hidden: true });
+  const notice = h("div", { class: "deck-notice" });
+  const recBtn = h("button", { class: "btn", type: "button", title: "Record from your mic (Ctrl R)" }, icon("i-record"), "Record");
+  recBtn.addEventListener("click", () => app.actions.record());
   const count = h("span", { class: "count num" });
   const addBtn = h("button", { class: "btn primary", type: "button" }, icon("i-plus"), "Add sounds");
   addBtn.addEventListener("click", () => app.actions.addSounds());
@@ -33,17 +37,25 @@ export function createPads(root, app) {
     h(
       "div",
       { class: "deck-bar" },
-      h("div", { class: "deck-title" }, title, count),
-      h("div", { class: "deck-tools" }, h("span", { class: "sizes" }, ...sizeBtns), h("span", { class: "sep sizes-sep" }), gridBtn, listBtn, h("span", { class: "sep" }), addBtn)
+      h("div", { class: "deck-title" }, letter, title, count),
+      h("div", { class: "deck-tools" }, h("span", { class: "sizes" }, ...sizeBtns), h("span", { class: "sep sizes-sep" }), gridBtn, listBtn, h("span", { class: "sep" }), recBtn, addBtn)
     ),
+    notice,
     scroller
   );
 
   function visible() {
     const s = store.state;
     const q = ui.query.trim().toLowerCase();
-    return s.sounds.filter((snd) => {
-      if (ui.board !== "all" && snd.folderId !== ui.board) return false;
+    let pool = s.sounds;
+    if (ui.board === "recent") {
+      const byId = new Map(s.sounds.map((x) => [x.id, x]));
+      pool = s.recent.map((id) => byId.get(id)).filter(Boolean);
+    }
+    return pool.filter((snd) => {
+      if (ui.board === "fav") {
+        if (!snd.fav) return false;
+      } else if (ui.board !== "all" && ui.board !== "recent" && snd.folderId !== ui.board) return false;
       if (!q) return true;
       return (snd.name || baseName(snd.path)).toLowerCase().includes(q) || formatKey(snd.key).toLowerCase().includes(q);
     });
@@ -52,6 +64,8 @@ export function createPads(root, app) {
   function boardName() {
     if (ui.board === "all") return "All sounds";
     if (ui.board === "") return "Unsorted";
+    if (ui.board === "fav") return "Favorites";
+    if (ui.board === "recent") return "Recent";
     return store.state.folders.find((f) => f.id === ui.board)?.name || "Board";
   }
 
@@ -62,6 +76,7 @@ export function createPads(root, app) {
     openMenu(e.clientX, e.clientY, [
       { label: engine.isPlaying(snd.id) ? "Stop" : "Play", icon: engine.isPlaying(snd.id) ? "i-stop" : "i-play", run: () => (engine.isPlaying(snd.id) ? engine.stop(snd.id) : app.actions.fire(snd)) },
       { label: "Set hotkey", icon: "i-key", run: () => app.actions.captureKey(snd.id) },
+      { label: snd.fav ? "Remove from favorites" : "Add to favorites", icon: "i-star", run: () => app.actions.toggleFav(snd.id) },
       "-",
       ...(boards.length || snd.folderId ? [{ title: "Move to" }] : []),
       ...(snd.folderId ? [{ label: "Unsorted", run: () => app.actions.moveToBoard([snd.id], "") }] : []),
@@ -71,7 +86,7 @@ export function createPads(root, app) {
     ]);
   }
 
-  function pad(snd) {
+  function pad(snd, slot) {
     const missing = app.missing.has(snd.id);
     const conflict = app.keyFailed.has(snd.id);
     const bar = h("i", { class: "pad-progress" });
@@ -92,13 +107,14 @@ export function createPads(root, app) {
         "div",
         { class: "pad-top" },
         h("span", { class: "pad-name" }, name),
-        snd.key ? h("span", { class: `kbd${conflict ? " conflict" : ""}`, title: conflict ? "Another app already uses this hotkey" : "" }, formatKey(snd.key)) : null
+        snd.key ? h("span", { class: `kbd${conflict ? " conflict" : ""}`, title: conflict ? "This hotkey isn’t active: another app owns it, or Numpad slots or push-to-talk use it" : "" }, formatKey(snd.key)) : null
       ),
       h("span", { class: "pad-gap" }),
       h(
         "div",
         { class: "pad-foot" },
         h("span", { class: "pip", "aria-hidden": "true" }),
+        slot ? h("span", { class: "slot num", title: `Numpad ${slot}` }, `N${slot}`) : null,
         missing
           ? h("span", { class: "warn" }, "File missing")
           : h("span", { class: "dur num" }, fmtDuration(snd.end - snd.start)),
@@ -195,13 +211,45 @@ export function createPads(root, app) {
       );
     }
     if (ui.query) return h("div", { class: "empty" }, h("h2", {}, "No matches"), h("p", {}, `Nothing here is called “${ui.query}”.`));
-    return h("div", { class: "empty" }, h("h2", {}, "This board is empty"), h("p", {}, "Drag pads onto it from the rail, or right-click a pad and choose Move to."));
+    if (ui.board === "fav") return h("div", { class: "empty" }, h("h2", {}, "No favorites yet"), h("p", {}, "Right-click a pad and choose Add to favorites, or use the star in the editor."));
+    if (ui.board === "recent") return h("div", { class: "empty" }, h("h2", {}, "Nothing played yet"), h("p", {}, "The last sixteen sounds you fire show up here."));
+    return h("div", { class: "empty" }, h("h2", {}, "This bank is empty"), h("p", {}, "Drag pads onto it in the rail, record a clip, or right-click a pad and choose Move to. Its first nine pads become Numpad slots."));
+  }
+
+  /** Setup card: point new users at a virtual cable, or offer one we found. */
+  function renderNotice() {
+    const s = store.state;
+    notice.replaceChildren();
+    if (s.outputs.cableId || s.cableTipDismissed || ui.compact) return;
+    const found = app.devices.outputs.find((d) => /cable|vb-audio|voicemeeter|virtual/i.test(d.label));
+    const dismiss = h("button", { class: "btn ghost", type: "button" }, "Not now");
+    dismiss.addEventListener("click", () => store.update((x) => (x.cableTipDismissed = true), "outputs"));
+    let action = null;
+    let text;
+    if (found) {
+      action = h("button", { class: "btn primary", type: "button" }, `Use ${found.label.split(" (")[0]}`);
+      action.addEventListener("click", () => {
+        store.update((x) => (x.outputs.cableId = found.deviceId), "outputs");
+        engine.setOutputs(store.state.outputs);
+      });
+      text = "Found a virtual cable. Send sounds to it, then pick it as your microphone in Discord or OBS.";
+    } else if (!app.devices.labelled && app.devices.outputs.length) {
+      text = "Open the Cable menu above and choose Show device names to find your virtual cable.";
+    } else {
+      text = "To play sounds into Discord or a game, install a free virtual cable such as VB-CABLE, then pick it under Cable above and as your mic in the voice app.";
+    }
+    notice.append(h("div", { class: "notice" }, icon("i-cable"), h("div", { class: "notice-copy" }, h("strong", {}, "Send sounds into voice chat"), h("span", {}, text)), action, dismiss));
   }
 
   function render() {
     const s = store.state;
     const list = visible();
     title.textContent = boardName();
+    const bi = s.folders.findIndex((f) => f.id === ui.board);
+    letter.hidden = bi < 0;
+    letter.textContent = bi < 0 ? "" : bankLetter(bi);
+    letter.classList.toggle("active", bi >= 0 && s.activeBank === ui.board);
+    const slots = s.slotKeys ? new Map(slotSounds(s, s.activeBank).map((x, i) => [x.id, i + 1])) : new Map();
     count.textContent = ui.query ? `${list.length} of ${s.sounds.length}` : `${list.length}`;
     grid.dataset.size = s.padSize;
     grid.classList.toggle("list", s.view === "list");
@@ -216,10 +264,12 @@ export function createPads(root, app) {
     if (list.length === 0) {
       grid.replaceChildren();
       scroller.replaceChildren(emptyState());
+      renderNotice();
       return;
     }
     if (scroller.firstChild !== grid) scroller.replaceChildren(grid);
-    grid.replaceChildren(...list.map(pad));
+    grid.replaceChildren(...list.map((snd) => pad(snd, slots.get(snd.id))));
+    renderNotice();
   }
 
   /** Called every animation frame while something plays. */
@@ -249,5 +299,5 @@ export function createPads(root, app) {
   }
 
   render();
-  return { render, paint, updateSelection, visible, focusPad: (id) => els.get(id)?.el.focus() };
+  return { render, renderNotice, paint, updateSelection, visible, focusPad: (id) => els.get(id)?.el.focus() };
 }

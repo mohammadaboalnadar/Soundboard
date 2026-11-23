@@ -19,7 +19,25 @@ export function createEngine({ fileUrl, cacheMB = 64 }) {
   const outputs = { monitorId: "default", cableId: "", monitorVol: 1, cableVol: 1 };
   const buses = { monitor: null, cable: null };
   let cableError = "";
-  const mic = { enabled: false, deviceId: "default", gain: 1, stream: null, node: null, gainNode: null };
+  const mic = { enabled: false, deviceId: "default", gain: 1, duck: 0, stream: null, node: null, gainNode: null };
+  let cableActive = false;
+
+  /** Cable activity drives auto push-to-talk and mic ducking. Fading voices still count. */
+  function updateCableActivity() {
+    let active = false;
+    for (const v of voices.values()) if (v.cable) active = true;
+    if (active === cableActive) return;
+    cableActive = active;
+    applyDuck();
+    emit("cable", { active });
+  }
+
+  function applyDuck() {
+    if (!mic.gainNode || !buses.cable) return;
+    const ducked = cableActive && mic.duck < 0;
+    const target = mic.gain * (ducked ? 10 ** (mic.duck / 20) : 1);
+    mic.gainNode.gain.setTargetAtTime(target, buses.cable.ctx.currentTime, ducked ? 0.03 : 0.25);
+  }
 
   function emit(evt, data) {
     for (const fn of listeners.get(evt) || []) fn(data);
@@ -187,10 +205,11 @@ export function createEngine({ fileUrl, cacheMB = 64 }) {
 
   const voiceGainOf = (sound) => sound.gain * (sound.autoLevel ? sound.normGain : 1);
 
-  function scheduleEnvelope(param, t0, sound, segDur, loop) {
+  /** segDur is wall-clock seconds; fades are clip seconds, so they scale with playback rate. */
+  function scheduleEnvelope(param, t0, sound, segDur, loop, rate = 1) {
     const g = voiceGainOf(sound);
-    const fi = Math.min(sound.fadeIn, segDur);
-    const fo = Math.min(sound.fadeOut, Math.max(0, segDur - fi));
+    const fi = Math.min(sound.fadeIn / rate, segDur);
+    const fo = Math.min(sound.fadeOut / rate, Math.max(0, segDur - fi));
     param.cancelScheduledValues(0);
     param.setValueAtTime(fi > 0 ? 0 : g, t0);
     if (fi > 0) param.linearRampToValueAtTime(g, t0 + fi);
@@ -218,6 +237,7 @@ export function createEngine({ fileUrl, cacheMB = 64 }) {
     cache.unpin(voice.key);
     voices.delete(voice.vid);
     emit("voiceend", { id: voice.id });
+    updateCableActivity();
     if (voices.size === 0) scheduleIdle();
   }
 
@@ -225,8 +245,10 @@ export function createEngine({ fileUrl, cacheMB = 64 }) {
     await ensureBuses();
     const seg = await getSegment(sound);
     const loop = sound.mode === "loop";
+    const rate = Math.min(2, Math.max(0.5, Number(sound.rate) || 1));
+    const wallDur = seg.duration / rate;
     const vid = ++voiceSeq;
-    const voice = { vid, id: sound.id, key: seg.key, nodes: [], loop, segDur: seg.duration, done: false, timer: 0, t0: 0 };
+    const voice = { vid, id: sound.id, name: sound.name, key: seg.key, nodes: [], loop, segDur: wallDur, done: false, timer: 0, t0: 0, cable: false };
     cache.pin(seg.key);
 
     for (const bus of monitorOnly ? [buses.monitor] : activeBuses()) {
@@ -239,6 +261,7 @@ export function createEngine({ fileUrl, cacheMB = 64 }) {
       if (seg.kind === "buffer") {
         src = ctx.createBufferSource();
         src.buffer = seg.buffer;
+        src.playbackRate.value = rate;
         if (loop) {
           src.loop = true;
           src.start(t0, 0);
@@ -252,12 +275,15 @@ export function createEngine({ fileUrl, cacheMB = 64 }) {
         el.preload = "auto";
         el.src = fileUrl(sound.path);
         el.currentTime = sound.start;
+        el.preservesPitch = false;
+        el.playbackRate = rate;
         src = ctx.createMediaElementSource(el);
         el.play().catch((e) => emit("error", { scope: "play", id: sound.id, message: String(e) }));
       }
       src.connect(gain);
-      scheduleEnvelope(gain.gain, t0, sound, seg.duration, loop);
+      scheduleEnvelope(gain.gain, t0, sound, wallDur, loop, rate);
       voice.nodes.push({ bus, src, gain, el });
+      if (bus === buses.cable) voice.cable = true;
       if (bus === buses.monitor) voice.t0 = t0;
     }
 
@@ -267,17 +293,18 @@ export function createEngine({ fileUrl, cacheMB = 64 }) {
         if (voice.loop) {
           for (const n of voice.nodes) n.el.currentTime = sound.start;
           voice.t0 = buses.monitor.ctx.currentTime;
-          voice.timer = setTimeout(tick, seg.duration * 1000);
+          voice.timer = setTimeout(tick, wallDur * 1000);
         } else {
           finishVoice(voice);
         }
       };
-      voice.timer = setTimeout(tick, seg.duration * 1000 + 30);
+      voice.timer = setTimeout(tick, wallDur * 1000 + 30);
     }
 
     voices.set(vid, voice);
     clearTimeout(idleTimer);
     emit("voicestart", { id: sound.id });
+    updateCableActivity();
     return voice;
   }
 
@@ -366,6 +393,18 @@ export function createEngine({ fileUrl, cacheMB = 64 }) {
     return Math.min(1, t / newest.segDur);
   }
 
+  /** Active voices for the now-playing strip, newest first. */
+  function nowPlaying() {
+    const out = [];
+    for (const v of voices.values()) if (!v.stopping) out.push({ vid: v.vid, id: v.id, name: v.name, loop: v.loop });
+    return out.reverse();
+  }
+
+  function stopVoiceById(vid) {
+    const v = voices.get(vid);
+    if (v) stopVoice(v, 0.08);
+  }
+
   function playingIds() {
     const ids = new Set();
     for (const v of voices.values()) if (!v.stopping) ids.add(v.id);
@@ -407,10 +446,11 @@ export function createEngine({ fileUrl, cacheMB = 64 }) {
     return { cableActive: Boolean(buses.cable), cableError };
   }
 
-  async function setMic({ enabled, deviceId, gain }) {
+  async function setMic({ enabled, deviceId, gain, duck = mic.duck }) {
+    mic.duck = Math.min(0, Number(duck) || 0);
     mic.deviceId = deviceId || "default";
     mic.gain = gain ?? mic.gain;
-    if (mic.gainNode) mic.gainNode.gain.value = mic.gain;
+    if (mic.gainNode) applyDuck();
     const wantRestart = enabled !== mic.enabled || mic.stream?.__deviceId !== mic.deviceId || !buses.cable;
     mic.enabled = Boolean(enabled);
     if (!wantRestart && mic.stream) return;
@@ -444,6 +484,7 @@ export function createEngine({ fileUrl, cacheMB = 64 }) {
       mic.gainNode = ctx.createGain();
       mic.gainNode.gain.value = mic.gain;
       mic.node.connect(mic.gainNode).connect(buses.cable.master);
+      applyDuck();
     } catch (e) {
       mic.enabled = false;
       emit("error", { scope: "mic", message: String(e && e.message || e) });
@@ -489,6 +530,9 @@ export function createEngine({ fileUrl, cacheMB = 64 }) {
     refresh,
     isPlaying,
     playingIds,
+    nowPlaying,
+    stopVoiceById,
+    isCableActive: () => cableActive,
     progress,
     invalidate,
     setOutputs,
