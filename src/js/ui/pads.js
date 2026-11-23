@@ -34,7 +34,7 @@ export function createPads(root, app) {
       "div",
       { class: "deck-bar" },
       h("div", { class: "deck-title" }, title, count),
-      h("div", { class: "deck-tools" }, ...sizeBtns, h("span", { class: "sep" }), gridBtn, listBtn, h("span", { class: "sep" }), addBtn)
+      h("div", { class: "deck-tools" }, h("span", { class: "sizes" }, ...sizeBtns), h("span", { class: "sep sizes-sep" }), gridBtn, listBtn, h("span", { class: "sep" }), addBtn)
     ),
     scroller
   );

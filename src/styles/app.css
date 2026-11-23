@@ -650,3 +650,16 @@ select.field {
   @keyframes rise { from { opacity: 0; } }
   @keyframes pop { from { opacity: 0; } }
 }
+
+/* ---------- narrow windows ---------- */
+.deck-tools .sizes { display: flex; gap: var(--space-1); }
+@media (max-width: 1240px) {
+  .bus { flex: 1 1 0; width: auto; min-width: 0; grid-template-columns: auto minmax(0, 1fr) 72px; }
+  .bus .vol { display: none; }
+  .mic-toggle .label { display: none; }
+}
+@media (max-width: 1100px) {
+  .deck-tools .sizes, .deck-tools .sizes-sep { display: none; }
+  .bus .bus-name .label { display: none; }
+  .wordmark { width: auto; }
+}

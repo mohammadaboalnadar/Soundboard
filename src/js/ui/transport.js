@@ -17,7 +17,7 @@ export function createTransport(root, app) {
     const el = h(
       "div",
       { class: "bus", dataset: { kind } },
-      h("span", { class: "bus-name" }, icon(iconName), label),
+      h("span", { class: "bus-name" }, icon(iconName), h("span", { class: "label" }, label)),
       select,
       h("div", { class: "fader-wrap" }, fader, h("div", { class: "meter" }, meterFill)),
       vol
@@ -53,7 +53,7 @@ export function createTransport(root, app) {
   const cable = bus("cable", "Cable", "i-cable");
 
   const micSwitch = h("input", { class: "switch", type: "checkbox", role: "switch", "aria-label": "Send microphone to cable" });
-  const micWrap = h("label", { class: "mic-toggle", title: "Mix your microphone into the cable output" }, icon("i-mic"), "Mic to cable", micSwitch);
+  const micWrap = h("label", { class: "mic-toggle", title: "Mix your microphone into the cable output" }, icon("i-mic"), h("span", { class: "label" }, "Mic to cable"), micSwitch);
   micSwitch.addEventListener("change", () => {
     store.update((s) => (s.mic.enabled = micSwitch.checked), "mic");
     engine.setMic(store.state.mic);
