@@ -26,3 +26,4 @@ Thumbs.db
 src-tauri/target/
 src-tauri/gen/
 .superpowers/
+.impeccable/review/
