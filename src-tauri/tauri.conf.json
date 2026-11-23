@@ -1,8 +1,9 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Soundboard",
-  "version": "2.0.0",
-  "identifier": "com.laxxz0.soundboard",
+  "productName": "Sonic Dominion",
+  "mainBinaryName": "Sonic Dominion",
+  "version": "3.0.0",
+  "identifier": "com.sonicdominion.app",
   "build": {
     "frontendDist": "../src"
   },
@@ -11,7 +12,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "Soundboard",
+        "title": "Sonic Dominion",
         "width": 1240,
         "height": 780,
         "minWidth": 900,

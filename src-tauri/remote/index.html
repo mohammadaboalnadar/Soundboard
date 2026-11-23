@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#151412" />
+<title>Sonic Dominion remote</title>
+<style>
+@font-face { font-family: "Schibsted Grotesk"; src: url(/font/ui.woff2) format("woff2"); font-weight: 400 900; font-display: swap; }
+@font-face { font-family: "Martian Mono"; src: url(/font/mono.woff2) format("woff2"); font-weight: 100 800; font-stretch: 75% 112.5%; font-display: swap; }
+:root {
+  color-scheme: dark;
+  --font-ui: "Schibsted Grotesk", system-ui, sans-serif;
+  --font-mono: "Martian Mono", ui-monospace, monospace;
+  --paper: oklch(16% 0.008 60);
+  --paper-2: oklch(19.5% 0.009 60);
+  --paper-3: oklch(23% 0.010 60);
+  --well: oklch(13% 0.007 60);
+  --rule: oklch(28% 0.010 60);
+  --rule-strong: oklch(36% 0.011 60);
+  --ink: oklch(94% 0.007 80);
+  --muted: oklch(76% 0.008 70);
+  --neutral: oklch(64% 0.010 65);
+  --accent: oklch(77% 0.155 64);
+  --accent-ink: oklch(21% 0.030 60);
+  --danger: oklch(68% 0.170 28);
+  --led-amber: oklch(78% 0.14 72); --led-ember: oklch(70% 0.15 42); --led-rose: oklch(72% 0.13 8); --led-violet: oklch(70% 0.12 300);
+  --led-azure: oklch(72% 0.11 245); --led-teal: oklch(75% 0.10 190); --led-moss: oklch(76% 0.12 135); --led-sand: oklch(80% 0.06 85);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--paper); color: var(--ink); font: 400 15px/1.35 var(--font-ui); overflow-x: clip; -webkit-tap-highlight-color: transparent; }
+button { font: inherit; color: inherit; }
+::selection { background: var(--accent); color: var(--accent-ink); }
+.top { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 10px; padding: calc(env(safe-area-inset-top) + 12px) 16px 12px; background: var(--paper-2); border-bottom: 1px solid var(--rule); }
+.mark { flex: 1; font-weight: 700; letter-spacing: 0.02em; font-size: 14px; }
+.stop { display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: 1px solid var(--rule-strong); border-radius: 8px; background: var(--paper-3); font-weight: 600; }
+.stop:active { transform: translateY(1px); }
+.stop i { width: 10px; height: 10px; border-radius: 2px; background: var(--danger); }
+.banks { display: flex; gap: 6px; padding: 12px 16px 4px; overflow-x: auto; scrollbar-width: none; }
+.bank { flex: none; height: 36px; padding: 0 14px; border: 1px solid var(--rule); border-radius: 8px; background: transparent; color: var(--muted); white-space: nowrap; }
+.bank b { font-family: var(--font-mono); font-stretch: 87.5%; margin-right: 8px; color: var(--neutral); font-weight: 600; }
+.bank[aria-pressed="true"] { background: var(--paper-3); color: var(--ink); border-color: var(--rule-strong); }
+.bank[aria-pressed="true"] b { color: var(--accent); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(46%, 150px), 1fr)); gap: 8px; padding: 12px 16px calc(env(safe-area-inset-bottom) + 24px); }
+.pad { position: relative; display: grid; align-content: space-between; min-height: 92px; padding: 12px; border: 1px solid var(--rule); border-radius: 8px; background: var(--paper-3); box-shadow: inset 0 1px 0 var(--rule-strong), 0 2px 0 var(--well); text-align: left; overflow: hidden; transition: transform 120ms var(--ease-out), background-color 120ms var(--ease-out); }
+.pad:active { transform: translateY(2px); background: var(--paper-2); box-shadow: inset 0 1px 0 var(--rule-strong); }
+.pad .name { font-weight: 600; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.pad .foot { display: flex; align-items: center; gap: 8px; color: var(--neutral); font: 12px var(--font-mono); font-stretch: 87.5%; }
+.pad .pip { width: 8px; height: 8px; border-radius: 2px; background: var(--led); opacity: 0.45; }
+.pad.playing { border-color: var(--accent); }
+.pad.playing .pip { opacity: 1; }
+.gate { display: grid; place-content: center; gap: 14px; min-height: 80svh; padding: 24px; text-align: center; }
+.gate h1 { margin: 0; font-size: 20px; }
+.gate p { margin: 0; color: var(--neutral); max-width: 32ch; }
+.gate input { width: 100%; height: 52px; border: 1px solid var(--rule-strong); border-radius: 8px; background: var(--well); color: var(--ink); font: 600 24px var(--font-mono); letter-spacing: 0.3em; text-align: center; }
+.gate input:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+.gate .err { color: var(--danger); min-height: 1.3em; }
+.gate button { height: 48px; border: 1px solid var(--accent); border-radius: 8px; background: var(--accent); color: var(--accent-ink); font-weight: 700; }
+.empty { padding: 32px 16px; color: var(--neutral); }
+.offline { padding: 8px 16px; background: var(--paper-2); color: var(--danger); font-size: 13px; }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+(() => {
+  const root = document.getElementById("root");
+  let pin = "";
+  try { pin = localStorage.getItem("sd.pin") || ""; } catch {}
+  let state = null, bank = null, offline = false, timer = 0;
+
+  const el = (tag, props = {}, ...kids) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(props)) {
+      if (k.startsWith("on")) n.addEventListener(k.slice(2), v);
+      else if (k === "style") n.setAttribute("style", v);
+      else n.setAttribute(k, v);
+    }
+    for (const k of kids) if (k != null) n.append(k);
+    return n;
+  };
+
+  async function api(path, method = "GET") {
+    const r = await fetch(path, { method, headers: { "X-Pin": pin } });
+    if (r.status === 401) throw Object.assign(new Error("pin"), { pin: true });
+    if (!r.ok) throw new Error("http");
+    return r.json();
+  }
+
+  function gate(msg = "") {
+    clearTimeout(timer);
+    const input = el("input", { inputmode: "numeric", autocomplete: "one-time-code", maxlength: "6", "aria-label": "PIN" });
+    const err = el("p", { class: "err", role: "alert" }, msg);
+    const go = async () => {
+      pin = input.value.trim();
+      try { await refresh(); try { localStorage.setItem("sd.pin", pin); } catch {} }
+      catch (e) { err.textContent = e.pin ? "That PIN didn't match. Check Settings > Phone remote." : "Can't reach Sonic Dominion."; }
+    };
+    input.addEventListener("keydown", (e) => e.key === "Enter" && go());
+    root.replaceChildren(el("div", { class: "gate" },
+      el("h1", {}, "Sonic Dominion"),
+      el("p", {}, "Enter the 6-digit PIN shown in Settings > Phone remote on your PC."),
+      input, err, el("button", { onclick: go }, "Connect")));
+    input.focus();
+  }
+
+  async function act(path) {
+    try { await api(path, "POST"); setTimeout(refresh, 120); } catch (e) { if (e.pin) gate("PIN changed. Enter the new one."); }
+  }
+
+  function render() {
+    const playing = new Set(state.playing || []);
+    const banks = state.banks || [];
+    if (bank === null || !banks.some((b) => b.id === bank)) bank = state.activeBank ?? (banks[0] ? banks[0].id : "");
+    const sounds = (state.sounds || []).filter((s) => !banks.length || s.bank === bank);
+    root.replaceChildren(
+      el("div", { class: "top" }, el("span", { class: "mark" }, "SONIC DOMINION"),
+        el("button", { class: "stop", onclick: () => act("/api/stopall") }, el("i"), "Stop all")),
+      offline ? el("div", { class: "offline" }, "Connection lost. Retrying.") : null,
+      banks.length ? el("div", { class: "banks" }, ...banks.map((b) => el("button", {
+        class: "bank", "aria-pressed": String(b.id === bank),
+        onclick: () => { bank = b.id; act("/api/bank?id=" + encodeURIComponent(b.id)); render(); }
+      }, el("b", {}, b.letter), b.name))) : null,
+      sounds.length ? el("div", { class: "grid" }, ...sounds.map((s) => el("button", {
+        class: "pad" + (playing.has(s.id) ? " playing" : ""), style: "--led: var(--led-" + (s.color || "amber") + ")",
+        onclick: () => act((playing.has(s.id) && s.mode !== "overlap" && s.mode !== "restart" ? "/api/stop?id=" : "/api/play?id=") + encodeURIComponent(s.id))
+      }, el("span", { class: "name" }, s.name), el("span", { class: "foot" }, el("span", { class: "pip" }), s.slot ? "Slot " + s.slot : "")))) : el("p", { class: "empty" }, "No sounds in this bank yet.")
+    );
+  }
+
+  async function refresh() {
+    clearTimeout(timer);
+    try { state = await api("/api/state"); offline = false; render(); }
+    catch (e) { if (e.pin) { if (state) gate("PIN changed. Enter the new one."); throw e; } offline = true; if (state) render(); }
+    timer = setTimeout(() => { if (!document.hidden) refresh().catch(() => {}); }, 1500);
+  }
+  document.addEventListener("visibilitychange", () => { if (!document.hidden && state) refresh().catch(() => {}); });
+
+  if (pin) refresh().catch(() => gate()); else gate();
+})();
+</script>
+</body>
+</html>
