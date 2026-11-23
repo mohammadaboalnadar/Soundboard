@@ -43,7 +43,7 @@ button { font: inherit; color: inherit; }
 .bank[aria-pressed="true"] { background: var(--paper-3); color: var(--ink); border-color: var(--rule-strong); }
 .bank[aria-pressed="true"] b { color: var(--accent); }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(46%, 150px), 1fr)); gap: 8px; padding: 12px 16px calc(env(safe-area-inset-bottom) + 24px); }
-.pad { position: relative; display: grid; align-content: space-between; min-height: 92px; padding: 12px; border: 1px solid var(--rule); border-radius: 8px; background: var(--paper-3); box-shadow: inset 0 1px 0 var(--rule-strong), 0 2px 0 var(--well); text-align: left; overflow: hidden; transition: transform 120ms var(--ease-out), background-color 120ms var(--ease-out); }
+.pad { min-width: 0; position: relative; display: grid; align-content: space-between; min-height: 92px; padding: 12px; border: 1px solid var(--rule); border-radius: 8px; background: var(--paper-3); box-shadow: inset 0 1px 0 var(--rule-strong), 0 2px 0 var(--well); text-align: left; overflow: hidden; transition: transform 120ms var(--ease-out), background-color 120ms var(--ease-out); }
 .pad:active { transform: translateY(2px); background: var(--paper-2); box-shadow: inset 0 1px 0 var(--rule-strong); }
 .pad .name { font-weight: 600; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .pad .foot { display: flex; align-items: center; gap: 8px; color: var(--neutral); font: 12px var(--font-mono); font-stretch: 87.5%; }
@@ -116,7 +116,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     const banks = state.banks || [];
     if (bank === null || !banks.some((b) => b.id === bank)) bank = state.activeBank ?? (banks[0] ? banks[0].id : "");
     const sounds = (state.sounds || []).filter((s) => !banks.length || s.bank === bank);
-    root.replaceChildren(
+    root.replaceChildren(...[
       el("div", { class: "top" }, el("span", { class: "mark" }, "SONIC DOMINION"),
         el("button", { class: "stop", onclick: () => act("/api/stopall") }, el("i"), "Stop all")),
       offline ? el("div", { class: "offline" }, "Connection lost. Retrying.") : null,
@@ -128,7 +128,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         class: "pad" + (playing.has(s.id) ? " playing" : ""), style: "--led: var(--led-" + (s.color || "amber") + ")",
         onclick: () => act((playing.has(s.id) && s.mode !== "overlap" && s.mode !== "restart" ? "/api/stop?id=" : "/api/play?id=") + encodeURIComponent(s.id))
       }, el("span", { class: "name" }, s.name), el("span", { class: "foot" }, el("span", { class: "pip" }), s.slot ? "Slot " + s.slot : "")))) : el("p", { class: "empty" }, "No sounds in this bank yet.")
-    );
+    ].filter(Boolean));
   }
 
   async function refresh() {
