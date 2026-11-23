@@ -153,7 +153,7 @@ export function createEngine({ fileUrl, cacheMB = 64 }) {
     }
   }
 
-  /** Decode a file once to get duration, waveform and loudness. Caches the trimmed segment as a side effect. */
+  /** Decode a file once to get duration, waveform and loudness. Nothing is cached: the full decode is dropped. */
   async function analyze(sound) {
     const full = await fetchAndDecode(sound.path);
     const duration = full.duration;
@@ -163,11 +163,10 @@ export function createEngine({ fileUrl, cacheMB = 64 }) {
     const end = sound.end > 0 ? Math.min(sound.end, duration) : duration;
     const s = { ...sound, end };
     let loud = measureLoudness(chans);
-    if (s.end - s.start > 0 && (s.end - s.start) * full.sampleRate * full.numberOfChannels * 4 <= STREAM_THRESHOLD) {
-      const { seg, chans: segChans } = sliceBuffer(full, s.start, s.end);
-      loud = measureLoudness(segChans);
-      cache.set(segKey(s), { key: segKey(s), kind: "buffer", buffer: seg, duration: seg.duration }, seg.length * seg.numberOfChannels * 4);
-      emit("cache", stats());
+    if (s.end - s.start > 0 && (s.start > 0 || s.end < duration)) {
+      const a = Math.floor(s.start * full.sampleRate);
+      const b = Math.floor(s.end * full.sampleRate);
+      loud = measureLoudness(chans.map((c) => c.subarray(a, b)));
     }
     return { duration, peaks, ...loud };
   }

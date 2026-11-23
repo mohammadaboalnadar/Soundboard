@@ -91,6 +91,15 @@ fn set_hotkeys(app: AppHandle, map: HashMap<String, String>) -> hotkeys::SetResu
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        // A second launch focuses the running window instead of starting another
+        // copy that would fight over the global hotkeys.
+        .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
+            if let Some(w) = app.get_webview_window("main") {
+                let _ = w.unminimize();
+                let _ = w.show();
+                let _ = w.set_focus();
+            }
+        }))
         .manage(hotkeys::Hotkeys::default())
         .plugin(tauri_plugin_dialog::init())
         .plugin(
