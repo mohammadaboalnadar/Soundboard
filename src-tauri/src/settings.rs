@@ -15,6 +15,10 @@ pub fn load(primary: &Path, legacy: Option<&Path>) -> Value {
     if let Some(v) = read_json(primary) {
         return v;
     }
+    // An unreadable settings file is moved aside, never silently overwritten by the next save.
+    if primary.exists() {
+        let _ = fs::rename(primary, primary.with_extension("corrupt.json"));
+    }
     if let Some(path) = legacy {
         if let Some(v) = read_json(path) {
             return v;
@@ -25,7 +29,7 @@ pub fn load(primary: &Path, legacy: Option<&Path>) -> Value {
 
 fn read_json(path: &Path) -> Option<Value> {
     let text = fs::read_to_string(path).ok()?;
-    serde_json::from_str(&text).ok()
+    serde_json::from_str(text.trim_start_matches('\u{feff}')).ok()
 }
 
 /// Write via a temp file in the same directory and rename over the target, so a
@@ -87,11 +91,22 @@ mod tests {
     }
 
     #[test]
+    fn utf8_bom_is_accepted() {
+        // Notepad and PowerShell 5 write a BOM; that must not look like corruption.
+        let dir = tempfile::tempdir().unwrap();
+        let primary = dir.path().join("v2.json");
+        fs::write(&primary, "\u{feff}{\"version\":2,\"sounds\":[]}").unwrap();
+        assert_eq!(load(&primary, None), json!({"version": 2, "sounds": []}));
+    }
+
+    #[test]
     fn corrupt_primary_falls_back() {
         let dir = tempfile::tempdir().unwrap();
         let primary = dir.path().join("v2.json");
         fs::write(&primary, "{not json").unwrap();
         assert_eq!(load(&primary, None), Value::Null);
+        assert!(!primary.exists());
+        assert_eq!(fs::read_to_string(primary.with_extension("corrupt.json")).unwrap(), "{not json");
     }
 
     #[test]
