@@ -16,6 +16,7 @@ import { createPalette } from "./ui/palette.js";
 import { createStatus } from "./ui/status.js";
 import { createSettings } from "./ui/settings.js";
 import { createRecorder } from "./ui/recorder.js";
+import { createTour } from "./ui/tour.js";
 
 const STOP_ALL = "__stop_all__";
 const PTT_KEY = "__ptt__";
@@ -405,6 +406,11 @@ async function main() {
   const recorder = createRecorder(app);
   A.openSettings = () => settings.open();
   A.record = () => recorder.start();
+  const tour = createTour(app);
+  A.startTour = () => {
+    settings.isOpen() && document.getElementById("settings").close();
+    tour.start();
+  };
 
   const appEl = document.getElementById("app");
   store.subscribe((hint) => {
@@ -539,7 +545,7 @@ async function main() {
       } else if (e.ctrlKey && (k === "," || e.code === "Comma")) {
         e.preventDefault();
         A.openSettings();
-      } else if (typing || palette.isOpen() || settings.isOpen()) {
+      } else if (typing || palette.isOpen() || settings.isOpen() || tour.isOpen()) {
         return;
       } else if (e.key === "Escape") {
         engine.stopAll();
@@ -683,7 +689,10 @@ async function main() {
   // long files are analyzed once (duration only) and never re-decoded on later launches
   for (const s of S().sounds) if (!(s.duration > 0) || (!s.peaks && s.duration <= ANALYZE_MAX_SECONDS)) queueAnalysis(s.id);
   if (!queue.length) preloadLikely();
+  if (!S().onboarded) setTimeout(() => tour.start(), 400); // first run
   addEventListener("beforeunload", () => store.flush());
+  // hidden in the tray or minimized: WebView2 drops caches to a low memory target; hotkeys and audio keep working
+  document.addEventListener("visibilitychange", () => platform.setMemoryLow(document.hidden).catch(() => {}));
   window.__app = app;
 }
 

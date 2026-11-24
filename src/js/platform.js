@@ -16,6 +16,7 @@ function tauriPlatform(T) {
     pttSet: (down) => invoke("ptt_set", { down }),
     setCompact: (on) => invoke("set_compact", { on }),
     setCloseToTray: (on) => invoke("set_close_to_tray", { on }),
+    setMemoryLow: (low) => invoke("set_memory_low", { low }),
     autostartGet: () => invoke("autostart_get"),
     autostartSet: (on) => invoke("autostart_set", { on }),
     remoteStart: (port, pin) => invoke("remote_start", { port, pin }),
@@ -147,6 +148,7 @@ function mockPlatform() {
     async pttSet() {},
     async setCompact() {},
     async setCloseToTray() {},
+    async setMemoryLow() {},
     async autostartGet() {
       return false;
     },

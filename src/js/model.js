@@ -43,6 +43,7 @@ export function defaultSettings() {
     activeBank: "",
     recent: [],
     cableTipDismissed: false,
+    onboarded: false,
     folders: [],
     sounds: []
   };
@@ -183,6 +184,7 @@ export function normalizeSettings(raw) {
     activeBank: folderIds.has(str(raw.activeBank)) ? str(raw.activeBank) : folders[0]?.id || "",
     recent: [...new Set((Array.isArray(raw.recent) ? raw.recent : []).map((x) => str(x)))].filter((id) => seen.has(id)).slice(0, 16),
     cableTipDismissed: Boolean(raw.cableTipDismissed),
+    onboarded: Boolean(raw.onboarded),
     folders,
     sounds
   };

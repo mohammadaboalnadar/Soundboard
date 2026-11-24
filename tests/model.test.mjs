@@ -119,3 +119,9 @@ test("future settings versions are kept as v2, not mangled by v1 migration", () 
   assert.equal(s.sounds[0].path, "C:/x.wav");
   assert.equal(s.sounds[0].name, "X");
 });
+
+test("onboarded flag: new and migrated users see the tour once", () => {
+  assert.equal(normalizeSettings(null).onboarded, false);
+  assert.equal(normalizeSettings({ version: 2, onboarded: true }).onboarded, true);
+  assert.equal(normalizeSettings({ sounds: [] }).onboarded, false); // v1 (Electron) users are new to this app
+});

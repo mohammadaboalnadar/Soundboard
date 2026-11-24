@@ -124,9 +124,16 @@ export function createSettings(dialog, app) {
         row("Start with Windows", "Starts in the tray, hotkeys ready.", autoSw),
         row("Close to tray", "The close button hides the window; hotkeys keep working.", sw(s.closeToTray, (on) => A.setCloseToTray(on), "Close to tray")),
         row("Theme", "", seg([["dark", "Dark"], ["light", "Light"]], s.theme, (v) => A.setTheme(v), "Theme")),
+        row("Tour", "The six-step walkthrough from your first launch.", tourBtn()),
         row("Audio cache", "Clips kept decoded for instant playback. Lower uses less memory; long clips always stream.", seg(CACHE.map((v) => [v, `${v} MB`]), s.cacheMB, (v) => A.setCacheMB(v), "Audio cache"))
       )
     );
+  }
+
+  function tourBtn() {
+    const b = h("button", { class: "btn", type: "button" }, "Replay tour");
+    b.addEventListener("click", () => A.startTour());
+    return b;
   }
 
   function clearPtt() {

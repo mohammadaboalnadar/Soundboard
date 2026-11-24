@@ -20,7 +20,7 @@
         "backgroundColor": "#141311",
         "backgroundThrottling": "disabled",
         "dragDropEnabled": true,
-        "additionalBrowserArgs": "--disable-gpu --disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection,Translate,AutofillServerCommunication --disable-background-networking --disable-component-update --no-pings"
+        "additionalBrowserArgs": "--disable-gpu --in-process-gpu --enable-features=NetworkServiceInProcess2 --disable-features=AudioServiceOutOfProcess,msWebOOUI,msPdfOOUI,msSmartScreenProtection,Translate,AutofillServerCommunication,SpareRendererForSitePerProcess --disable-background-networking --disable-component-update --no-pings --renderer-process-limit=1"
       }
     ],
     "security": {
@@ -33,10 +33,20 @@
   },
   "bundle": {
     "active": true,
-    "targets": ["nsis"],
-    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.ico"],
+    "targets": [
+      "nsis"
+    ],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.ico"
+    ],
     "windows": {
-      "webviewInstallMode": { "type": "downloadBootstrapper", "silent": true }
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper",
+        "silent": true
+      }
     }
   }
 }

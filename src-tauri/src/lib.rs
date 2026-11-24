@@ -52,6 +52,7 @@ fn is_audio(p: &str) -> bool {
 }
 
 fn show_main(app: &AppHandle) {
+    apply_memory_level(app, false);
     if let Some(w) = app.get_webview_window("main") {
         let _ = w.unminimize();
         let _ = w.show();
@@ -187,6 +188,33 @@ fn set_compact(app: AppHandle, state: tauri::State<'_, AppState>, on: bool) -> R
     Ok(())
 }
 
+/// While the window is hidden or minimized, ask WebView2 to drop caches and
+/// shrink to a low memory target; audio and hotkeys keep working.
+#[tauri::command]
+fn set_memory_low(app: AppHandle, low: bool) {
+    apply_memory_level(&app, low);
+}
+
+fn apply_memory_level(app: &AppHandle, low: bool) {
+    #[cfg(windows)]
+    if let Some(w) = app.get_webview_window("main") {
+        let _ = w.with_webview(move |wv| unsafe {
+            use webview2_com::Microsoft::Web::WebView2::Win32::{
+                ICoreWebView2_19, COREWEBVIEW2_MEMORY_USAGE_TARGET_LEVEL_LOW, COREWEBVIEW2_MEMORY_USAGE_TARGET_LEVEL_NORMAL,
+            };
+            use windows_core::Interface;
+            if let Ok(core) = wv.controller().CoreWebView2() {
+                if let Ok(core19) = core.cast::<ICoreWebView2_19>() {
+                    let level = if low { COREWEBVIEW2_MEMORY_USAGE_TARGET_LEVEL_LOW } else { COREWEBVIEW2_MEMORY_USAGE_TARGET_LEVEL_NORMAL };
+                    let _ = core19.SetMemoryUsageTargetLevel(level);
+                }
+            }
+        });
+    }
+    #[cfg(not(windows))]
+    let _ = (app, low);
+}
+
 #[tauri::command]
 fn set_close_to_tray(state: tauri::State<'_, AppState>, on: bool) {
     state.close_to_tray.store(on, Ordering::Relaxed);
@@ -275,6 +303,7 @@ pub fn run() {
                 if let Some(w) = app.get_webview_window("main") {
                     let _ = w.hide();
                 }
+                apply_memory_level(app.handle(), true);
             }
             Ok(())
         })
@@ -284,6 +313,7 @@ pub fn run() {
                 if state.close_to_tray.load(Ordering::Relaxed) {
                     api.prevent_close();
                     let _ = window.hide();
+                    apply_memory_level(window.app_handle(), true);
                 }
             }
         })
@@ -299,6 +329,7 @@ pub fn run() {
             ptt_set,
             set_compact,
             set_close_to_tray,
+            set_memory_low,
             autostart_get,
             autostart_set,
             remote_start,
