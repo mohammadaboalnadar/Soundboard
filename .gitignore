@@ -29,3 +29,12 @@ src-tauri/gen/
 .impeccable/review/
 .impeccable/hook.cache.json
 dist-release/
+
+# Internal design notes and tooling (kept local)
+.impeccable/
+DESIGN.md
+PRODUCT.md
+docs/superpowers/
+.claude/
+CLAUDE.md
+AGENTS.md

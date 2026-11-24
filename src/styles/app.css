@@ -1,4 +1,4 @@
-/* Sonic Dominion app shell · world: White Label (see DESIGN.md). The "White Label world" blocks at the end override earlier pad, rail and heading rules. */
+/* Sonic Dominion app shell · world: White Label. The "White Label world" blocks at the end override earlier pad, rail and heading rules. */
 
 *, *::before, *::after { box-sizing: border-box; }
 
