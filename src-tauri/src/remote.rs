@@ -18,6 +18,7 @@ use tiny_http::{Header, Method, Request, Response, Server};
 const PAGE: &str = include_str!("../remote/index.html");
 const FONT_UI: &[u8] = include_bytes!("../../src/fonts/SchibstedGrotesk-Variable.woff2");
 const FONT_MONO: &[u8] = include_bytes!("../../src/fonts/MartianMono-Variable.woff2");
+const FONT_STAMP: &[u8] = include_bytes!("../../src/fonts/BigShouldersDisplay-Variable.woff2");
 const FREE_TRIES: u32 = 5;
 
 #[derive(Default)]
@@ -186,6 +187,7 @@ fn handle(app: &AppHandle, req: Request, pin: &Mutex<String>, snapshot: &Mutex<S
     let font = match path.as_str() {
         "/font/ui.woff2" => Some(FONT_UI),
         "/font/mono.woff2" => Some(FONT_MONO),
+        "/font/stamp.woff2" => Some(FONT_STAMP),
         _ => None,
     };
     if let Some(bytes) = font {

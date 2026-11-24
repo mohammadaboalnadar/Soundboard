@@ -44,6 +44,7 @@ async function main() {
     platform,
     ui,
     missing: new Set(),
+    voidSeen: new Set(), // VOID stamps stay until the pad is opened
     keyFailed: new Set(),
     loudness: new Map(),
     devices: { outputs: [], inputs: [], labelled: false },
@@ -58,6 +59,10 @@ async function main() {
 
   A.select = (id, { quiet = false } = {}) => {
     if (ui.selectedId === id) return;
+    if (id && !app.voidSeen.has(id) && (app.missing.has(id) || app.keyFailed.has(id))) {
+      app.voidSeen.add(id);
+      queueMicrotask(() => store.emit("view"));
+    }
     ui.selectedId = id;
     if (ui.capture && ui.capture !== STOP_ALL && ui.capture !== PTT_KEY) A.cancelCapture();
     store.emit(quiet ? "select-quiet" : "select");

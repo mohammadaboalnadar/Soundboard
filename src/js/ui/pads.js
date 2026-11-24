@@ -87,11 +87,20 @@ export function createPads(root, app) {
     ]);
   }
 
-  function pad(snd, slot) {
+  /** Groove band width is proportional to clip length: a rimshot is a thin ring, a sting a wide one. */
+  function groovePct(seconds) {
+    const d = Number.isFinite(seconds) ? seconds : 0;
+    return (8 + Math.min(1, d / 6) * 28).toFixed(1); // 8% ring for a blip, 36% for 6 s and longer
+  }
+
+  function pad(snd, slot, index) {
     const missing = app.missing.has(snd.id);
     const conflict = app.keyFailed.has(snd.id);
-    const bar = h("i", { class: "pad-progress" });
+    const voided = (missing || conflict) && !app.voidSeen.has(snd.id);
     const name = snd.name || baseName(snd.path);
+    const length = snd.end - snd.start;
+    const catalog = `SD-${String(slot || index + 1).padStart(2, "0")}`;
+    const bar = h("i", { class: "pad-progress" });
     const el = h(
       "div",
       {
@@ -100,27 +109,39 @@ export function createPads(root, app) {
         tabindex: "0",
         draggable: "true",
         "aria-selected": ui.selectedId === snd.id ? "true" : "false",
-        "aria-label": `${name}${snd.key ? `, hotkey ${formatKey(snd.key)}` : ""}`,
-        style: { "--led": led(snd.color) },
+        "aria-label": `${name}${snd.key ? `, hotkey ${formatKey(snd.key)}` : ""}${slot ? `, Numpad ${slot}` : ""}`,
+        style: { "--led": led(snd.color), "--groove": `${groovePct(length)}%` },
         dataset: { id: snd.id }
       },
-      // A hardware key: status row (LED, slot, length, keycap) on top, the engraved label at the bottom.
+      // the pressing: grooves (width = length), the white label with its catalog number and cue sticker
       h(
         "div",
-        { class: "pad-status" },
-        h("span", { class: "pip", "aria-hidden": "true" }),
-        slot ? h("span", { class: "slot num", title: `Numpad ${slot}` }, `N${slot}`) : null,
-        missing ? h("span", { class: "warn" }, "File missing") : h("span", { class: "dur num" }, fmtDuration(snd.end - snd.start)),
-        store.state.view === "list" ? h("span", { class: "gain num" }, fmtDb(snd.gain)) : null,
-        h("span", { class: "grow" }),
-        snd.key ? h("span", { class: `kbd${conflict ? " conflict" : ""}`, title: conflict ? "This hotkey isn’t active: another app owns it, or Numpad slots or push-to-talk use it" : "" }, formatKey(snd.key)) : h("span", { class: "kbd-empty", "aria-hidden": "true" })
+        { class: "disc", "aria-hidden": "true" },
+        h("span", { class: "label" }, h("span", { class: "cat num" }, catalog), h("span", { class: "spindle" })),
+        h("span", { class: "pip" })
       ),
       h(
         "div",
-        { class: "pad-label" },
-        h("span", { class: "pad-name" }, name),
-        h("span", { class: "mode", title: MODE_LABEL[snd.mode] }, icon(MODE_ICON[snd.mode]))
+        { class: "pad-body" },
+        h(
+          "div",
+          { class: "pad-status" },
+          slot ? h("span", { class: "slot num", title: `Numpad ${slot}` }, `N${slot}`) : null,
+          missing ? h("span", { class: "warn" }, "File missing") : h("span", { class: "dur num" }, fmtDuration(length)),
+          store.state.view === "list" ? h("span", { class: "gain num" }, fmtDb(snd.gain)) : null,
+          h("span", { class: "grow" }),
+          snd.key
+            ? h("span", { class: `kbd${conflict ? " conflict" : ""}`, title: conflict ? "This hotkey isn’t active: another app owns it, or Numpad slots or push-to-talk use it" : "" }, formatKey(snd.key))
+            : h("span", { class: "kbd-empty", "aria-hidden": "true" })
+        ),
+        h(
+          "div",
+          { class: "pad-label" },
+          h("span", { class: "pad-name" }, name),
+          h("span", { class: "mode", title: MODE_LABEL[snd.mode] }, icon(MODE_ICON[snd.mode]))
+        )
       ),
+      voided ? h("span", { class: "void", title: missing ? "The file is missing. Open the pad to see why." : "This hotkey is off. Open the pad to see why." }, "Void") : null,
       bar
     );
 
@@ -283,7 +304,7 @@ export function createPads(root, app) {
       return;
     }
     if (scroller.firstChild !== grid) scroller.replaceChildren(grid);
-    grid.replaceChildren(...list.map((snd) => pad(snd, slots.get(snd.id))));
+    grid.replaceChildren(...list.map((snd, i) => pad(snd, slots.get(snd.id), i)));
     renderNotice();
   }
 
@@ -295,6 +316,7 @@ export function createPads(root, app) {
       const p = els.get(id);
       if (p) {
         p.el.classList.remove("playing");
+        p.el.style.removeProperty("--p");
         p.bar.style.transform = "scaleX(0)";
       }
       painted.delete(id);
@@ -304,6 +326,7 @@ export function createPads(root, app) {
       if (!p) continue;
       const prog = engine.progress(id);
       p.el.classList.add("playing");
+      p.el.style.setProperty("--p", `${((prog ?? 0) * 360).toFixed(1)}deg`);
       p.bar.style.transform = `scaleX(${(prog ?? 0).toFixed(4)})`;
       painted.add(id);
     }

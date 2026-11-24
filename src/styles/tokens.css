@@ -1,9 +1,15 @@
-/* Hallmark · component: desktop app shell · genre: atmospheric · tone: technical ("a sampler on your desk")
- * theme: custom-tuned graphite + signal amber · paper oklch(16% 0.008 60) · accent oklch(77% 0.155 64)
- * fonts: Schibsted Grotesk (UI) + Martian Mono (numbers, keys, times) · axes: dark / grotesk-sans + mono / warm
- * states: default · hover · focus · active · disabled · loading · error · success
+/* Sonic Dominion · world: White Label (pirate-radio dubplates, test pressings, record crates)
+ * sleeve black shell · cool white label stock · kraft crate dividers · one rubber-stamp red · saturated cue stickers
+ * fonts: Big Shoulders Display (stamped caps) · Schibsted Grotesk (UI) · Martian Mono (catalog numbers, times, keys)
+ * states are printed marks: hairline ring on hover, filled stamp pressed, struck through disabled, bracketed focus
  */
 
+@font-face {
+  font-family: "Big Shoulders Display";
+  src: url("../fonts/BigShouldersDisplay-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
 @font-face {
   font-family: "Schibsted Grotesk";
   src: url("../fonts/SchibstedGrotesk-Variable.woff2") format("woff2");
@@ -21,44 +27,53 @@
 :root {
   color-scheme: dark;
 
-  /* surfaces: each elevation step is ~3.5% lighter */
-  --color-paper: oklch(16% 0.008 60);
-  --color-paper-2: oklch(19.5% 0.009 60);
-  --color-paper-3: oklch(23% 0.010 60);
-  --color-paper-4: oklch(26.5% 0.011 60);
-  --color-paper-5: oklch(30% 0.012 60);
-  --color-well: oklch(13% 0.007 60);
-  --color-rule: oklch(28% 0.010 60);
-  --color-rule-strong: oklch(36% 0.011 60);
+  /* sleeves: matte black card stock, each step a heavier board */
+  --color-paper: oklch(14.5% 0.004 70);
+  --color-paper-2: oklch(17.5% 0.005 70);
+  --color-paper-3: oklch(20.5% 0.006 70);
+  --color-paper-4: oklch(24% 0.006 70);
+  --color-paper-5: oklch(28% 0.007 70);
+  --color-well: oklch(11% 0.004 70);
+  --color-groove: oklch(9% 0.003 70);
+  --color-rule: oklch(27% 0.006 70);
+  --color-rule-strong: oklch(36% 0.007 70);
 
-  /* text */
-  --color-ink: oklch(94% 0.007 80);
-  --color-muted: oklch(76% 0.008 70);
-  --color-neutral: oklch(62% 0.010 65);
-  --color-faint: oklch(55% 0.010 60);
+  /* text on sleeves */
+  --color-ink: oklch(95% 0.004 140);
+  --color-muted: oklch(79% 0.006 100);
+  --color-neutral: oklch(66% 0.008 80);
+  --color-faint: oklch(56% 0.008 75);
 
-  /* signal */
-  --color-accent: oklch(77% 0.155 64);
-  --color-accent-ink: oklch(21% 0.030 60);
-  --color-accent-soft: oklch(77% 0.155 64 / 0.14);
-  --color-focus: oklch(82% 0.140 64);
-  --color-danger: oklch(68% 0.170 28);
-  --color-danger-soft: oklch(68% 0.170 28 / 0.14);
-  --color-ok: oklch(74% 0.120 150);
-  --color-shadow: oklch(8% 0.01 60 / 0.55);
-  --color-scrim: oklch(10% 0.01 60 / 0.6);
+  /* label stock and crate */
+  --color-label: oklch(95% 0.004 140);
+  --color-label-ink: oklch(16% 0.005 70);
+  --color-kraft: oklch(66% 0.075 70);
+  --color-kraft-2: oklch(58% 0.07 68);
+  --color-kraft-ink: oklch(24% 0.04 60);
 
-  /* pad LEDs — user content colours, used on the pad pip and waveform only */
-  --led-amber: oklch(78% 0.14 72);
-  --led-ember: oklch(70% 0.15 42);
-  --led-rose: oklch(72% 0.13 8);
-  --led-violet: oklch(70% 0.12 300);
-  --led-azure: oklch(72% 0.11 245);
-  --led-teal: oklch(75% 0.10 190);
-  --led-moss: oklch(76% 0.12 135);
-  --led-sand: oklch(80% 0.06 85);
+  /* the one signal: rubber-stamp red (on air, active bank, void, focus) */
+  --color-accent: oklch(62% 0.205 28);
+  --color-accent-ink: oklch(97% 0.004 140);
+  --color-accent-soft: oklch(62% 0.205 28 / 0.16);
+  --color-focus: oklch(68% 0.19 28);
+  --color-danger: oklch(64% 0.205 28);
+  --color-danger-soft: oklch(64% 0.205 28 / 0.14);
+  --color-ok: oklch(72% 0.15 150);
+  --color-shadow: oklch(5% 0.004 70 / 0.6);
+  --color-scrim: oklch(6% 0.004 70 / 0.62);
+
+  /* cue stickers: user content colours, on the label and the waveform only */
+  --led-amber: oklch(85% 0.165 92);
+  --led-ember: oklch(72% 0.18 50);
+  --led-rose: oklch(68% 0.2 358);
+  --led-violet: oklch(62% 0.18 300);
+  --led-azure: oklch(62% 0.17 255);
+  --led-teal: oklch(74% 0.13 190);
+  --led-moss: oklch(70% 0.17 148);
+  --led-sand: oklch(82% 0.07 85);
 
   /* type */
+  --font-stamp: "Big Shoulders Display", "Arial Narrow", sans-serif;
   --font-body: "Schibsted Grotesk", "Segoe UI Variable Text", system-ui, sans-serif;
   --font-mono: "Martian Mono", "Cascadia Mono", ui-monospace, monospace;
   --text-2xs: 0.6875rem;
@@ -78,9 +93,9 @@
   --space-8: 32px;
   --space-10: 40px;
 
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 10px;
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
@@ -88,42 +103,47 @@
   --dur-micro: 120ms;
   --dur-short: 220ms;
   --dur-long: 420ms;
+  --rpm: 1.8s; /* one turn at 33 1/3 */
 
-  --rail-w: 224px;
+  --rail-w: 232px;
   --inspector-w: 340px;
   --transport-h: 56px;
   --status-h: 34px;
 }
 
+/* Light: white sleeves with black labels, the crate and stamp unchanged */
 :root[data-theme="light"] {
   color-scheme: light;
-  --color-paper: oklch(95.5% 0.008 75);
-  --color-paper-2: oklch(97.5% 0.006 75);
-  --color-paper-3: oklch(99% 0.004 75);
-  --color-paper-4: oklch(93% 0.009 75);
-  --color-paper-5: oklch(90% 0.010 75);
-  --color-well: oklch(91% 0.010 75);
-  --color-rule: oklch(87% 0.010 70);
-  --color-rule-strong: oklch(78% 0.012 70);
-  --color-ink: oklch(21% 0.012 60);
-  --color-muted: oklch(36% 0.012 60);
-  --color-neutral: oklch(48% 0.012 60);
-  --color-faint: oklch(62% 0.010 60);
-  --color-accent: oklch(64% 0.165 58);
-  --color-accent-ink: oklch(99% 0.004 75);
-  --color-accent-soft: oklch(64% 0.165 58 / 0.14);
-  --color-focus: oklch(56% 0.170 58);
-  --color-danger: oklch(55% 0.190 28);
-  --color-danger-soft: oklch(55% 0.190 28 / 0.12);
-  --color-ok: oklch(52% 0.120 150);
-  --color-shadow: oklch(30% 0.02 60 / 0.16);
-  --color-scrim: oklch(30% 0.02 60 / 0.3);
-  --led-amber: oklch(66% 0.15 68);
-  --led-ember: oklch(60% 0.16 40);
-  --led-rose: oklch(60% 0.15 8);
-  --led-violet: oklch(56% 0.14 300);
-  --led-azure: oklch(56% 0.13 245);
-  --led-teal: oklch(58% 0.10 190);
-  --led-moss: oklch(58% 0.13 135);
-  --led-sand: oklch(64% 0.07 80);
+  --color-paper: oklch(93.5% 0.004 140);
+  --color-paper-2: oklch(96% 0.003 140);
+  --color-paper-3: oklch(98.5% 0.002 140);
+  --color-paper-4: oklch(91% 0.005 140);
+  --color-paper-5: oklch(87% 0.006 140);
+  --color-well: oklch(89% 0.005 140);
+  --color-groove: oklch(22% 0.004 70);
+  --color-rule: oklch(84% 0.006 140);
+  --color-rule-strong: oklch(72% 0.008 140);
+  --color-ink: oklch(16% 0.005 70);
+  --color-muted: oklch(32% 0.006 70);
+  --color-neutral: oklch(44% 0.008 70);
+  --color-faint: oklch(56% 0.008 70);
+  --color-label: oklch(17% 0.005 70);
+  --color-label-ink: oklch(95% 0.004 140);
+  --color-accent: oklch(55% 0.21 28);
+  --color-accent-ink: oklch(98% 0.003 140);
+  --color-accent-soft: oklch(55% 0.21 28 / 0.12);
+  --color-focus: oklch(52% 0.21 28);
+  --color-danger: oklch(53% 0.21 28);
+  --color-danger-soft: oklch(53% 0.21 28 / 0.12);
+  --color-ok: oklch(50% 0.14 150);
+  --color-shadow: oklch(20% 0.01 70 / 0.18);
+  --color-scrim: oklch(20% 0.01 70 / 0.3);
+  --led-amber: oklch(72% 0.17 85);
+  --led-ember: oklch(62% 0.19 48);
+  --led-rose: oklch(58% 0.21 358);
+  --led-violet: oklch(52% 0.19 300);
+  --led-azure: oklch(52% 0.18 255);
+  --led-teal: oklch(60% 0.12 190);
+  --led-moss: oklch(58% 0.17 148);
+  --led-sand: oklch(68% 0.08 85);
 }
