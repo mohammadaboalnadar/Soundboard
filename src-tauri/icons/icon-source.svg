@@ -1,13 +1,24 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
-  <rect x="64" y="64" width="896" height="896" rx="200" fill="#1c1a17"/>
-  <rect x="64" y="64" width="896" height="896" rx="200" fill="none" stroke="#3a3631" stroke-width="16"/>
-  <g>
-    <rect x="200" y="200" width="272" height="272" rx="48" fill="#2f2b27"/>
-    <rect x="552" y="200" width="272" height="272" rx="48" fill="#2f2b27"/>
-    <rect x="200" y="552" width="272" height="272" rx="48" fill="#2f2b27"/>
-    <rect x="552" y="552" width="272" height="272" rx="48" fill="#f2a93b"/>
-    <rect x="200" y="200" width="24" height="272" rx="12" fill="#8fa7d8"/>
-    <rect x="552" y="200" width="24" height="272" rx="12" fill="#d98a8a"/>
-    <rect x="200" y="552" width="24" height="272" rx="12" fill="#8cc79a"/>
+  <!-- Sonic Dominion mark: a white-label pressing on air. Sleeve black ground, grooves,
+       the white test-pressing label with its cue sticker, and the red stylus arc. -->
+  <rect x="32" y="32" width="960" height="960" rx="216" fill="#121110"/>
+  <!-- the record -->
+  <circle cx="512" cy="512" r="352" fill="#1b1917"/>
+  <g fill="none" stroke="#34302c" stroke-width="10">
+    <circle cx="512" cy="512" r="326"/>
+    <circle cx="512" cy="512" r="292"/>
+    <circle cx="512" cy="512" r="258"/>
+    <circle cx="512" cy="512" r="224"/>
   </g>
+  <!-- white label -->
+  <circle cx="512" cy="512" r="176" fill="#eef0ec"/>
+  <!-- printed rim on the label -->
+  <circle cx="512" cy="512" r="138" fill="none" stroke="#121110" stroke-width="8"/>
+  <!-- spindle hole -->
+  <circle cx="512" cy="512" r="26" fill="#121110"/>
+  <!-- cue sticker -->
+  <circle cx="636" cy="636" r="52" fill="#f2c230" stroke="#121110" stroke-width="14"/>
+  <!-- stylus arc: on air, three quarters played -->
+  <circle cx="512" cy="512" r="408" fill="none" stroke="#d9302a" stroke-width="52" stroke-linecap="round"
+          stroke-dasharray="1922 2564" transform="rotate(-90 512 512)"/>
 </svg>

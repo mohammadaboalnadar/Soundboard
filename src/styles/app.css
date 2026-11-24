@@ -227,8 +227,6 @@ select.field {
   font-weight: 800;
   letter-spacing: 0.08em;
 }
-.wordmark .led-dot { width: 8px; height: 8px; border-radius: 2px; background: var(--color-faint); transition: background-color var(--dur-micro) var(--ease-out); }
-.wordmark .led-dot.on { background: var(--color-accent); }
 
 .bus {
   display: grid;
@@ -867,7 +865,6 @@ input, textarea { caret-color: var(--color-accent); }
 
 /* stamped caps: names, headings, bank letters, wordmark */
 .wordmark { font-family: var(--font-stamp); font-size: 1.375rem; font-weight: 900; letter-spacing: 0.04em; }
-.wordmark .led-dot { border-radius: 50%; }
 .deck-title h1 { font-family: var(--font-stamp); font-size: 2.25rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.02em; line-height: 0.95; }
 .title-letter { font-family: var(--font-stamp); font-size: 1.25rem; font-weight: 900; height: 30px; min-width: 30px; border-width: 2px; }
 .title-letter.active { border-color: var(--color-accent); color: var(--color-accent); }
@@ -1109,3 +1106,8 @@ input, textarea { caret-color: var(--color-accent); }
 .tour-card .btn.primary { background: var(--color-label-ink); border-color: var(--color-label-ink); color: var(--color-label); }
 .tour-card .btn:disabled { text-decoration: line-through; }
 .tour-card :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+/* brand mark in the top bar: turns like a record while anything is on air */
+.wordmark .mark { width: 26px; height: 26px; flex: none; }
+.wordmark .mark.on { animation: spin var(--rpm) linear infinite; }
+@media (prefers-reduced-motion: reduce) { .wordmark .mark.on { animation: none; } }

@@ -19,6 +19,7 @@ const PAGE: &str = include_str!("../remote/index.html");
 const FONT_UI: &[u8] = include_bytes!("../../src/fonts/SchibstedGrotesk-Variable.woff2");
 const FONT_MONO: &[u8] = include_bytes!("../../src/fonts/MartianMono-Variable.woff2");
 const FONT_STAMP: &[u8] = include_bytes!("../../src/fonts/BigShouldersDisplay-Variable.woff2");
+const ICON_PNG: &[u8] = include_bytes!("../icons/128x128@2x.png");
 const FREE_TRIES: u32 = 5;
 
 #[derive(Default)]
@@ -188,11 +189,12 @@ fn handle(app: &AppHandle, req: Request, pin: &Mutex<String>, snapshot: &Mutex<S
         "/font/ui.woff2" => Some(FONT_UI),
         "/font/mono.woff2" => Some(FONT_MONO),
         "/font/stamp.woff2" => Some(FONT_STAMP),
+        "/icon.png" => Some(ICON_PNG),
         _ => None,
     };
     if let Some(bytes) = font {
         let resp = Response::from_data(bytes.to_vec())
-            .with_header(header("Content-Type", "font/woff2"))
+            .with_header(header("Content-Type", if path.ends_with(".png") { "image/png" } else { "font/woff2" }))
             .with_header(header("Cache-Control", "max-age=86400"));
         let _ = req.respond(resp);
         return;

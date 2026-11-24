@@ -1,3 +1,5 @@
+<p align="center"><img src="src-tauri/icons/128x128@2x.png" width="128" alt="Sonic Dominion logo"></p>
+
 # Sonic Dominion
 
 The lightweight soundboard for streaming and voice chat. Fire clips from global hotkeys while you're in a game, and send them to your headphones and a virtual audio cable at the same time.

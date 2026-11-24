@@ -3,7 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#151412" />
+<meta name="theme-color" content="#121110" />
+<link rel="icon" href="/icon.png" />
+<link rel="apple-touch-icon" href="/icon.png" />
 <title>Sonic Dominion remote</title>
 <style>
 @font-face { font-family: "Big Shoulders Display"; src: url(/font/stamp.woff2) format("woff2"); font-weight: 100 900; font-display: swap; }
@@ -41,6 +43,7 @@ html, body { margin: 0; background: var(--paper); color: var(--ink); font: 400 1
 button { font: inherit; color: inherit; }
 ::selection { background: var(--accent); color: var(--accent-ink); }
 .top { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 10px; padding: calc(env(safe-area-inset-top) + 12px) 16px 12px; background: var(--paper-2); border-bottom: 1px solid var(--rule); }
+.logo { width: 28px; height: 28px; border-radius: 6px; }
 .mark { flex: 1; font-family: var(--font-stamp); font-weight: 900; letter-spacing: 0.04em; font-size: 20px; }
 .stop { height: 40px; padding: 0 16px; border: 2px solid var(--accent); border-radius: 3px; background: transparent; color: var(--accent); font-family: var(--font-stamp); font-size: 18px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em; }
 .stop:active { background: var(--accent); color: var(--accent-ink); }
@@ -131,7 +134,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     if (bank === null || !banks.some((b) => b.id === bank)) bank = state.activeBank ?? (banks[0] ? banks[0].id : "");
     const sounds = (state.sounds || []).filter((s) => !banks.length || s.bank === bank);
     root.replaceChildren(...[
-      el("div", { class: "top" }, el("span", { class: "mark" }, "SONIC DOMINION"),
+      el("div", { class: "top" }, el("img", { class: "logo", src: "/icon.png", alt: "" }), el("span", { class: "mark" }, "SONIC DOMINION"),
         el("button", { class: "stop", onclick: () => act("/api/stopall") }, el("i"), "Stop all")),
       offline ? el("div", { class: "offline" }, "Connection lost. Retrying.") : null,
       banks.length ? el("div", { class: "banks" }, ...banks.map((b) => el("button", {

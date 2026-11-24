@@ -6,7 +6,7 @@ export function createTransport(root, app) {
   const { store, engine } = app;
   let devices = { outputs: [], inputs: [], labelled: false };
 
-  const dot = h("span", { class: "led-dot" });
+  const dot = h("img", { class: "mark", src: "brand/mark.svg", alt: "", width: "26", height: "26" });
   const wordmark = h("div", { class: "wordmark", title: "Sonic Dominion" }, dot, h("span", { class: "wm-full" }, "SONIC DOMINION"), h("span", { class: "wm-short" }, "SD"));
 
   function bus(kind, label, iconName) {
