@@ -196,6 +196,35 @@ fn set_memory_low(app: AppHandle, low: bool) {
     apply_memory_level(&app, low);
 }
 
+/// The soundboard needs the microphone for "Mic to cable", the recorder and device names.
+/// Allow only that one permission, so there is no prompt to dismiss by accident.
+fn allow_microphone(app: &AppHandle) {
+    #[cfg(windows)]
+    if let Some(w) = app.get_webview_window("main") {
+        let _ = w.with_webview(|wv| unsafe {
+            use webview2_com::Microsoft::Web::WebView2::Win32::{
+                COREWEBVIEW2_PERMISSION_KIND, COREWEBVIEW2_PERMISSION_KIND_MICROPHONE, COREWEBVIEW2_PERMISSION_STATE_ALLOW,
+            };
+            use webview2_com::PermissionRequestedEventHandler;
+            if let Ok(core) = wv.controller().CoreWebView2() {
+                let handler = PermissionRequestedEventHandler::create(Box::new(|_, args| {
+                    if let Some(args) = args {
+                        let mut kind = COREWEBVIEW2_PERMISSION_KIND::default();
+                        if args.PermissionKind(&mut kind).is_ok() && kind == COREWEBVIEW2_PERMISSION_KIND_MICROPHONE {
+                            let _ = args.SetState(COREWEBVIEW2_PERMISSION_STATE_ALLOW);
+                        }
+                    }
+                    Ok(())
+                }));
+                let mut token = 0i64;
+                let _ = core.add_PermissionRequested(&handler, &mut token);
+            }
+        });
+    }
+    #[cfg(not(windows))]
+    let _ = app;
+}
+
 fn apply_memory_level(app: &AppHandle, low: bool) {
     #[cfg(windows)]
     if let Some(w) = app.get_webview_window("main") {
@@ -302,6 +331,7 @@ pub fn run() {
         )
         .setup(|app| {
             build_tray(app)?;
+            allow_microphone(app.handle());
             if std::env::args().any(|a| a == "--minimized") {
                 if let Some(w) = app.get_webview_window("main") {
                     let _ = w.hide();

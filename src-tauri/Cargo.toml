@@ -1,6 +1,6 @@
 [package]
 name = "sonic-dominion"
-version = "3.2.0"
+version = "3.2.1"
 description = "Sonic Dominion: the lightweight soundboard"
 edition = "2021"
 license = "MIT"

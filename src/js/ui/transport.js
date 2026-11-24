@@ -1,5 +1,5 @@
 // Top strip: monitor + cable outputs (device, fader, meter), mic, theme, stop all.
-import { h, icon, setFill } from "./dom.js";
+import { h, icon, setFill, toast } from "./dom.js";
 import { formatKey } from "../keys.js";
 
 export function createTransport(root, app) {
@@ -99,13 +99,36 @@ export function createTransport(root, app) {
     app.devices = devices;
     app.store.emit("devices");
     render();
+    await adoptCable();
+  }
+
+  // A saved cable that no longer exists (old install, new device ids) is found again by name.
+  let triedReveal = false;
+  async function adoptCable() {
+    const id = store.state.outputs.cableId;
+    if (id && devices.outputs.some((d) => d.deviceId === id)) return;
+    if (!devices.labelled) {
+      if (triedReveal) return;
+      triedReveal = true;
+      await revealLabels();
+      return;
+    }
+    const cable = devices.outputs.find((d) => /cable input/i.test(d.label) && !/16ch/i.test(d.label));
+    if (!cable) return;
+    store.update((s) => {
+      s.outputs.cableId = cable.deviceId;
+    }, "outputs");
+    engine.setOutputs(store.state.outputs);
+    toast(`Cable output set to ${cable.label}.`);
   }
 
   async function revealLabels() {
     try {
       const s = await navigator.mediaDevices.getUserMedia({ audio: true });
       s.getTracks().forEach((t) => t.stop());
-    } catch {}
+    } catch (e) {
+      toast(`Couldn’t read device names: ${e.message || e}`, { error: true });
+    }
     await loadDevices();
   }
 
