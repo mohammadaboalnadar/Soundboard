@@ -25,17 +25,20 @@ Be respectful, constructive, and collaborative in all discussions and reviews.
 
 ## Development Setup
 
-1. Install dependencies:
+1. Install [Rust](https://rustup.rs) and, on Windows, the Visual Studio C++ Build Tools.
+2. Install dependencies:
 
 ```bash
 npm install
 ```
 
-2. Run the app:
+3. Run the app:
 
 ```bash
-npm start
+npm run dev
 ```
+
+4. Before opening a pull request, run `npm test` and `npm run test:rust`.
 
 ## Coding Guidelines
 

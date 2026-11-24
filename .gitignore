@@ -21,3 +21,11 @@ release/
 .DS_Store
 Thumbs.db
 .vscode/
+
+# Tauri / tooling
+src-tauri/target/
+src-tauri/gen/
+.superpowers/
+.impeccable/review/
+.impeccable/hook.cache.json
+dist-release/

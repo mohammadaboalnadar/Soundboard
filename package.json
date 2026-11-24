@@ -1,14 +1,19 @@
 {
-  "name": "soundboard-app",
-  "version": "1.0.0",
-  "description": "Lightweight desktop soundboard",
-  "main": "main.js",
+  "name": "sonic-dominion",
+  "version": "3.1.1",
+  "description": "Sonic Dominion: the lightweight soundboard",
   "scripts": {
-    "start": "electron ."
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "ui": "node tools/serve.mjs",
+    "test": "node --test \"tests/*.test.mjs\"",
+    "test:rust": "cargo test --manifest-path src-tauri/Cargo.toml",
+    "release": "node tools/release.mjs"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^31.0.0"
-  }
+    "@tauri-apps/cli": "^2.12.6"
+  },
+  "type": "module"
 }

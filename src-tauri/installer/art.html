@@ -1,0 +1,24 @@
+<!doctype html>
+<!-- Source for the NSIS installer bitmaps. Render ?sidebar at 164x314 and ?header at 150x57,
+     then convert to 24-bit BMP (see src-tauri/installer/README.md). -->
+<html><head><meta charset="utf-8">
+<style>
+@font-face { font-family: "Big Shoulders Display"; src: url("../../src/fonts/BigShouldersDisplay-Variable.woff2") format("woff2"); font-weight: 100 900; }
+@font-face { font-family: "Martian Mono"; src: url("../../src/fonts/MartianMono-Variable.woff2") format("woff2"); font-weight: 100 800; font-stretch: 75% 112.5%; }
+* { box-sizing: border-box; margin: 0; }
+body { overflow: hidden; }
+.sidebar { width: 164px; height: 314px; background: #121110; color: #eef0ec; position: relative; overflow: hidden; }
+.sidebar img { position: absolute; left: -38px; top: -30px; width: 240px; height: 240px; }
+.sidebar .name { position: absolute; left: 14px; bottom: 34px; font: 900 34px/0.86 "Big Shoulders Display", sans-serif; text-transform: uppercase; letter-spacing: 0.02em; }
+.sidebar .name b { color: #d9302a; font-weight: 900; }
+.sidebar .cat { position: absolute; left: 14px; bottom: 14px; font: 700 9px "Martian Mono", monospace; font-stretch: 87.5%; color: #a8a29a; letter-spacing: 0.04em; }
+.header { width: 150px; height: 57px; background: #ffffff; display: flex; align-items: center; justify-content: flex-end; gap: 8px; padding-right: 8px; }
+.header img { width: 40px; height: 40px; }
+.header .name { font: 900 19px/0.86 "Big Shoulders Display", sans-serif; text-transform: uppercase; color: #121110; text-align: right; }
+.header .name b { color: #d9302a; font-weight: 900; }
+</style></head>
+<body>
+<div id="sidebar" class="sidebar" hidden><img src="../icons/icon-source.svg" alt=""><div class="name">Sonic<br><b>Dominion</b></div><div class="cat">SD-300 · TEST PRESSING</div></div>
+<div id="header" class="header" hidden><div class="name">Sonic<br><b>Dominion</b></div><img src="../icons/icon-source.svg" alt=""></div>
+<script>document.getElementById(location.search.includes("header") ? "header" : "sidebar").hidden = false;</script>
+</body></html>
