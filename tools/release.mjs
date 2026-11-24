@@ -2,6 +2,7 @@
 //
 //   npm run release -- --notes "What changed"        build + publish to GitHub
 //   npm run release -- --notes "..." --dry-run       build + latest.json only
+//   --repo owner/name   publish to another repository (default: mohammadaboalnadar/Soundboard)
 //
 // Needs: the signing key at ~/.tauri/sonic-dominion.key (or TAURI_SIGNING_PRIVATE_KEY),
 // the GitHub CLI logged in, and the version already bumped in src-tauri/tauri.conf.json.
@@ -10,10 +11,12 @@ import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from
 import { homedir } from "node:os";
 import { join, resolve } from "node:path";
 
-const REPO = "LaxxZ0/Soundboard";
 const root = resolve(new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
 const args = process.argv.slice(2);
 const dry = args.includes("--dry-run");
+const repoAt = args.indexOf("--repo");
+const REPO = repoAt >= 0 ? args[repoAt + 1] : "mohammadaboalnadar/Soundboard";
+const skipBuild = args.includes("--skip-build"); // reuse the last build, e.g. to publish the same version to a second repo
 const notesAt = args.indexOf("--notes");
 const notes = notesAt >= 0 ? args[notesAt + 1] : "";
 if (!notes) throw new Error('Give release notes: npm run release -- --notes "What changed"');
@@ -30,8 +33,10 @@ if (!env.TAURI_SIGNING_PRIVATE_KEY) {
 }
 env.TAURI_SIGNING_PRIVATE_KEY_PASSWORD ??= "";
 
-console.log(`Building ${tag}...`);
-execFileSync("npx", ["tauri", "build"], { cwd: root, env, stdio: "inherit", shell: true });
+if (!skipBuild) {
+  console.log(`Building ${tag}...`);
+  execFileSync("npx", ["tauri", "build"], { cwd: root, env, stdio: "inherit", shell: true });
+}
 
 const target = env.CARGO_TARGET_DIR || join(root, "src-tauri", "target");
 const built = join(target, "release", "bundle", "nsis", `${conf.productName}_${version}_x64-setup.exe`);

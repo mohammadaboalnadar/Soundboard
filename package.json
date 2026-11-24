@@ -1,6 +1,6 @@
 {
   "name": "sonic-dominion",
-  "version": "3.1.1",
+  "version": "3.2.0",
   "description": "Sonic Dominion: the lightweight soundboard",
   "scripts": {
     "dev": "tauri dev",
