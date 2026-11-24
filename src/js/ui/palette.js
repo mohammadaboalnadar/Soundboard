@@ -34,6 +34,7 @@ export function createPalette(dialog, app) {
       { label: "Record from mic", meta: "Ctrl R", run: () => app.actions.record() },
       { label: "Open settings", meta: "Ctrl ,", run: () => app.actions.openSettings() },
       { label: "Show the tour", meta: "Command", run: () => app.actions.startTour() },
+      { label: "Check for updates", meta: "Command", run: () => app.actions.checkUpdates() },
       { label: app.ui.compact ? "Leave compact mode" : "Compact mode", meta: "Command", run: () => app.actions.setCompact(!app.ui.compact) },
       { label: s.slotKeys ? "Turn off Numpad slots" : "Turn on Numpad slots", meta: "Command", run: () => app.actions.setSlotKeys(!s.slotKeys) },
       { label: s.remote.enabled ? "Turn off phone remote" : "Turn on phone remote", meta: "Command", run: () => app.actions.setRemote(!s.remote.enabled) },

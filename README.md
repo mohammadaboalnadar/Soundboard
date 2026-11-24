@@ -69,6 +69,15 @@ npm run test:rust  # Rust unit tests
 npm run ui         # UI only, in a browser with demo data: http://localhost:5174/?demo
 ```
 
+## Releasing an update
+
+Installed copies check GitHub Releases at startup and every 6 hours and offer new versions in a small card (Update now / Later). To ship one:
+
+1. Bump `version` in `src-tauri/tauri.conf.json`, `src-tauri/Cargo.toml` and `package.json`.
+2. Run `npm run release -- --notes "What changed"`. It builds, signs with `~/.tauri/sonic-dominion.key`, writes `latest.json` and publishes the GitHub release.
+
+Keep the signing key safe and backed up: without it, installed copies cannot verify (and will refuse) future updates.
+
 ## Project layout
 
 ```

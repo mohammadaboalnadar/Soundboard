@@ -17,6 +17,10 @@ function tauriPlatform(T) {
     setCompact: (on) => invoke("set_compact", { on }),
     setCloseToTray: (on) => invoke("set_close_to_tray", { on }),
     setMemoryLow: (low) => invoke("set_memory_low", { low }),
+    appVersion: () => invoke("app_version"),
+    updateCheck: () => invoke("update_check"),
+    updateInstall: () => invoke("update_install"),
+    onUpdateProgress: (fn) => T.event.listen("update-progress", (e) => fn(e.payload)),
     autostartGet: () => invoke("autostart_get"),
     autostartSet: (on) => invoke("autostart_set", { on }),
     remoteStart: (port, pin) => invoke("remote_start", { port, pin }),
@@ -149,6 +153,14 @@ function mockPlatform() {
     async setCompact() {},
     async setCloseToTray() {},
     async setMemoryLow() {},
+    async appVersion() {
+      return "3.1.0";
+    },
+    async updateCheck() {
+      return new URLSearchParams(location.search).has("update") ? { version: "3.2.0", current: "3.1.0", notes: "Quick setup and faster startup.", date: null } : null;
+    },
+    async updateInstall() {},
+    async onUpdateProgress() {},
     async autostartGet() {
       return false;
     },

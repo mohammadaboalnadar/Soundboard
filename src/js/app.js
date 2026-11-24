@@ -17,6 +17,7 @@ import { createStatus } from "./ui/status.js";
 import { createSettings } from "./ui/settings.js";
 import { createRecorder } from "./ui/recorder.js";
 import { createTour } from "./ui/tour.js";
+import { createUpdates } from "./ui/updates.js";
 
 const STOP_ALL = "__stop_all__";
 const PTT_KEY = "__ptt__";
@@ -407,6 +408,8 @@ async function main() {
   A.openSettings = () => settings.open();
   A.record = () => recorder.start();
   const tour = createTour(app);
+  const updates = createUpdates(app);
+  A.checkUpdates = () => updates.check({ manual: true });
   A.startTour = () => {
     settings.isOpen() && document.getElementById("settings").close();
     tour.start();

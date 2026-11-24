@@ -28,3 +28,4 @@ src-tauri/gen/
 .superpowers/
 .impeccable/review/
 .impeccable/hook.cache.json
+dist-release/

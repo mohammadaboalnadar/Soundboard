@@ -1111,3 +1111,26 @@ input, textarea { caret-color: var(--color-accent); }
 .wordmark .mark { width: 26px; height: 26px; flex: none; }
 .wordmark .mark.on { animation: spin var(--rpm) linear infinite; }
 @media (prefers-reduced-motion: reduce) { .wordmark .mark.on { animation: none; } }
+
+/* ---------- update offer: a new pressing has arrived ---------- */
+.upd-card {
+  position: fixed;
+  right: var(--space-4);
+  bottom: calc(var(--status-h) + var(--space-4));
+  z-index: 35;
+  width: min(360px, calc(100vw - 32px));
+  padding: var(--space-4) var(--space-4) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-label);
+  color: var(--color-label-ink);
+  box-shadow: 0 14px 40px var(--color-shadow);
+  animation: rise var(--dur-short) var(--ease-out);
+}
+.upd-cat { display: block; margin-bottom: var(--space-1); color: var(--color-accent); font-size: var(--text-2xs); font-weight: 700; }
+.upd-card h2 { margin: 0 0 var(--space-1); font-family: var(--font-stamp); font-size: 1.5rem; font-weight: 900; line-height: 0.95; text-transform: uppercase; letter-spacing: 0.02em; }
+.upd-card p { margin: 0; font-size: var(--text-sm); line-height: 1.45; }
+.upd-actions { display: flex; align-items: center; justify-content: flex-end; gap: var(--space-2); margin-top: var(--space-3); }
+.upd-progress { margin-right: auto; font-size: var(--text-xs); }
+.upd-card .btn { border-color: oklch(from var(--color-label-ink) l c h / 0.35); background: transparent; color: var(--color-label-ink); }
+.upd-card .btn.primary { background: var(--color-label-ink); border-color: var(--color-label-ink); color: var(--color-label); }
+.upd-card :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }

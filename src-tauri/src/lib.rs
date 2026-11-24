@@ -2,6 +2,7 @@ mod hotkeys;
 mod ptt;
 mod remote;
 mod settings;
+mod updates;
 
 use serde_json::Value;
 use std::collections::HashMap;
@@ -158,7 +159,7 @@ fn ptt_set(state: tauri::State<'_, AppState>, down: bool) -> Result<(), String> 
     }
 }
 
-fn release_ptt(app: &AppHandle) {
+pub(crate) fn release_ptt(app: &AppHandle) {
     if let Some(state) = app.try_state::<AppState>() {
         if let Some(keys) = state.ptt.lock().unwrap().release_all() {
             let _ = ptt::send(&keys, false);
@@ -290,6 +291,8 @@ pub fn run() {
         .plugin(tauri_plugin_autostart::init(tauri_plugin_autostart::MacosLauncher::LaunchAgent, Some(vec!["--minimized"])))
         .manage(hotkeys::Hotkeys::default())
         .manage(remote::Remote::default())
+        .manage(updates::PendingUpdate::default())
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .manage(AppState { close_to_tray: AtomicBool::new(true), ..Default::default() })
         .plugin(tauri_plugin_dialog::init())
         .plugin(
@@ -330,6 +333,9 @@ pub fn run() {
             set_compact,
             set_close_to_tray,
             set_memory_low,
+            updates::app_version,
+            updates::update_check,
+            updates::update_install,
             autostart_get,
             autostart_set,
             remote_start,

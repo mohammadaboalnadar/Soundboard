@@ -2,7 +2,7 @@
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Sonic Dominion",
   "mainBinaryName": "Sonic Dominion",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "identifier": "com.sonicdominion.app",
   "build": {
     "frontendDist": "../src"
@@ -64,6 +64,18 @@
     "category": "Music",
     "shortDescription": "The lightweight soundboard for streaming and voice chat",
     "longDescription": "Fire sounds from global hotkeys into your headphones and a virtual cable at the same time. Banks with Numpad slots, auto push-to-talk, phone remote, recorder.",
-    "homepage": "https://github.com/LaxxZ0/Soundboard"
+    "homepage": "https://github.com/LaxxZ0/Soundboard",
+    "createUpdaterArtifacts": true
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDUzRjFCOEE3NUNFNjhCRTAKUldUZ2krWmNwN2p4VTVZdUY4Nk16UE1FTTladVkyb2VRaHc2ZTlpRUI2VkZSRjc4V2dUVlRmQU8K",
+      "endpoints": [
+        "https://github.com/LaxxZ0/Soundboard/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
   }
 }
