@@ -857,7 +857,8 @@ input, textarea { caret-color: var(--color-accent); }
 .status button.item { border: 0; background: transparent; padding: 0; font: inherit; cursor: pointer; }
 .status button.item:hover { text-decoration: underline; text-underline-offset: 3px; }
 .app.compact .deck-title:has(.bank-keys > *) .title-letter { display: none; }
-.pad-status .dur { min-width: 0; overflow: hidden; white-space: nowrap; }
+.pad-status .dur { flex: none; white-space: nowrap; }
+.app.compact .pad-status .dur { display: none; }
 .pad-status .kbd, .pad-status .slot, .pad-status .pip { flex: none; }
 .kbd-empty { display: none; }
 .pads.list .kbd-empty { display: block; order: 3; }
