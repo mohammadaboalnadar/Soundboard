@@ -676,6 +676,10 @@ async function main() {
   if (S().mic.enabled) engine.setMic(S().mic);
   if (S().remote.enabled) A.setRemote(true);
   if (platform.kind === "mock" && new URLSearchParams(location.search).has("compact")) A.setCompact(true);
+  if (platform.kind === "mock" && new URLSearchParams(location.search).get("play")) {
+    const name = new URLSearchParams(location.search).get("play");
+    setTimeout(() => A.fire(S().sounds.find((x) => x.name === name)), 2500);
+  }
   // long files are analyzed once (duration only) and never re-decoded on later launches
   for (const s of S().sounds) if (!(s.duration > 0) || (!s.peaks && s.duration <= ANALYZE_MAX_SECONDS)) queueAnalysis(s.id);
   if (!queue.length) preloadLikely();

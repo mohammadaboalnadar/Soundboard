@@ -1041,3 +1041,38 @@ input, textarea { caret-color: var(--color-accent); }
 @media (prefers-reduced-motion: reduce) {
   .pad.playing .disc .label { animation: none; }
 }
+
+/* ---------- White Label review fixes ---------- */
+
+/* name first, one data row under it (slot · length · mode ... keycap) */
+.pad-body { grid-template-rows: minmax(0, 1fr) auto; row-gap: var(--space-1); container-type: inline-size; }
+.pad-body .pad-name { grid-row: 1; align-self: center; }
+.pad-body .pad-status { grid-row: 2; }
+.pad-name {
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+  font-size: clamp(1.05rem, 13cqi, 1.5rem);
+}
+.pads[data-size="l"] .pad-name { font-size: clamp(1.2rem, 13cqi, 1.875rem); }
+.pads[data-size="s"] .pad-name { font-size: clamp(0.95rem, 11cqi, 1.125rem); }
+.pad-status .slot { color: var(--color-muted); font-weight: 700; }
+.pad-status .mode { color: var(--color-neutral); white-space: nowrap; }
+.app.compact .pad-status .mode { display: none; }
+
+/* VOID sits low on the label so the catalog number stays readable */
+.void { top: calc(50% + var(--disc) * 0.18); }
+
+/* pressed: the label takes the stamp's ink */
+.pad:active .disc .label, .pad.pressed .disc .label { background: var(--color-accent); color: var(--color-accent-ink); }
+.pad:active .disc .spindle, .pad.pressed .disc .spindle { background: var(--color-accent-ink); }
+
+/* compact keeps the crate: bank keys are kraft dividers, the active one in label white */
+.bank-key { border: 0; border-radius: 3px 10px 3px 3px; background: var(--color-kraft); color: var(--color-kraft-ink); font-family: var(--font-stamp); font-size: 1rem; font-weight: 900; }
+.bank-key:hover { background: var(--color-kraft-2); color: var(--color-kraft-ink); }
+.bank-key .bank-led { border-radius: 50%; background: transparent; box-shadow: inset 0 0 0 1.5px var(--color-kraft-ink); }
+.bank-key[aria-pressed="true"] { background: var(--color-label); color: var(--color-accent); }
+.bank-key[aria-pressed="true"] .bank-led { background: var(--color-accent); box-shadow: none; }
+
+/* list view keeps the same data row */
+.pads.list .pad-status .mode { order: 6; justify-self: end; }

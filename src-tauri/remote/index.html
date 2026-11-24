@@ -33,7 +33,7 @@
   --accent-ink: oklch(97% 0.004 140);
   --danger: oklch(64% 0.205 28);
   --led-amber: oklch(85% 0.165 92); --led-ember: oklch(72% 0.18 50); --led-rose: oklch(68% 0.2 358); --led-violet: oklch(62% 0.18 300);
-  --led-azure: oklch(62% 0.17 255); --led-teal: oklch(74% 0.13 190); --led-moss: oklch(70% 0.17 148); --led-sand: oklch(82% 0.07 85);
+  --led-azure: oklch(62% 0.17 255); --led-teal: oklch(74% 0.13 190); --led-moss: oklch(70% 0.17 148); --led-sand: oklch(87% 0.17 125);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 * { box-sizing: border-box; }
@@ -45,7 +45,7 @@ button { font: inherit; color: inherit; }
 .stop { height: 40px; padding: 0 16px; border: 2px solid var(--accent); border-radius: 3px; background: transparent; color: var(--accent); font-family: var(--font-stamp); font-size: 18px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em; }
 .stop:active { background: var(--accent); color: var(--accent-ink); }
 .stop i { display: none; }
-.banks { display: flex; gap: 6px; padding: 12px 16px 4px; overflow-x: auto; scrollbar-width: none; }
+.banks { display: flex; gap: 6px; padding: 12px 16px 4px; overflow-x: auto; scrollbar-width: none; -webkit-mask: linear-gradient(90deg, #000 85%, transparent); mask: linear-gradient(90deg, #000 85%, transparent); }
 .bank { flex: none; height: 38px; padding: 0 14px 0 8px; border: 0; border-radius: 3px 12px 3px 3px; background: var(--kraft); color: var(--kraft-ink); white-space: nowrap; font-family: var(--font-stamp); font-size: 17px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.03em; display: flex; align-items: center; gap: 8px; }
 .bank b { display: grid; place-items: center; width: 24px; height: 24px; border: 2px solid var(--kraft-ink); border-radius: 3px; font-weight: 900; }
 .bank[aria-pressed="true"] { background: var(--label); color: var(--label-ink); }
@@ -59,7 +59,7 @@ button { font: inherit; color: inherit; }
 .disc .pip { position: absolute; right: -2px; bottom: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--led); box-shadow: 0 0 0 2px var(--paper-3); }
 .pad .body { display: grid; gap: 4px; min-width: 0; }
 .pad .name { font-family: var(--font-stamp); font-size: 22px; font-weight: 900; line-height: 0.95; text-transform: uppercase; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.pad .foot { color: var(--accent); font: 700 12px var(--font-mono); font-stretch: 87.5%; }
+.pad .foot { color: var(--muted); font: 700 12px var(--font-mono); font-stretch: 87.5%; }
 .pad.playing { border-color: var(--accent); }
 .pad.playing .label { animation: spin 1.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }

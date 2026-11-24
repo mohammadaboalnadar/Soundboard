@@ -4,7 +4,6 @@ import { h, icon, led, fmtDuration, openMenu, fmtDb } from "./dom.js";
 import { formatKey } from "../keys.js";
 import { baseName, bankLetter, slotSounds } from "../model.js";
 
-const MODE_ICON = { restart: "m-restart", overlap: "m-overlap", toggle: "m-toggle", loop: "m-loop", hold: "m-hold" };
 const MODE_LABEL = { restart: "Restart", overlap: "Overlap", toggle: "Toggle", loop: "Loop", hold: "Hold" };
 
 export function createPads(root, app) {
@@ -96,7 +95,7 @@ export function createPads(root, app) {
   function pad(snd, slot, index) {
     const missing = app.missing.has(snd.id);
     const conflict = app.keyFailed.has(snd.id);
-    const voided = (missing || conflict) && !app.voidSeen.has(snd.id);
+    const voided = missing && !app.voidSeen.has(snd.id); // VOID = the pressing cannot play
     const name = snd.name || baseName(snd.path);
     const length = snd.end - snd.start;
     const catalog = `SD-${String(slot || index + 1).padStart(2, "0")}`;
@@ -123,22 +122,19 @@ export function createPads(root, app) {
       h(
         "div",
         { class: "pad-body" },
+        h("span", { class: "pad-name" }, name),
+        // one catalog-sheet data row under the name: slot · length · mode ... keycap
         h(
           "div",
           { class: "pad-status" },
           slot ? h("span", { class: "slot num", title: `Numpad ${slot}` }, `N${slot}`) : null,
           missing ? h("span", { class: "warn" }, "File missing") : h("span", { class: "dur num" }, fmtDuration(length)),
+          h("span", { class: "mode num", title: MODE_LABEL[snd.mode] }, MODE_LABEL[snd.mode].toLowerCase()),
           store.state.view === "list" ? h("span", { class: "gain num" }, fmtDb(snd.gain)) : null,
           h("span", { class: "grow" }),
           snd.key
             ? h("span", { class: `kbd${conflict ? " conflict" : ""}`, title: conflict ? "This hotkey isn’t active: another app owns it, or Numpad slots or push-to-talk use it" : "" }, formatKey(snd.key))
             : h("span", { class: "kbd-empty", "aria-hidden": "true" })
-        ),
-        h(
-          "div",
-          { class: "pad-label" },
-          h("span", { class: "pad-name" }, name),
-          h("span", { class: "mode", title: MODE_LABEL[snd.mode] }, icon(MODE_ICON[snd.mode]))
         )
       ),
       voided ? h("span", { class: "void", title: missing ? "The file is missing. Open the pad to see why." : "This hotkey is off. Open the pad to see why." }, "Void") : null,
