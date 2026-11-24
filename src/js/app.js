@@ -401,7 +401,9 @@ async function main() {
   A.openSettings = () => settings.open();
   A.record = () => recorder.start();
 
+  const appEl = document.getElementById("app");
   store.subscribe((hint) => {
+    appEl.classList.toggle("no-inspector", !ui.selectedId);
     switch (hint) {
       case "sound-quiet":
         break;
@@ -448,6 +450,7 @@ async function main() {
         pads.render();
         inspector.render();
         settings.render();
+        status.render();
         break;
       default:
         rail.render();

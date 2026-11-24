@@ -131,7 +131,8 @@ export function createTransport(root, app) {
     compactBtn.title = compactLabel;
     compactBtn.setAttribute("aria-label", compactLabel);
     compactBtn.setAttribute("aria-pressed", String(app.ui.compact));
-    stopKey.textContent = s.stopAllKey ? formatKey(s.stopAllKey) : "No key";
+    stopKey.textContent = s.stopAllKey ? formatKey(s.stopAllKey) : "";
+    stopKey.hidden = !s.stopAllKey;
     stopKey.classList.toggle("conflict", app.keyFailed.has("__stop_all__"));
     stopBtn.title = app.keyFailed.has("__stop_all__") ? "The Stop all hotkey is not active: another binding or app uses it" : "Stop every sound (right-click to set a hotkey)";
   }

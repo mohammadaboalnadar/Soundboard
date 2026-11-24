@@ -22,6 +22,17 @@ export function createStatus(root, app) {
     );
   }
 
+  /** Visible explanation for red keycaps: how many hotkeys are off, why, and where to fix it. */
+  function inactiveKeys(s) {
+    const n = app.keyFailed.size;
+    if (!n) return null;
+    const numpadClash = s.slotKeys && s.sounds.some((x) => app.keyFailed.has(x.id) && /^Numpad/.test(x.key.split("+").pop()));
+    const why = numpadClash ? "Numpad slots use Num 1–9" : "another app or binding has them";
+    const el = h("button", { class: "item warn", type: "button", title: "Open settings to turn slots off or change keys" }, `${n} hotkey${n === 1 ? "" : "s"} off · ${why}`);
+    el.addEventListener("click", () => app.actions.openSettings());
+    return el;
+  }
+
   function render() {
     const s = store.state;
     const st = engine.stats();
@@ -41,6 +52,7 @@ export function createStatus(root, app) {
         bi >= 0 ? h("span", { class: "item", title: s.slotKeys ? "Numpad 1–9 play this bank, Num + / − switch" : "Active bank" }, "Bank", h("b", { class: "num" }, bankLetter(bi))) : null,
         s.remote.enabled ? h("span", { class: "item on", title: app.ui.remoteUrl }, h("span", { class: "dot" }), "Remote") : null,
         s.ptt.key ? h("span", { class: "item", title: "Auto push-to-talk is on" }, "PTT") : null,
+        inactiveKeys(s),
         h("span", { class: "item", title: "Decoded audio kept in memory for instant playback" }, "Cache", h("span", { class: "cachebar" }, fill), h("span", { class: "num" }, `${(st.cacheBytes / 1048576).toFixed(1)}/${Math.round(st.budget / 1048576)} MB`))
       )
     );

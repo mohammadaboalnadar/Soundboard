@@ -33,7 +33,7 @@ html, body { margin: 0; background: var(--paper); color: var(--ink); font: 400 1
 button { font: inherit; color: inherit; }
 ::selection { background: var(--accent); color: var(--accent-ink); }
 .top { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 10px; padding: calc(env(safe-area-inset-top) + 12px) 16px 12px; background: var(--paper-2); border-bottom: 1px solid var(--rule); }
-.mark { flex: 1; font-weight: 700; letter-spacing: 0.02em; font-size: 14px; }
+.mark { flex: 1; font-weight: 800; letter-spacing: 0.08em; font-size: 14px; }
 .stop { display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border: 1px solid var(--rule-strong); border-radius: 8px; background: var(--paper-3); font-weight: 600; }
 .stop:active { transform: translateY(1px); }
 .stop i { width: 10px; height: 10px; border-radius: 2px; background: var(--danger); }
@@ -47,16 +47,16 @@ button { font: inherit; color: inherit; }
 .pad:active { transform: translateY(2px); background: var(--paper-2); box-shadow: inset 0 1px 0 var(--rule-strong); }
 .pad .name { font-weight: 600; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .pad .foot { display: flex; align-items: center; gap: 8px; color: var(--neutral); font: 12px var(--font-mono); font-stretch: 87.5%; }
-.pad .pip { width: 8px; height: 8px; border-radius: 2px; background: var(--led); opacity: 0.45; }
+.pad .pip { width: 8px; height: 8px; border-radius: 2px; background: var(--led); box-shadow: inset 0 0 0 1px var(--rule-strong); }
 .pad.playing { border-color: var(--accent); }
-.pad.playing .pip { opacity: 1; }
+.pad.playing .pip { box-shadow: none; outline: 1px solid var(--led); outline-offset: 1px; }
 .gate { display: grid; place-content: center; gap: 14px; min-height: 80svh; padding: 24px; text-align: center; }
-.gate h1 { margin: 0; font-size: 20px; }
+.gate h1 { margin: 0; font-size: 18px; font-weight: 800; letter-spacing: 0.08em; }
 .gate p { margin: 0; color: var(--neutral); max-width: 32ch; }
 .gate input { width: 100%; height: 52px; border: 1px solid var(--rule-strong); border-radius: 8px; background: var(--well); color: var(--ink); font: 600 24px var(--font-mono); letter-spacing: 0.3em; text-align: center; }
 .gate input:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
 .gate .err { color: var(--danger); min-height: 1.3em; }
-.gate button { height: 48px; border: 1px solid var(--accent); border-radius: 8px; background: var(--accent); color: var(--accent-ink); font-weight: 700; }
+.gate button { height: 48px; border: 1px solid var(--ink); border-radius: 8px; background: var(--ink); color: var(--paper); font-weight: 700; }
 .empty { padding: 32px 16px; color: var(--neutral); }
 .offline { padding: 8px 16px; background: var(--paper-2); color: var(--danger); font-size: 13px; }
 button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -97,12 +97,12 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     const go = async () => {
       pin = input.value.trim();
       try { await refresh(); try { localStorage.setItem("sd.pin", pin); } catch {} }
-      catch (e) { err.textContent = e.pin ? "That PIN didn't match. Check Settings > Phone remote." : e.locked ? "Too many wrong PINs. Wait a minute, then try again." : "Can't reach Sonic Dominion."; }
+      catch (e) { err.textContent = e.pin ? "That PIN didn't match. Check Settings > Phone remote." : e.locked ? "Too many wrong PINs. Wait a minute, then try again." : "Can't reach Sonic Dominion."; }
     };
     input.addEventListener("keydown", (e) => e.key === "Enter" && go());
     root.replaceChildren(el("div", { class: "gate" },
-      el("h1", {}, "Sonic Dominion"),
-      el("p", {}, "Enter the 6-digit PIN shown in Settings > Phone remote on your PC."),
+      el("h1", {}, "SONIC DOMINION"),
+      el("p", {}, "Enter the 6-digit PIN shown in Settings > Phone remote on your PC."),
       input, err, el("button", { onclick: go }, "Connect")));
     input.focus();
   }

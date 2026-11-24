@@ -14,6 +14,7 @@ export function createPads(root, app) {
 
   const title = h("h1");
   const letter = h("span", { class: "title-letter num", hidden: true });
+  const bankKeys = h("div", { class: "bank-keys", role: "group", "aria-label": "Banks" });
   const notice = h("div", { class: "deck-notice" });
   const recBtn = h("button", { class: "btn", type: "button", title: "Record from your mic (Ctrl R)" }, icon("i-record"), "Record");
   recBtn.addEventListener("click", () => app.actions.record());
@@ -37,7 +38,7 @@ export function createPads(root, app) {
     h(
       "div",
       { class: "deck-bar" },
-      h("div", { class: "deck-title" }, letter, title, count),
+      h("div", { class: "deck-title" }, letter, title, count, bankKeys),
       h("div", { class: "deck-tools" }, h("span", { class: "sizes" }, ...sizeBtns), h("span", { class: "sep sizes-sep" }), gridBtn, listBtn, h("span", { class: "sep" }), recBtn, addBtn)
     ),
     notice,
@@ -249,6 +250,21 @@ export function createPads(root, app) {
     letter.hidden = bi < 0;
     letter.textContent = bi < 0 ? "" : bankLetter(bi);
     letter.classList.toggle("active", bi >= 0 && s.activeBank === ui.board);
+    // compact mode: the rail is hidden, so banks get their own keys beside the title
+    bankKeys.replaceChildren(
+      ...(ui.compact && s.folders.length > 1
+        ? s.folders.map((f, i) => {
+            const key = h(
+              "button",
+              { class: "bank-key", type: "button", "aria-pressed": String(s.activeBank === f.id), title: f.name },
+              h("span", { class: "bank-led", "aria-hidden": "true" }),
+              bankLetter(i)
+            );
+            key.addEventListener("click", () => app.actions.setActiveBank(f.id, { show: true }));
+            return key;
+          })
+        : [])
+    );
     const slots = s.slotKeys ? new Map(slotSounds(s, s.activeBank).map((x, i) => [x.id, i + 1])) : new Map();
     count.textContent = ui.query ? `${list.length} of ${s.sounds.length}` : `${list.length}`;
     grid.dataset.size = s.padSize;

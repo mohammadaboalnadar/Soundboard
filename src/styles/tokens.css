@@ -48,7 +48,7 @@
   --color-shadow: oklch(8% 0.01 60 / 0.55);
   --color-scrim: oklch(10% 0.01 60 / 0.6);
 
-  /* pad LEDs — user content colours, used on the edge strip and waveform only */
+  /* pad LEDs — user content colours, used on the pad pip and waveform only */
   --led-amber: oklch(78% 0.14 72);
   --led-ember: oklch(70% 0.15 42);
   --led-rose: oklch(72% 0.13 8);
