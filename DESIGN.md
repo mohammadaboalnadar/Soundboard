@@ -1,84 +1,73 @@
 ---
 name: Sonic Dominion
-description: A dual-output soundboard built like a hardware sampler on your desk.
+description: Every sound is a white-label test pressing you stamped yourself, filed in a crate and spun the second you hit the key.
 colors:
-  paper: "oklch(16% 0.008 60)"
-  paper-2: "oklch(19.5% 0.009 60)"
-  paper-3: "oklch(23% 0.010 60)"
-  paper-4: "oklch(26.5% 0.011 60)"
-  paper-5: "oklch(30% 0.012 60)"
-  well: "oklch(13% 0.007 60)"
-  rule: "oklch(28% 0.010 60)"
-  rule-strong: "oklch(36% 0.011 60)"
-  ink: "oklch(94% 0.007 80)"
-  muted: "oklch(76% 0.008 70)"
-  neutral: "oklch(62% 0.010 65)"
-  faint: "oklch(55% 0.010 60)"
-  accent: "oklch(77% 0.155 64)"
-  accent-ink: "oklch(21% 0.030 60)"
-  accent-soft: "oklch(77% 0.155 64 / 0.14)"
-  focus: "oklch(82% 0.140 64)"
-  danger: "oklch(68% 0.170 28)"
-  danger-soft: "oklch(68% 0.170 28 / 0.14)"
-  ok: "oklch(74% 0.120 150)"
-  led-amber: "oklch(78% 0.14 72)"
-  led-ember: "oklch(70% 0.15 42)"
-  led-rose: "oklch(72% 0.13 8)"
-  led-violet: "oklch(70% 0.12 300)"
-  led-azure: "oklch(72% 0.11 245)"
-  led-teal: "oklch(75% 0.10 190)"
-  led-moss: "oklch(76% 0.12 135)"
-  led-sand: "oklch(80% 0.06 85)"
+  paper: "oklch(14.5% 0.004 70)"
+  paper-2: "oklch(17.5% 0.005 70)"
+  paper-3: "oklch(20.5% 0.006 70)"
+  paper-4: "oklch(24% 0.006 70)"
+  paper-5: "oklch(28% 0.007 70)"
+  well: "oklch(11% 0.004 70)"
+  groove: "oklch(9% 0.003 70)"
+  rule: "oklch(27% 0.006 70)"
+  rule-strong: "oklch(36% 0.007 70)"
+  ink: "oklch(95% 0.004 140)"
+  muted: "oklch(79% 0.006 100)"
+  neutral: "oklch(66% 0.008 80)"
+  faint: "oklch(56% 0.008 75)"
+  label: "oklch(95% 0.004 140)"
+  label-ink: "oklch(16% 0.005 70)"
+  kraft: "oklch(66% 0.075 70)"
+  kraft-2: "oklch(58% 0.07 68)"
+  kraft-ink: "oklch(24% 0.04 60)"
+  accent: "oklch(62% 0.205 28)"
+  accent-ink: "oklch(97% 0.004 140)"
+  accent-soft: "oklch(62% 0.205 28 / 0.16)"
+  focus: "oklch(68% 0.19 28)"
+  danger: "oklch(64% 0.205 28)"
+  danger-soft: "oklch(64% 0.205 28 / 0.14)"
+  ok: "oklch(72% 0.15 150)"
+  led-amber: "oklch(85% 0.165 92)"
+  led-ember: "oklch(72% 0.18 50)"
+  led-rose: "oklch(68% 0.2 358)"
+  led-violet: "oklch(62% 0.18 300)"
+  led-azure: "oklch(62% 0.17 255)"
+  led-teal: "oklch(74% 0.13 190)"
+  led-moss: "oklch(70% 0.17 148)"
+  led-sand: "oklch(87% 0.17 125)"
 typography:
+  display:
+    fontFamily: "Big Shoulders Display, Arial Narrow, sans-serif"
+    fontSize: "2.25rem"
+    fontWeight: 900
+    lineHeight: 0.95
+    letterSpacing: "0.02em"
   headline:
-    fontFamily: "Schibsted Grotesk, Segoe UI Variable Text, system-ui, sans-serif"
-    fontSize: "1.25rem"
-    fontWeight: 600
-    lineHeight: 1.4
-    letterSpacing: "-0.02em"
+    fontFamily: "Big Shoulders Display, Arial Narrow, sans-serif"
+    fontSize: "1.75rem"
+    fontWeight: 900
+    letterSpacing: "0.02em"
   title:
-    fontFamily: "Schibsted Grotesk, Segoe UI Variable Text, system-ui, sans-serif"
-    fontSize: "0.875rem"
-    fontWeight: 600
-    lineHeight: 1.25
-    letterSpacing: "-0.01em"
+    fontFamily: "Big Shoulders Display, Arial Narrow, sans-serif"
+    fontSize: "1.5rem"
+    fontWeight: 900
+    lineHeight: 0.92
+    letterSpacing: "0.01em"
   body:
     fontFamily: "Schibsted Grotesk, Segoe UI Variable Text, system-ui, sans-serif"
     fontSize: "0.875rem"
     fontWeight: 400
     lineHeight: 1.4
-  control:
-    fontFamily: "Schibsted Grotesk, Segoe UI Variable Text, system-ui, sans-serif"
-    fontSize: "0.8125rem"
-    fontWeight: 500
-    lineHeight: 1.4
   label:
-    fontFamily: "Schibsted Grotesk, Segoe UI Variable Text, system-ui, sans-serif"
+    fontFamily: "Martian Mono, Cascadia Mono, ui-monospace, monospace"
     fontSize: "0.75rem"
-    fontWeight: 500
-    lineHeight: 1.4
-  wordmark:
-    fontFamily: "Schibsted Grotesk, Segoe UI Variable Text, system-ui, sans-serif"
-    fontSize: "0.8125rem"
-    fontWeight: 800
-    letterSpacing: "0.08em"
-  data:
-    fontFamily: "Martian Mono, Cascadia Mono, ui-monospace, monospace"
-    fontSize: "0.92em"
-    fontWeight: 400
+    fontWeight: 700
     letterSpacing: "-0.01em"
-    fontFeature: "'tnum' 1"
-    fontVariation: "'wdth' 87.5"
-  keycap:
-    fontFamily: "Martian Mono, Cascadia Mono, ui-monospace, monospace"
-    fontSize: "0.625rem"
-    fontWeight: 400
-    fontFeature: "'tnum' 1"
     fontVariation: "'wdth' 87.5"
 rounded:
-  sm: "4px"
-  md: "6px"
-  lg: "10px"
+  sm: "3px"
+  md: "4px"
+  lg: "8px"
 spacing:
   "1": "4px"
   "2": "8px"
@@ -92,7 +81,7 @@ components:
   button:
     backgroundColor: "{colors.paper-3}"
     textColor: "{colors.ink}"
-    typography: "{typography.control}"
+    typography: "{typography.body}"
     rounded: "{rounded.md}"
     padding: "0 12px"
     height: "30px"
@@ -101,207 +90,205 @@ components:
   button-primary:
     backgroundColor: "{colors.paper-4}"
     textColor: "{colors.ink}"
-    typography: "{typography.control}"
     rounded: "{rounded.md}"
-    padding: "0 12px"
     height: "30px"
   button-primary-hover:
     backgroundColor: "{colors.ink}"
     textColor: "{colors.paper}"
-  button-ghost:
+  stop-all:
     backgroundColor: "transparent"
-    textColor: "{colors.muted}"
+    textColor: "{colors.accent}"
+    typography: "{typography.title}"
     rounded: "{rounded.md}"
-    height: "30px"
+  stop-all-hover:
+    backgroundColor: "{colors.accent-soft}"
+  stop-all-active:
+    backgroundColor: "{colors.accent}"
+    textColor: "{colors.accent-ink}"
   field:
     backgroundColor: "{colors.well}"
     textColor: "{colors.ink}"
     rounded: "{rounded.sm}"
     padding: "0 8px"
     height: "28px"
-  kbd:
-    backgroundColor: "{colors.paper-2}"
-    textColor: "{colors.muted}"
-    typography: "{typography.keycap}"
-    rounded: "{rounded.sm}"
-    padding: "0 5px"
-    height: "18px"
+  bank-divider:
+    backgroundColor: "{colors.kraft}"
+    textColor: "{colors.kraft-ink}"
+    height: "40px"
+  bank-divider-hover:
+    backgroundColor: "{colors.kraft-2}"
+  bank-divider-active:
+    backgroundColor: "{colors.label}"
+    textColor: "{colors.label-ink}"
   pad:
     backgroundColor: "{colors.paper-3}"
     textColor: "{colors.ink}"
-    typography: "{typography.title}"
     rounded: "{rounded.md}"
-    padding: "8px 12px"
-    height: "76px"
-  pad-hover:
-    backgroundColor: "{colors.paper-4}"
+    padding: "12px"
+    height: "112px"
   pad-pressed:
     backgroundColor: "{colors.paper-2}"
-  rail-item:
-    backgroundColor: "transparent"
+  pad-label:
+    backgroundColor: "{colors.label}"
+    textColor: "{colors.label-ink}"
+  pad-label-pressed:
+    backgroundColor: "{colors.accent}"
+    textColor: "{colors.accent-ink}"
+  keycap:
+    backgroundColor: "{colors.paper-2}"
     textColor: "{colors.muted}"
-    rounded: "{rounded.md}"
-    padding: "0 8px"
-    height: "32px"
-  rail-item-current:
-    backgroundColor: "{colors.paper-4}"
-    textColor: "{colors.ink}"
+    rounded: "{rounded.sm}"
+    padding: "0 5px"
+    height: "18px"
   chip:
     backgroundColor: "{colors.paper-3}"
     textColor: "{colors.ink}"
     rounded: "{rounded.sm}"
-    padding: "0 2px 0 8px"
     height: "24px"
-  bank-key:
-    backgroundColor: "{colors.paper-3}"
-    textColor: "{colors.muted}"
-    typography: "{typography.keycap}"
-    rounded: "{rounded.sm}"
-    padding: "0 7px"
-    height: "26px"
 ---
 
 # Design System: Sonic Dominion
 
 ## Overview
 
-**Creative North Star: "The Sampler on the Desk"**
+**Creative North Star: "The White Label Crate"**
 
-Sonic Dominion is a piece of pro-audio hardware rendered in a window. Pads are physical keys with a status row on top (LED pip, numpad slot, length, keycap) and an engraved label at the bottom; banks carry hardware letters with their own LED; numbers, times and keys are set in a narrow monospace like silkscreen on a faceplate. The window is dense and exact, built for a person who sets the board up between sessions and then fires it blind from hotkeys while a game has focus.
+Every sound is a white-label test pressing the user stamped themselves: a black sleeve holding a round white label, filed in a crate of kraft dividers and spun the moment its key is hit. The shell is matte sleeve-black card stock in five weights of board; on it sit three printed materials (cool white label stock, kraft crate brown, one rubber-stamp red) and the user's own saturated cue stickers. Nothing glows and nothing floats; the world is paper, ink and vinyl.
 
-The material is warm graphite: one hue (60) stepped in lightness, with 1px rules doing the structural work. Colour is restrained to a single signal amber that means "live" and nothing else, plus eight low-chroma LED hues that belong to the user's content. Power shows in details (key travel, LED states, tabular numerals, a meter under each fader), never in decoration. The generic card-grid dashboard is the explicit anti-reference.
+The system serves a tool fired mid-game, so density is high and motion is functional. The one continuous motion is the signature: the playing pressing's label turns at 33 1/3 rpm while a red stylus arc tracks progress around the disc. Every state is a printed mark rather than a lighting effect: a hairline ring on hover, an inked label on press, a strike-through when disabled, corner brackets on focus. The world rejects the grey rounded-card soundboard dashboard and the neon gamer panel.
+
+A light theme inverts the sleeves (white sleeves, black labels) while the crate kraft and the stamp red stay put. The phone remote carries the same pressings, dividers and stamp at touch scale.
 
 **Key Characteristics:**
-- Warm graphite surfaces, five elevation steps about 3.5% lightness apart.
-- One amber accent, reserved for live and active state.
-- Grotesk for the interface, narrow Martian Mono for data and keys only.
-- 1px rules and tonal steps for structure; soft shadow only on floating overlays.
-- Small, square-ish corners (4/6/10px); LEDs are 2px-radius squares.
-- Pads behave like keys: a 2px travel on press.
+- Sleeve-black warm-neutral shell (hue 70, chroma under 0.01) layered by board weight, not shadow.
+- Pads are pressings: grooved disc, white label with an SD-nn catalog number, cue-sticker dot, stamped name.
+- Groove band width encodes clip length: the label inset runs from 8% (a blip) to 36% (6 s and longer) of the disc.
+- Banks are kraft divider cards with one dog-eared corner; the active one is pulled forward in label white.
+- Stamp red is a signal, never a decoration.
+- Three voices of type: stamped condensed caps, a plain grotesk for UI, a narrow mono for catalog data.
 
 ## Colors
 
-A single-hue warm graphite ramp with one signal amber and a user-owned set of LED colours.
+A near-black warm sleeve palette with three printed materials and a set of user-owned cue colours.
 
 ### Primary
-- **Signal Amber** (`accent`): the live signal. Wordmark LED while audio runs, playing pad outline and progress bar, active bank LED and letter, current rail icon, meter fill, checked switch, listening key-capture, favourite star, text selection and caret. Its tint (`accent-soft`) backs a checked switch and a drag-drop target. Text on amber uses `accent-ink`.
-- **Focus Amber** (`focus`): a lighter amber used only for the 2px `:focus-visible` ring (offset 2px) and the focused field border.
+- **Rubber-Stamp Red** (accent): the only interface signal. On air (playing pad border, stylus arc), the active bank's letter and LED, the Stop all stamp, the pressed label's ink, the VOID stamp, hotkey conflicts, and focus (via the slightly lighter **Focus Red**). **Danger Red** is the same stamp used for destructive and error states; **Stamp Wash** (accent-soft) is the 16% tint for stamp hover and switch tracks.
+
+### Secondary
+- **Crate Kraft** (kraft): bank divider cards in the rail, compact bank keys and phone bank tabs. **Worn Kraft** (kraft-2) is its hover. **Kraft Ink** (kraft-ink) prints the bank name, letter box and LED ring on kraft.
+
+### Tertiary
+- **Label Stock** (label): the round pad label and the pulled-forward active bank. **Label Ink** (label-ink) prints the catalog number and spindle on it.
 
 ### Neutral
-- **Graphite Paper** (`paper`): the base canvas and the deck behind the pads.
-- **Graphite 2 to 5** (`paper-2` to `paper-5`): elevation by lightness. `paper-2` is chrome (transport, rail, inspector, status strip, sheets); `paper-3` is raised objects (pads, buttons, chips, menus, palette); `paper-4` is hover and current; `paper-5` is pressed/selected inside menus, empty meter and fader tracks.
-- **Well** (`well`): the recessed tone below the canvas. Inputs, segmented controls, the waveform and the pad's key-travel shadow.
-- **Rule / Rule Strong** (`rule`, `rule-strong`): 1px dividers and control outlines. `rule` separates regions; `rule-strong` outlines interactive objects (buttons, keycaps, chips, overlays).
-- **Ink, Muted, Neutral, Faint** (`ink` to `faint`): the four text levels. Ink for names and values; muted for idle controls; neutral for secondary copy and status; faint for counts, paths and group labels.
+- **Sleeve Black** (paper): app background. **paper-2 to paper-5** are heavier boards: inspector and sheets (paper-2), pads, chips and menus (paper-3), toasts and primary buttons (paper-4), menu hover and the vinyl between grooves (paper-5).
+- **Well** (well): recessed input fields and meters. **Groove** (groove): the cut grooves and spindle hole.
+- **Rule** / **Strong Rule** (rule, rule-strong): 1px borders; the strong rule is the hairline hover ring.
+- **Ink, Muted, Neutral, Faint**: text from primary to placeholder; muted carries numpad slots, neutral carries play mode.
+- **Signal Green** (ok): the one positive state.
 
-### Status
-- **Signal Red** (`danger`, `danger-soft`): offline device, clipping meter, hotkey conflict keycap, missing file, recording bar, destructive hover. Never decorative.
-- **Go Green** (`ok`): the push-to-talk / remote active dot in the status strip only.
-
-### Pad LEDs (user content)
-- **Amber, Ember, Rose, Violet, Azure, Teal, Moss, Sand** (`led-*`): eight low-chroma hues the user assigns per pad. They appear on the pad pip, the waveform, the palette row LED, the swatch picker and the status chip pip. Nowhere else.
-
-A light theme (`data-theme="light"`) remaps the same roles onto warm paper (hue 75) with a deeper amber; role assignments do not change.
+### Cue Stickers
+The eight led-* colours are user content: each pad's chosen sticker colour, painted only on the disc's sticker dot, the list-view label and the now-playing chip. Saved settings use eight fixed colour names; the `sand` key is kept for compatibility but renders as lime so it never reads as kraft.
 
 ### Named Rules
-**The One Signal Rule.** Amber means live or active. At rest, with nothing playing or focused, the only amber on screen is the active bank's LED and letter; the wordmark LED and meters light only while audio is running.
+**The One Stamp Rule.** Red is reserved for on air, the active bank, VOID (missing files only), hotkey conflicts, destructive actions and focus. It is never a brand colour, a hover tint on ordinary controls, or a decoration.
 
-**The User's Colour Rule.** LED hues are the user's content, not the interface's palette. They never tint a surface, a border, a button or text.
-
-**The Ink Primary Rule.** The primary action is ink, never amber: it rests outlined in `muted` on `paper-4` and fills with ink on hover.
+**The Sticker Rule.** Cue colours belong to the user's pressings. They never colour chrome, buttons, headings or state.
 
 ## Typography
 
+**Display Font:** Big Shoulders Display (with Arial Narrow)
 **Body Font:** Schibsted Grotesk (with Segoe UI Variable Text, system-ui)
 **Label/Mono Font:** Martian Mono at 87.5% width (with Cascadia Mono, ui-monospace)
 
-**Character:** A crisp contemporary grotesk carries every word of the interface; a condensed monospace appears only where a faceplate would carry silkscreen: durations, dB values, slot numbers, keycaps, bank letters, PINs, paths.
+**Character:** Condensed stamped caps for anything the user named, a quiet grotesk for everything the app says, and a narrow tabular mono for anything a catalog would print.
 
 ### Hierarchy
-- **Headline** (600, 1.25rem, -0.02em): deck title, settings sheet title, empty-state heading. One per region.
-- **Title** (600, 0.875rem, 1.25 line height, -0.01em): the engraved pad label (two-line clamp; one line and 0.8125rem on small pads), settings section heads.
-- **Body** (400, 0.875rem, 1.4): default copy.
-- **Control** (500, 0.8125rem): button and menu labels.
-- **Label** (500, 0.75rem): inspector labels, bus names, status strip, hints. Sentence case, never tracked uppercase.
-- **Wordmark** (800, 0.8125rem, +0.08em): the product name in the transport and on the phone remote. The only tracked, heavy setting.
-- **Data** (Martian Mono, 87.5% width, 0.92em of context, tabular): every number, time and key. **Keycap** is the same face at 0.625rem.
+- **Display** (900, 2.25rem, 0.95): the active bank heading above the pad grid, uppercase.
+- **Headline** (900, 1.75rem): sheet and empty-state headings, uppercase. Inspector clip name uses 800 at 1.625rem.
+- **Title** (900, clamp 1.05rem to 1.5rem by container, 0.92): pad names, uppercase, never broken mid-word; 1.125rem in list and compact views. Stop all, VOID and bank dividers use the same face at 1.0625 to 1.125rem.
+- **Body** (400, 0.875rem, 1.4): all UI copy, buttons (500, 0.8125rem), menus and notices.
+- **Label** (mono 700, 0.5625 to 0.75rem, tabular): SD-nn catalog numbers, N1 to N9 slot marks, lengths, dB, keycaps (0.625rem) and counts.
 
 ### Named Rules
-**The Silkscreen Rule.** Mono is for data and keys only. If a string would change when a clip, key or level changes, it is mono; if it is a word, it is grotesk.
+**The Stamp Is for Names Rule.** Big Shoulders sets user-named things and section heads only (pad, bank, deck, sheet, wordmark, Stop all, VOID). Interface copy stays in Schibsted.
 
-**The Tabular Rule.** Every live number uses tabular figures so meters, timers and counts never shift width.
+**The Catalog Rule.** Any number a record sleeve would print (catalog, slot, time, gain, key) is mono with tabular figures.
 
 ## Layout
 
-A fixed five-region instrument on a CSS grid: transport strip (56px) across the top, rail (224px) left, deck centre, inspector (340px) right, status strip (34px) across the bottom. Density is high and spacing follows a 4pt scale (4, 8, 12, 16, 20, 24, 32, 40px).
+A fixed desktop shell grid: a 56px transport bar across the top, a 232px rail on the left, the deck in the middle, a 340px inspector on the right and a 34px status bar with now-playing chips at the bottom. Spacing is a 4pt scale (4 to 40px).
 
-The pad grid is `auto-fill` with a minimum key width of 168px and a key height of 76px, 8px gaps; small keys are 136 x 62px and large 216 x 104px; list view collapses each key to a 40px ruled row. Below 1240px the buses shrink and drop their numeric readouts; below 1100px the inspector disappears until a pad is selected and pad-size controls hide; below 1080px rail and inspector narrow to 196/300px; below 900px the rail collapses to a 64px icon column.
+The deck is an auto-fill grid of pads in three sizes: S (min 180px wide, 76px tall, 54px disc), M (232 / 112 / 86) and L (280 / 140 / 112), 12px gap. Each pad is a two-column sleeve: disc on the left, then the name over one data row (slot, length, mode, then the keycap pushed right). List view collapses each pad to a 44px row (26px disc, name, keycap, length, gain, mode). Compact always-on-top mode shrinks pads (176 / 84 / 58) and replaces the rail with kraft bank keys.
 
-Compact mode is a single column (transport, deck, status) for an always-on-top window: buses, rail, inspector and pad durations drop away, and lettered bank keys sit beside the title. The phone remote is a sticky top bar (wordmark, Stop all), a horizontally scrolling bank row, and a two-column key grid at 16px gutters with safe-area insets.
+Rail dividers are 40px kraft cards stacked 6px apart; every even card is indented 10px so the crate reads as staggered tabs. The phone remote scrolls its dividers horizontally and stacks pressings in a touch grid (64px disc, 88px min height).
 
 ## Elevation & Depth
 
-Depth is tonal. Each surface is one lightness step above or below its neighbour, separated by 1px rules; content regions never float. Shadows exist in exactly two forms.
+Depth is material, not lift. The shell is flat; surfaces separate by board weight (paper to paper-5) and 1px rules. Pads carry no drop shadow at rest; their only edges are inset hairlines that appear with state. The disc itself is depth by pattern: a repeating radial groove (1.2px groove, 1.2px vinyl). Shadows exist only on things that truly sit above the page.
 
 ### Shadow Vocabulary
-- **Key travel** (`box-shadow: 0 1px 0 var(--color-rule-strong) inset, 0 2px 0 var(--color-well)`): pads only. A lit top edge and a 2px skirt in the well tone; on press the pad translates down 2px and the skirt collapses to 0. Keycaps (`.kbd`) express the same idea with a 2px bottom border.
-- **Overlay lift** (`0 8px 24px` toast, `0 10px 30px` menu, `0 24px 60px` palette, `-16px 0 40px` sheet, all in `--color-shadow`): only for things that float above the instrument, with a scrim behind modal ones.
+- **Hairline ring** (`box-shadow: inset 0 0 0 1px var(--color-rule-strong)`): pad hover.
+- **Ink ring** (`box-shadow: inset 0 0 0 1px var(--color-ink)`): pad pressed.
+- **Sticker cut** (`box-shadow: 0 0 0 2px var(--color-paper-3)`): separates the cue sticker from the disc edge.
+- **Toast** (`box-shadow: 0 8px 24px var(--color-shadow)`), **Menu** (`0 10px 30px`), **Dialog** (`0 24px 60px`), **Sheet** (`-16px 0 40px`): floating layers only.
 
 ### Named Rules
-**The Flat Instrument Rule.** Regions are flat and ruled. A shadow means either "this is a key you press" or "this floats above the board". No glow, no glass, no blur.
+**The Paper Not Light Rule.** No glows, no coloured shadows, no blur. A state shows as ink on paper.
 
 ## Shapes
 
-Corners are small and consistent: 4px for keycaps, fields, chips and swatches; 6px for buttons, pads, rail items, buses, menus and toasts; 10px only for the command palette and drop veil. LEDs, pips and bank LEDs are 2px-radius squares, never circles. Every edge is a 1px rule; the one exception is the keycap's 2px bottom edge. Faders are a 4px track with a 10 x 18px square cap.
+Corners are barely softened card stock: 3px for fields, keycaps, chips and stamps, 4px for buttons and pads, 8px reserved for larger floating layers. Two shapes break the rectangle and carry the world: the circle (disc, label, spindle, cue sticker, bank LED, chip pip) and the crate divider, a card with one dog-eared top-right corner (`3px 14px 3px 3px` in the rail, `3px 10px 3px 3px` for compact keys, `3px 12px 3px 3px` on the phone). The VOID stamp is a 2px red outlined box rotated -14 degrees.
 
 ## Components
 
 ### Buttons
-Tactile and quiet, like panel switches.
-- **Shape:** gently squared (6px), 30px tall, 12px side padding, 1px `rule-strong` outline on `paper-3`.
-- **Hover / Active:** step to `paper-4`; on press move down 1px onto `paper-2`. Transitions 120ms ease-out.
-- **Primary:** `muted` outline on `paper-4`; fills with ink (text turns `paper`) on hover. On the phone PIN gate it rests ink-filled.
-- **Ghost:** no fill or outline, `muted` text, `paper-4` on hover. Icon buttons are 30px square.
-- **Danger:** neutral at rest; red outline, text and tint on hover. Stop all carries a red stop glyph, not a red button.
-- **Toggled** (`aria-pressed`): `paper-5` with ink text.
+Quiet, printed, rectangular.
+- **Shape:** gently cornered (4px), 30px tall, 1px strong rule border.
+- **Default:** paper-3 board, ink text, Schibsted 500.
+- **Primary:** paper-4 board with a muted border; on hover it inverts to an ink slab with sleeve-black text.
+- **Ghost:** transparent, muted text; paper-4 on hover. Icon buttons are 30px square.
+- **Pressed:** drops 1px onto paper-2. **Disabled:** struck through at 60% opacity.
+- **Focus:** 2px Focus Red outline, 2px offset.
 
-### Pads (signature)
-The hardware key. `paper-3` body, 1px `rule`, 6px corners, key-travel shadow. Status row: LED pip (8px), `N1`-style slot, duration, spacer, keycap. Bottom: the engraved name in Title type with the play-mode glyph. Hover steps to `paper-4`; selected takes a `faint` border; playing takes an amber border and a 2px amber progress bar along the bottom edge, and the pip gains a 1px outline in its own LED colour. Missing files drop to `paper-2` with a red "File missing" in place of the duration.
+### Stop All (signature stamp)
+A rubber stamp: 2px red outline, transparent, Big Shoulders 900 uppercase. Hover washes with Stamp Wash; pressed inks solid red with label-white text. Same on the phone remote.
+
+### Crate Dividers (bank navigation)
+Kraft cards with a dog-eared corner, stamped uppercase bank names, a 24px kraft-ink letter box and a hollow LED ring. Hover darkens to Worn Kraft. The active bank pulls forward in Label Stock with label-ink text, its letter box and LED turned stamp red. A drop target shows a 2px inset red ring.
+
+### Pressings (pads)
+The core component.
+- **Sleeve:** paper-3, 4px corners, 12px padding, no rest shadow.
+- **Disc:** grooved circle; the white label's inset is `8% + min(1, seconds / 6) × 28%`, so the groove band encodes clip length. The label carries an `SD-nn` mono catalog number (hidden at S and compact) and a groove-coloured spindle; the cue sticker sits on the lower right rim.
+- **Name and data row:** stamped uppercase name, then mono slot (N1 to N9, muted), length, mode (neutral) and the keycap.
+- **States:** hover shows a hairline ring; press drops 1px, rings in ink and inks the label stamp red; selected takes a muted border; on air takes a red border, the label spins at one turn per 1.8s, and a 3px red conic stylus arc grows around the disc. Reduced motion stops the spin; the arc still tracks.
+- **Focus:** four 12px by 2px Focus Red corner brackets inset 3px from the corners.
+- **Missing:** paper-2, neutral name, "File missing" in the data row, and a red VOID stamp low on the label until the pad is opened.
 
 ### Keycaps
-18px tall, mono keycap type, `paper-2` on a 1px `rule-strong` border with a 2px bottom edge, 4px corners. A conflicting hotkey turns border and text red.
+Mono 0.625rem on paper-2 with a 2px bottom border, 3px corners, 18px tall. A conflicting hotkey turns border and text red.
 
 ### Inputs / Fields
-- **Style:** recessed `well` fill, 1px `rule`, 4px corners, 28px tall.
-- **Focus:** border becomes `focus` amber with a 1px matching ring.
-- **Error:** red border (`aria-invalid`). Numeric fields right-align in mono.
-- **Fader:** 4px track filled in `muted` up to the value over `paper-5`, ink square cap; a 2px meter runs beneath bus faders (amber, red when hot).
-- **Switch:** 30 x 18px pill; checked is amber outline on amber tint with an amber knob.
-- **Segmented:** `well` tray with 2px inset; the checked segment is `paper-4` with a 1px `rule-strong` underline.
+- **Style:** recessed well, 1px rule, 3px corners, 28px tall; numeric fields right-aligned mono.
+- **Focus:** border and a 1px ring in Focus Red. **Invalid:** red border. Caret is stamp red.
 
-### Navigation (rail)
-32px rows, 6px corners, `muted` text. Hover `paper-3`; current `paper-4` with ink text and an amber icon. Banks lead with a 20 x 18px lettered plate and a 6px LED; the active bank lights both in amber. Group labels are faint 0.6875rem sentence case with a mono key hint. In compact mode the same letters become 26px bank keys beside the deck title.
-
-### Chips (status strip)
-Now-playing chips: 24px, `paper-3`, `rule-strong` border, 4px corners, LED pip, name, 20px stop button. They rise in over 220ms.
-
-### Overlays
-Menus, palette and toasts sit on `paper-3`/`paper-4` with a `rule-strong` border and overlay lift; menus and palette pop from 97% scale over 220ms; the settings sheet slides 24px in from the right over 420ms. Reduced motion clamps every animation to a 150ms fade and removes key travel.
+### Chips (now playing)
+24px paper-3 chips with a strong rule, a round cue-sticker pip, the clip name and a stop control.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** step surfaces by lightness on hue 60 (`paper` to `paper-5`) and separate regions with 1px `rule`.
-- **Do** reserve amber for playing, active bank, focus, listening and checked states.
-- **Do** set every number, time, slot and key in Martian Mono at 87.5% width with tabular figures.
-- **Do** build new pads and key-like controls with the status-row-on-top, label-at-bottom anatomy and 2px key travel.
-- **Do** draw LEDs as 8px (pads) or 6px (banks) squares with 2px corners.
-- **Do** keep corners on the 4/6/10px scale.
+- **Do** print every state as a mark: hairline ring (hover), inked label (press), strike-through (disabled), corner brackets or a 2px red outline (focus).
+- **Do** keep stamp red to on air, active bank, VOID, conflicts, destructive actions and focus.
+- **Do** set user-named things in Big Shoulders uppercase and catalog data in tabular Martian Mono.
+- **Do** derive the label inset from clip length (8% to 36% of the disc); never fix it per pad.
+- **Do** keep the label spin at 33 1/3 (1.8s per turn) and only while the pressing is on air; stop it under reduced motion.
+- **Do** separate surfaces by board weight and 1px rules.
 
 ### Don't:
-- **Don't** make the primary action amber; primary is ink.
-- **Don't** use LED hues on surfaces, borders, buttons or text.
-- **Don't** add glow, glassmorphism or blur, or decorative gradients; hard-stop gradients that draw a select chevron or a fader fill are fine.
-- **Don't** float content regions with shadows; shadow is for keys and overlays only.
-- **Don't** set words in mono or set labels in tracked uppercase; only the wordmark is tracked.
-- **Don't** fall back to a generic card-grid dashboard look: pads are keys, not cards.
+- **Don't** use cue-sticker colours for chrome, headings or state; they belong to the user's pads.
+- **Don't** add glows, coloured shadows, blur or drop shadows on resting pads.
+- **Don't** stamp VOID on anything but a pressing that cannot play.
+- **Don't** set interface copy, labels or helper text in the stamp face.
+- **Don't** round pads or buttons beyond 4px or turn the crate dividers into pills.

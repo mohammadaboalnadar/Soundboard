@@ -1,170 +1,757 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-24T00:00:00Z",
+  "generatedAt": "2026-11-24T14:45:30.920Z",
   "title": "Design System: Sonic Dominion",
   "extensions": {
     "colorMeta": {
-      "paper": { "role": "neutral", "displayName": "Graphite Paper", "canonical": "oklch(16% 0.008 60)", "tonalRamp": ["oklch(13% 0.007 60)", "oklch(16% 0.008 60)", "oklch(19.5% 0.009 60)", "oklch(23% 0.010 60)", "oklch(26.5% 0.011 60)", "oklch(30% 0.012 60)", "oklch(36% 0.011 60)", "oklch(55% 0.010 60)"] },
-      "paper-2": { "role": "neutral", "displayName": "Graphite 2 (chrome)", "canonical": "oklch(19.5% 0.009 60)" },
-      "paper-3": { "role": "neutral", "displayName": "Graphite 3 (raised)", "canonical": "oklch(23% 0.010 60)" },
-      "paper-4": { "role": "neutral", "displayName": "Graphite 4 (hover/current)", "canonical": "oklch(26.5% 0.011 60)" },
-      "paper-5": { "role": "neutral", "displayName": "Graphite 5 (pressed/track)", "canonical": "oklch(30% 0.012 60)" },
-      "well": { "role": "neutral", "displayName": "Well", "canonical": "oklch(13% 0.007 60)" },
-      "rule": { "role": "neutral", "displayName": "Rule", "canonical": "oklch(28% 0.010 60)" },
-      "rule-strong": { "role": "neutral", "displayName": "Rule Strong", "canonical": "oklch(36% 0.011 60)" },
-      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "oklch(94% 0.007 80)", "tonalRamp": ["oklch(55% 0.010 60)", "oklch(62% 0.010 65)", "oklch(70% 0.009 68)", "oklch(76% 0.008 70)", "oklch(82% 0.008 74)", "oklch(88% 0.007 77)", "oklch(94% 0.007 80)", "oklch(97% 0.005 80)"] },
-      "muted": { "role": "neutral", "displayName": "Muted", "canonical": "oklch(76% 0.008 70)" },
-      "neutral": { "role": "neutral", "displayName": "Neutral", "canonical": "oklch(62% 0.010 65)" },
-      "faint": { "role": "neutral", "displayName": "Faint", "canonical": "oklch(55% 0.010 60)" },
-      "accent": { "role": "primary", "displayName": "Signal Amber", "canonical": "oklch(77% 0.155 64)", "tonalRamp": ["oklch(21% 0.030 60)", "oklch(32% 0.070 62)", "oklch(45% 0.110 63)", "oklch(58% 0.140 63)", "oklch(68% 0.155 64)", "oklch(77% 0.155 64)", "oklch(86% 0.110 66)", "oklch(94% 0.050 70)"] },
-      "accent-ink": { "role": "primary", "displayName": "Amber Ink", "canonical": "oklch(21% 0.030 60)" },
-      "accent-soft": { "role": "primary", "displayName": "Amber Tint", "canonical": "oklch(77% 0.155 64 / 0.14)" },
-      "focus": { "role": "primary", "displayName": "Focus Amber", "canonical": "oklch(82% 0.140 64)" },
-      "danger": { "role": "status", "displayName": "Signal Red", "canonical": "oklch(68% 0.170 28)", "tonalRamp": ["oklch(22% 0.050 28)", "oklch(32% 0.090 28)", "oklch(44% 0.130 28)", "oklch(56% 0.160 28)", "oklch(68% 0.170 28)", "oklch(78% 0.120 28)", "oklch(87% 0.070 28)", "oklch(95% 0.025 28)"] },
-      "danger-soft": { "role": "status", "displayName": "Red Tint", "canonical": "oklch(68% 0.170 28 / 0.14)" },
-      "ok": { "role": "status", "displayName": "Go Green", "canonical": "oklch(74% 0.120 150)" },
-      "led-amber": { "role": "content", "displayName": "LED Amber", "canonical": "oklch(78% 0.14 72)" },
-      "led-ember": { "role": "content", "displayName": "LED Ember", "canonical": "oklch(70% 0.15 42)" },
-      "led-rose": { "role": "content", "displayName": "LED Rose", "canonical": "oklch(72% 0.13 8)" },
-      "led-violet": { "role": "content", "displayName": "LED Violet", "canonical": "oklch(70% 0.12 300)" },
-      "led-azure": { "role": "content", "displayName": "LED Azure", "canonical": "oklch(72% 0.11 245)" },
-      "led-teal": { "role": "content", "displayName": "LED Teal", "canonical": "oklch(75% 0.10 190)" },
-      "led-moss": { "role": "content", "displayName": "LED Moss", "canonical": "oklch(76% 0.12 135)" },
-      "led-sand": { "role": "content", "displayName": "LED Sand", "canonical": "oklch(80% 0.06 85)" }
+      "paper": {
+        "role": "neutral",
+        "displayName": "Sleeve Black",
+        "canonical": "oklch(14.5% 0.004 70)",
+        "tonalRamp": [
+          "oklch(15% 0.001 70)",
+          "oklch(25% 0.002 70)",
+          "oklch(35% 0.004 70)",
+          "oklch(45% 0.004 70)",
+          "oklch(55% 0.004 70)",
+          "oklch(70% 0.004 70)",
+          "oklch(85% 0.002 70)",
+          "oklch(95% 0.001 70)"
+        ]
+      },
+      "paper-2": {
+        "role": "neutral",
+        "displayName": "Sleeve Board 2",
+        "canonical": "oklch(17.5% 0.005 70)",
+        "tonalRamp": [
+          "oklch(15% 0.001 70)",
+          "oklch(25% 0.003 70)",
+          "oklch(35% 0.005 70)",
+          "oklch(45% 0.005 70)",
+          "oklch(55% 0.005 70)",
+          "oklch(70% 0.005 70)",
+          "oklch(85% 0.003 70)",
+          "oklch(95% 0.001 70)"
+        ]
+      },
+      "paper-3": {
+        "role": "neutral",
+        "displayName": "Sleeve Board 3",
+        "canonical": "oklch(20.5% 0.006 70)",
+        "tonalRamp": [
+          "oklch(15% 0.001 70)",
+          "oklch(25% 0.004 70)",
+          "oklch(35% 0.006 70)",
+          "oklch(45% 0.006 70)",
+          "oklch(55% 0.006 70)",
+          "oklch(70% 0.006 70)",
+          "oklch(85% 0.004 70)",
+          "oklch(95% 0.001 70)"
+        ]
+      },
+      "paper-4": {
+        "role": "neutral",
+        "displayName": "Sleeve Board 4",
+        "canonical": "oklch(24% 0.006 70)",
+        "tonalRamp": [
+          "oklch(15% 0.001 70)",
+          "oklch(25% 0.004 70)",
+          "oklch(35% 0.006 70)",
+          "oklch(45% 0.006 70)",
+          "oklch(55% 0.006 70)",
+          "oklch(70% 0.006 70)",
+          "oklch(85% 0.004 70)",
+          "oklch(95% 0.001 70)"
+        ]
+      },
+      "paper-5": {
+        "role": "neutral",
+        "displayName": "Vinyl",
+        "canonical": "oklch(28% 0.007 70)",
+        "tonalRamp": [
+          "oklch(15% 0.001 70)",
+          "oklch(25% 0.004 70)",
+          "oklch(35% 0.007 70)",
+          "oklch(45% 0.007 70)",
+          "oklch(55% 0.007 70)",
+          "oklch(70% 0.007 70)",
+          "oklch(85% 0.004 70)",
+          "oklch(95% 0.001 70)"
+        ]
+      },
+      "well": {
+        "role": "neutral",
+        "displayName": "Well",
+        "canonical": "oklch(11% 0.004 70)",
+        "tonalRamp": [
+          "oklch(15% 0.001 70)",
+          "oklch(25% 0.002 70)",
+          "oklch(35% 0.004 70)",
+          "oklch(45% 0.004 70)",
+          "oklch(55% 0.004 70)",
+          "oklch(70% 0.004 70)",
+          "oklch(85% 0.002 70)",
+          "oklch(95% 0.001 70)"
+        ]
+      },
+      "groove": {
+        "role": "neutral",
+        "displayName": "Groove",
+        "canonical": "oklch(9% 0.003 70)",
+        "tonalRamp": [
+          "oklch(15% 0.001 70)",
+          "oklch(25% 0.002 70)",
+          "oklch(35% 0.003 70)",
+          "oklch(45% 0.003 70)",
+          "oklch(55% 0.003 70)",
+          "oklch(70% 0.003 70)",
+          "oklch(85% 0.002 70)",
+          "oklch(95% 0.001 70)"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Rule",
+        "canonical": "oklch(27% 0.006 70)",
+        "tonalRamp": [
+          "oklch(15% 0.001 70)",
+          "oklch(25% 0.004 70)",
+          "oklch(35% 0.006 70)",
+          "oklch(45% 0.006 70)",
+          "oklch(55% 0.006 70)",
+          "oklch(70% 0.006 70)",
+          "oklch(85% 0.004 70)",
+          "oklch(95% 0.001 70)"
+        ]
+      },
+      "rule-strong": {
+        "role": "neutral",
+        "displayName": "Strong Rule",
+        "canonical": "oklch(36% 0.007 70)",
+        "tonalRamp": [
+          "oklch(15% 0.001 70)",
+          "oklch(25% 0.004 70)",
+          "oklch(35% 0.007 70)",
+          "oklch(45% 0.007 70)",
+          "oklch(55% 0.007 70)",
+          "oklch(70% 0.007 70)",
+          "oklch(85% 0.004 70)",
+          "oklch(95% 0.001 70)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "oklch(95% 0.004 140)",
+        "tonalRamp": [
+          "oklch(15% 0.001 140)",
+          "oklch(25% 0.002 140)",
+          "oklch(35% 0.004 140)",
+          "oklch(45% 0.004 140)",
+          "oklch(55% 0.004 140)",
+          "oklch(70% 0.004 140)",
+          "oklch(85% 0.002 140)",
+          "oklch(95% 0.001 140)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted",
+        "canonical": "oklch(79% 0.006 100)",
+        "tonalRamp": [
+          "oklch(15% 0.001 100)",
+          "oklch(25% 0.004 100)",
+          "oklch(35% 0.006 100)",
+          "oklch(45% 0.006 100)",
+          "oklch(55% 0.006 100)",
+          "oklch(70% 0.006 100)",
+          "oklch(85% 0.004 100)",
+          "oklch(95% 0.001 100)"
+        ]
+      },
+      "neutral": {
+        "role": "neutral",
+        "displayName": "Neutral",
+        "canonical": "oklch(66% 0.008 80)",
+        "tonalRamp": [
+          "oklch(15% 0.002 80)",
+          "oklch(25% 0.005 80)",
+          "oklch(35% 0.008 80)",
+          "oklch(45% 0.008 80)",
+          "oklch(55% 0.008 80)",
+          "oklch(70% 0.008 80)",
+          "oklch(85% 0.005 80)",
+          "oklch(95% 0.002 80)"
+        ]
+      },
+      "faint": {
+        "role": "neutral",
+        "displayName": "Faint",
+        "canonical": "oklch(56% 0.008 75)",
+        "tonalRamp": [
+          "oklch(15% 0.002 75)",
+          "oklch(25% 0.005 75)",
+          "oklch(35% 0.008 75)",
+          "oklch(45% 0.008 75)",
+          "oklch(55% 0.008 75)",
+          "oklch(70% 0.008 75)",
+          "oklch(85% 0.005 75)",
+          "oklch(95% 0.002 75)"
+        ]
+      },
+      "label": {
+        "role": "tertiary",
+        "displayName": "Label Stock",
+        "canonical": "oklch(95% 0.004 140)",
+        "tonalRamp": [
+          "oklch(15% 0.001 140)",
+          "oklch(25% 0.002 140)",
+          "oklch(35% 0.004 140)",
+          "oklch(45% 0.004 140)",
+          "oklch(55% 0.004 140)",
+          "oklch(70% 0.004 140)",
+          "oklch(85% 0.002 140)",
+          "oklch(95% 0.001 140)"
+        ]
+      },
+      "label-ink": {
+        "role": "tertiary",
+        "displayName": "Label Ink",
+        "canonical": "oklch(16% 0.005 70)",
+        "tonalRamp": [
+          "oklch(15% 0.001 70)",
+          "oklch(25% 0.003 70)",
+          "oklch(35% 0.005 70)",
+          "oklch(45% 0.005 70)",
+          "oklch(55% 0.005 70)",
+          "oklch(70% 0.005 70)",
+          "oklch(85% 0.003 70)",
+          "oklch(95% 0.001 70)"
+        ]
+      },
+      "kraft": {
+        "role": "secondary",
+        "displayName": "Crate Kraft",
+        "canonical": "oklch(66% 0.075 70)",
+        "tonalRamp": [
+          "oklch(15% 0.015 70)",
+          "oklch(25% 0.045 70)",
+          "oklch(35% 0.075 70)",
+          "oklch(45% 0.075 70)",
+          "oklch(55% 0.075 70)",
+          "oklch(70% 0.075 70)",
+          "oklch(85% 0.045 70)",
+          "oklch(95% 0.015 70)"
+        ]
+      },
+      "kraft-2": {
+        "role": "secondary",
+        "displayName": "Worn Kraft",
+        "canonical": "oklch(58% 0.07 68)",
+        "tonalRamp": [
+          "oklch(15% 0.014 68)",
+          "oklch(25% 0.042 68)",
+          "oklch(35% 0.070 68)",
+          "oklch(45% 0.070 68)",
+          "oklch(55% 0.070 68)",
+          "oklch(70% 0.070 68)",
+          "oklch(85% 0.042 68)",
+          "oklch(95% 0.014 68)"
+        ]
+      },
+      "kraft-ink": {
+        "role": "secondary",
+        "displayName": "Kraft Ink",
+        "canonical": "oklch(24% 0.04 60)",
+        "tonalRamp": [
+          "oklch(15% 0.008 60)",
+          "oklch(25% 0.024 60)",
+          "oklch(35% 0.040 60)",
+          "oklch(45% 0.040 60)",
+          "oklch(55% 0.040 60)",
+          "oklch(70% 0.040 60)",
+          "oklch(85% 0.024 60)",
+          "oklch(95% 0.008 60)"
+        ]
+      },
+      "accent": {
+        "role": "primary",
+        "displayName": "Rubber-Stamp Red",
+        "canonical": "oklch(62% 0.205 28)",
+        "tonalRamp": [
+          "oklch(15% 0.041 28)",
+          "oklch(25% 0.123 28)",
+          "oklch(35% 0.205 28)",
+          "oklch(45% 0.205 28)",
+          "oklch(55% 0.205 28)",
+          "oklch(70% 0.205 28)",
+          "oklch(85% 0.123 28)",
+          "oklch(95% 0.041 28)"
+        ]
+      },
+      "accent-ink": {
+        "role": "primary",
+        "displayName": "Stamp Paper",
+        "canonical": "oklch(97% 0.004 140)",
+        "tonalRamp": [
+          "oklch(15% 0.001 140)",
+          "oklch(25% 0.002 140)",
+          "oklch(35% 0.004 140)",
+          "oklch(45% 0.004 140)",
+          "oklch(55% 0.004 140)",
+          "oklch(70% 0.004 140)",
+          "oklch(85% 0.002 140)",
+          "oklch(95% 0.001 140)"
+        ]
+      },
+      "accent-soft": {
+        "role": "primary",
+        "displayName": "Stamp Wash",
+        "canonical": "oklch(62% 0.205 28 / 0.16)",
+        "tonalRamp": [
+          "oklch(15% 0.041 28)",
+          "oklch(25% 0.123 28)",
+          "oklch(35% 0.205 28)",
+          "oklch(45% 0.205 28)",
+          "oklch(55% 0.205 28)",
+          "oklch(70% 0.205 28)",
+          "oklch(85% 0.123 28)",
+          "oklch(95% 0.041 28)"
+        ]
+      },
+      "focus": {
+        "role": "primary",
+        "displayName": "Focus Red",
+        "canonical": "oklch(68% 0.19 28)",
+        "tonalRamp": [
+          "oklch(15% 0.038 28)",
+          "oklch(25% 0.114 28)",
+          "oklch(35% 0.190 28)",
+          "oklch(45% 0.190 28)",
+          "oklch(55% 0.190 28)",
+          "oklch(70% 0.190 28)",
+          "oklch(85% 0.114 28)",
+          "oklch(95% 0.038 28)"
+        ]
+      },
+      "danger": {
+        "role": "primary",
+        "displayName": "Danger Red",
+        "canonical": "oklch(64% 0.205 28)",
+        "tonalRamp": [
+          "oklch(15% 0.041 28)",
+          "oklch(25% 0.123 28)",
+          "oklch(35% 0.205 28)",
+          "oklch(45% 0.205 28)",
+          "oklch(55% 0.205 28)",
+          "oklch(70% 0.205 28)",
+          "oklch(85% 0.123 28)",
+          "oklch(95% 0.041 28)"
+        ]
+      },
+      "danger-soft": {
+        "role": "primary",
+        "displayName": "Danger Wash",
+        "canonical": "oklch(64% 0.205 28 / 0.14)",
+        "tonalRamp": [
+          "oklch(15% 0.041 28)",
+          "oklch(25% 0.123 28)",
+          "oklch(35% 0.205 28)",
+          "oklch(45% 0.205 28)",
+          "oklch(55% 0.205 28)",
+          "oklch(70% 0.205 28)",
+          "oklch(85% 0.123 28)",
+          "oklch(95% 0.041 28)"
+        ]
+      },
+      "ok": {
+        "role": "neutral",
+        "displayName": "Signal Green",
+        "canonical": "oklch(72% 0.15 150)",
+        "tonalRamp": [
+          "oklch(15% 0.030 150)",
+          "oklch(25% 0.090 150)",
+          "oklch(35% 0.150 150)",
+          "oklch(45% 0.150 150)",
+          "oklch(55% 0.150 150)",
+          "oklch(70% 0.150 150)",
+          "oklch(85% 0.090 150)",
+          "oklch(95% 0.030 150)"
+        ]
+      },
+      "led-amber": {
+        "role": "cue",
+        "displayName": "Cue Amber",
+        "canonical": "oklch(85% 0.165 92)",
+        "tonalRamp": [
+          "oklch(15% 0.033 92)",
+          "oklch(25% 0.099 92)",
+          "oklch(35% 0.165 92)",
+          "oklch(45% 0.165 92)",
+          "oklch(55% 0.165 92)",
+          "oklch(70% 0.165 92)",
+          "oklch(85% 0.099 92)",
+          "oklch(95% 0.033 92)"
+        ]
+      },
+      "led-ember": {
+        "role": "cue",
+        "displayName": "Cue Ember",
+        "canonical": "oklch(72% 0.18 50)",
+        "tonalRamp": [
+          "oklch(15% 0.036 50)",
+          "oklch(25% 0.108 50)",
+          "oklch(35% 0.180 50)",
+          "oklch(45% 0.180 50)",
+          "oklch(55% 0.180 50)",
+          "oklch(70% 0.180 50)",
+          "oklch(85% 0.108 50)",
+          "oklch(95% 0.036 50)"
+        ]
+      },
+      "led-rose": {
+        "role": "cue",
+        "displayName": "Cue Rose",
+        "canonical": "oklch(68% 0.2 358)",
+        "tonalRamp": [
+          "oklch(15% 0.040 358)",
+          "oklch(25% 0.120 358)",
+          "oklch(35% 0.200 358)",
+          "oklch(45% 0.200 358)",
+          "oklch(55% 0.200 358)",
+          "oklch(70% 0.200 358)",
+          "oklch(85% 0.120 358)",
+          "oklch(95% 0.040 358)"
+        ]
+      },
+      "led-violet": {
+        "role": "cue",
+        "displayName": "Cue Violet",
+        "canonical": "oklch(62% 0.18 300)",
+        "tonalRamp": [
+          "oklch(15% 0.036 300)",
+          "oklch(25% 0.108 300)",
+          "oklch(35% 0.180 300)",
+          "oklch(45% 0.180 300)",
+          "oklch(55% 0.180 300)",
+          "oklch(70% 0.180 300)",
+          "oklch(85% 0.108 300)",
+          "oklch(95% 0.036 300)"
+        ]
+      },
+      "led-azure": {
+        "role": "cue",
+        "displayName": "Cue Azure",
+        "canonical": "oklch(62% 0.17 255)",
+        "tonalRamp": [
+          "oklch(15% 0.034 255)",
+          "oklch(25% 0.102 255)",
+          "oklch(35% 0.170 255)",
+          "oklch(45% 0.170 255)",
+          "oklch(55% 0.170 255)",
+          "oklch(70% 0.170 255)",
+          "oklch(85% 0.102 255)",
+          "oklch(95% 0.034 255)"
+        ]
+      },
+      "led-teal": {
+        "role": "cue",
+        "displayName": "Cue Teal",
+        "canonical": "oklch(74% 0.13 190)",
+        "tonalRamp": [
+          "oklch(15% 0.026 190)",
+          "oklch(25% 0.078 190)",
+          "oklch(35% 0.130 190)",
+          "oklch(45% 0.130 190)",
+          "oklch(55% 0.130 190)",
+          "oklch(70% 0.130 190)",
+          "oklch(85% 0.078 190)",
+          "oklch(95% 0.026 190)"
+        ]
+      },
+      "led-moss": {
+        "role": "cue",
+        "displayName": "Cue Moss",
+        "canonical": "oklch(70% 0.17 148)",
+        "tonalRamp": [
+          "oklch(15% 0.034 148)",
+          "oklch(25% 0.102 148)",
+          "oklch(35% 0.170 148)",
+          "oklch(45% 0.170 148)",
+          "oklch(55% 0.170 148)",
+          "oklch(70% 0.170 148)",
+          "oklch(85% 0.102 148)",
+          "oklch(95% 0.034 148)"
+        ]
+      },
+      "led-sand": {
+        "role": "cue",
+        "displayName": "Cue Lime (sand key)",
+        "canonical": "oklch(87% 0.17 125)",
+        "tonalRamp": [
+          "oklch(15% 0.034 125)",
+          "oklch(25% 0.102 125)",
+          "oklch(35% 0.170 125)",
+          "oklch(45% 0.170 125)",
+          "oklch(55% 0.170 125)",
+          "oklch(70% 0.170 125)",
+          "oklch(85% 0.102 125)",
+          "oklch(95% 0.034 125)"
+        ]
+      }
     },
     "typographyMeta": {
-      "headline": { "displayName": "Headline", "purpose": "Deck title, settings sheet title, empty-state heading." },
-      "title": { "displayName": "Title", "purpose": "Engraved pad label and settings section heads." },
-      "body": { "displayName": "Body", "purpose": "Default interface copy." },
-      "control": { "displayName": "Control", "purpose": "Button and menu labels." },
-      "label": { "displayName": "Label", "purpose": "Inspector labels, bus names, status strip, hints; sentence case." },
-      "wordmark": { "displayName": "Wordmark", "purpose": "Product name only; the one tracked, heavy setting." },
-      "data": { "displayName": "Data", "purpose": "Every number, time, slot, dB value and path, tabular." },
-      "keycap": { "displayName": "Keycap", "purpose": "Hotkey keycaps, numpad slots, bank letters." }
+      "display": {
+        "displayName": "Stamped Display",
+        "purpose": "Active bank heading over the pad grid; uppercase."
+      },
+      "headline": {
+        "displayName": "Stamped Headline",
+        "purpose": "Sheet and empty-state headings; uppercase."
+      },
+      "title": {
+        "displayName": "Stamped Name",
+        "purpose": "Pad names (container-clamped 1.05 to 1.5rem), Stop all, VOID, bank dividers."
+      },
+      "body": {
+        "displayName": "UI Body",
+        "purpose": "All interface copy, buttons and menus."
+      },
+      "label": {
+        "displayName": "Catalog Mono",
+        "purpose": "Catalog numbers, slots, lengths, dB, keycaps; tabular, 87.5% width."
+      }
     },
     "shadows": [
-      { "name": "key-travel", "value": "0 1px 0 var(--color-rule-strong) inset, 0 2px 0 var(--color-well)", "purpose": "Pads only: lit top edge and 2px skirt that collapses when the key is pressed (translateY 2px)." },
-      { "name": "toast", "value": "0 8px 24px var(--color-shadow)", "purpose": "Toasts floating above the status strip." },
-      { "name": "menu", "value": "0 10px 30px var(--color-shadow)", "purpose": "Context menus." },
-      { "name": "palette", "value": "0 24px 60px var(--color-shadow)", "purpose": "Command palette over a scrim." },
-      { "name": "sheet", "value": "-16px 0 40px var(--color-shadow)", "purpose": "Settings sheet sliding in from the right." }
+      {
+        "name": "hairline-ring",
+        "value": "inset 0 0 0 1px var(--color-rule-strong)",
+        "purpose": "Pad hover mark."
+      },
+      {
+        "name": "ink-ring",
+        "value": "inset 0 0 0 1px var(--color-ink)",
+        "purpose": "Pad pressed mark."
+      },
+      {
+        "name": "sticker-cut",
+        "value": "0 0 0 2px var(--color-paper-3)",
+        "purpose": "Separates the cue sticker from the disc rim."
+      },
+      {
+        "name": "toast",
+        "value": "0 8px 24px var(--color-shadow)",
+        "purpose": "Toasts."
+      },
+      {
+        "name": "menu",
+        "value": "0 10px 30px var(--color-shadow)",
+        "purpose": "Context menus."
+      },
+      {
+        "name": "dialog",
+        "value": "0 24px 60px var(--color-shadow)",
+        "purpose": "Command palette."
+      },
+      {
+        "name": "sheet",
+        "value": "-16px 0 40px var(--color-shadow)",
+        "purpose": "Right-edge sheets."
+      }
     ],
     "motion": [
-      { "name": "ease-out", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Default for every state change and entrance." },
-      { "name": "ease-in", "value": "cubic-bezier(0.7, 0, 0.84, 0)", "purpose": "Exits (toast leaving)." },
-      { "name": "ease-in-out", "value": "cubic-bezier(0.65, 0, 0.35, 1)", "purpose": "Reserved for symmetric moves." },
-      { "name": "dur-micro", "value": "120ms", "purpose": "Hover, press, LED and colour changes." },
-      { "name": "dur-short", "value": "220ms", "purpose": "Chip rise, menu and palette pop, switch knob." },
-      { "name": "dur-long", "value": "420ms", "purpose": "Settings sheet slide-in." },
-      { "name": "reduced-motion", "value": "150ms fades, no key travel", "purpose": "prefers-reduced-motion clamps all animation." }
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Default for state changes and entrances."
+      },
+      {
+        "name": "ease-in",
+        "value": "cubic-bezier(0.7, 0, 0.84, 0)",
+        "purpose": "Exits (toast leaving)."
+      },
+      {
+        "name": "ease-in-out",
+        "value": "cubic-bezier(0.65, 0, 0.35, 1)",
+        "purpose": "Symmetric moves."
+      },
+      {
+        "name": "dur-micro",
+        "value": "120ms",
+        "purpose": "Hover, press, border changes."
+      },
+      {
+        "name": "dur-short",
+        "value": "220ms",
+        "purpose": "Chips, toasts, menus appearing."
+      },
+      {
+        "name": "dur-long",
+        "value": "420ms",
+        "purpose": "Sheet slide-in."
+      },
+      {
+        "name": "rpm",
+        "value": "1.8s linear infinite",
+        "purpose": "One label turn at 33 1/3 while a pressing is on air; off under reduced motion."
+      }
     ],
-    "breakpoints": [
-      { "name": "buses-shrink", "value": "1240px" },
-      { "name": "inspector-on-select", "value": "1100px" },
-      { "name": "narrow-columns", "value": "1080px" },
-      { "name": "icon-rail", "value": "900px" }
-    ]
+    "layout": [
+      {
+        "name": "rail-w",
+        "value": "232px"
+      },
+      {
+        "name": "inspector-w",
+        "value": "340px"
+      },
+      {
+        "name": "transport-h",
+        "value": "56px"
+      },
+      {
+        "name": "status-h",
+        "value": "34px"
+      },
+      {
+        "name": "pad-s",
+        "value": "min 180px / 76px tall / 54px disc"
+      },
+      {
+        "name": "pad-m",
+        "value": "min 232px / 112px tall / 86px disc"
+      },
+      {
+        "name": "pad-l",
+        "value": "min 280px / 140px tall / 112px disc"
+      },
+      {
+        "name": "groove",
+        "value": "label inset = 8% + min(1, seconds / 6) * 28%"
+      }
+    ],
+    "themes": {
+      "light": "White sleeves with black labels (label oklch(17% 0.005 70), label-ink oklch(95% 0.004 140)); paper oklch(93.5% 0.004 140); accent oklch(55% 0.21 28); kraft unchanged; cue colours darkened for contrast."
+    }
   },
   "components": [
     {
       "name": "Button",
       "kind": "button",
       "refersTo": "button",
-      "description": "Default panel-switch button on raised graphite.",
-      "html": "<button class=\"ds-btn\">Import</button>",
-      "css": ".ds-btn { display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 12px; border: 1px solid var(--color-rule-strong); border-radius: 6px; background: var(--color-paper-3); color: var(--color-ink); font: 500 0.8125rem/1.4 var(--font-body); cursor: pointer; transition: background-color 120ms cubic-bezier(0.16,1,0.3,1), border-color 120ms cubic-bezier(0.16,1,0.3,1), transform 120ms cubic-bezier(0.16,1,0.3,1); } .ds-btn:hover { background: var(--color-paper-4); border-color: var(--color-faint); } .ds-btn:active { transform: translateY(1px); background: var(--color-paper-2); } .ds-btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }"
+      "description": "Default printed button; struck through when disabled.",
+      "html": "<button class=\"ds-btn\" type=\"button\">Record</button> <button class=\"ds-btn\" type=\"button\" disabled>Trim</button>",
+      "css": ".ds-btn { display: inline-flex; align-items: center; height: 30px; padding: 0 12px; border: 1px solid var(--color-rule-strong); border-radius: 4px; background: var(--color-paper-3); color: var(--color-ink); font: 500 0.8125rem var(--font-body); cursor: pointer; transition: background-color 120ms cubic-bezier(0.16,1,0.3,1), transform 120ms cubic-bezier(0.16,1,0.3,1); } .ds-btn:hover { background: var(--color-paper-4); border-color: var(--color-faint); } .ds-btn:active { transform: translateY(1px); background: var(--color-paper-2); } .ds-btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; } .ds-btn:disabled { text-decoration: line-through; opacity: 0.6; cursor: default; transform: none; }"
     },
     {
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "The one primary action; ink, never amber. Fills with ink on hover.",
-      "html": "<button class=\"ds-btn-primary\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"><path d=\"M8 3v10M3 8h10\"/></svg>Add sounds</button>",
-      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 12px; border: 1px solid var(--color-muted); border-radius: 6px; background: var(--color-paper-4); color: var(--color-ink); font: 500 0.8125rem/1.4 var(--font-body); cursor: pointer; transition: background-color 120ms cubic-bezier(0.16,1,0.3,1), border-color 120ms cubic-bezier(0.16,1,0.3,1), color 120ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-primary:hover { background: var(--color-ink); border-color: var(--color-ink); color: var(--color-paper); } .ds-btn-primary:active { transform: translateY(1px); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }"
+      "description": "Inverts to an ink slab on hover.",
+      "html": "<button class=\"ds-btn-primary\" type=\"button\">Add sounds</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; height: 30px; padding: 0 12px; border: 1px solid var(--color-muted); border-radius: 4px; background: var(--color-paper-4); color: var(--color-ink); font: 500 0.8125rem var(--font-body); cursor: pointer; transition: background-color 120ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-primary:hover { background: var(--color-ink); border-color: var(--color-ink); color: var(--color-paper); } .ds-btn-primary:active { transform: translateY(1px); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }"
     },
     {
-      "name": "Ghost Button",
+      "name": "Stop All Stamp",
       "kind": "button",
-      "refersTo": "button-ghost",
-      "description": "Toolbar and secondary actions without fill or outline.",
-      "html": "<button class=\"ds-btn-ghost\">Grid</button>",
-      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; height: 30px; padding: 0 12px; border: 1px solid transparent; border-radius: 6px; background: transparent; color: var(--color-muted); font: 500 0.8125rem/1.4 var(--font-body); cursor: pointer; transition: background-color 120ms cubic-bezier(0.16,1,0.3,1), color 120ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-ghost:hover { background: var(--color-paper-4); color: var(--color-ink); } .ds-btn-ghost:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }"
+      "refersTo": "stop-all",
+      "description": "Rubber stamp: outlined at rest, inked when pressed.",
+      "html": "<button class=\"ds-stop\" type=\"button\">Stop all</button>",
+      "css": ".ds-stop { height: 34px; padding: 0 14px; border: 2px solid var(--color-accent); border-radius: 4px; background: transparent; color: var(--color-accent); font: 900 1.125rem var(--font-stamp); text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; } .ds-stop:hover { background: var(--color-accent-soft); } .ds-stop:active { background: var(--color-accent); color: var(--color-accent-ink); } .ds-stop:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }"
     },
     {
       "name": "Field",
       "kind": "input",
       "refersTo": "field",
-      "description": "Recessed well input; amber border on focus.",
-      "html": "<input class=\"ds-field\" placeholder=\"Search sounds\" />",
-      "css": ".ds-field { height: 28px; padding: 0 8px; border: 1px solid var(--color-rule); border-radius: 4px; background: var(--color-well); color: var(--color-ink); font: 400 0.875rem/1.4 var(--font-body); transition: border-color 120ms cubic-bezier(0.16,1,0.3,1); } .ds-field:hover { border-color: var(--color-rule-strong); } .ds-field:focus-visible { outline: none; border-color: var(--color-focus); box-shadow: 0 0 0 1px var(--color-focus); } .ds-field::placeholder { color: var(--color-faint); }"
+      "description": "Recessed well input.",
+      "html": "<input class=\"ds-field\" value=\"Airhorn\" aria-label=\"Name\">",
+      "css": ".ds-field { height: 28px; padding: 0 8px; border: 1px solid var(--color-rule); border-radius: 3px; background: var(--color-well); color: var(--color-ink); font: 400 0.875rem var(--font-body); caret-color: var(--color-accent); } .ds-field:hover { border-color: var(--color-rule-strong); } .ds-field:focus-visible { outline: none; border-color: var(--color-focus); box-shadow: 0 0 0 1px var(--color-focus); }"
     },
     {
-      "name": "Keycap",
-      "kind": "chip",
-      "refersTo": "kbd",
-      "description": "Hotkey keycap in narrow mono with a 2px bottom edge.",
-      "html": "<span class=\"ds-kbd\">Ctrl+F1</span>",
-      "css": ".ds-kbd { display: inline-flex; align-items: center; height: 18px; padding: 0 5px; border: 1px solid var(--color-rule-strong); border-bottom-width: 2px; border-radius: 4px; background: var(--color-paper-2); color: var(--color-muted); font-family: var(--font-mono); font-stretch: 87.5%; font-size: 0.625rem; font-variant-numeric: tabular-nums; white-space: nowrap; }"
+      "name": "Crate Dividers",
+      "kind": "nav",
+      "refersTo": "bank-divider",
+      "description": "Kraft bank cards; the active one pulled forward in label white.",
+      "html": "<nav class=\"ds-crate\"><button class=\"ds-div\" type=\"button\"><b>A</b>Openers</button><button class=\"ds-div on\" type=\"button\" aria-current=\"true\"><b>B</b>Hype</button><button class=\"ds-div\" type=\"button\"><b>C</b>Fails</button></nav>",
+      "css": ".ds-crate { display: grid; gap: 6px; width: 220px; } .ds-div { display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 10px; border: 0; border-radius: 3px 14px 3px 3px; background: var(--color-kraft); color: var(--color-kraft-ink); font: 800 1.0625rem var(--font-stamp); text-transform: uppercase; letter-spacing: 0.03em; text-align: left; cursor: pointer; } .ds-div:nth-child(even) { margin-left: 10px; } .ds-div b { display: grid; place-items: center; width: 24px; height: 24px; border: 2px solid currentColor; border-radius: 3px; font-weight: 900; } .ds-div:hover { background: var(--color-kraft-2); } .ds-div.on { background: var(--color-label); color: var(--color-label-ink); } .ds-div.on b { border-color: var(--color-accent); color: var(--color-accent); } .ds-div:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }"
     },
     {
-      "name": "Pad",
+      "name": "Pressing (pad)",
       "kind": "custom",
       "refersTo": "pad",
-      "description": "The signature hardware key: status row on top, engraved label at the bottom, 2px key travel, amber outline and progress while playing.",
-      "html": "<button class=\"ds-pad ds-playing\" style=\"--led: var(--led-teal)\"><span class=\"ds-pad-status\"><span class=\"ds-pip\"></span><span class=\"ds-num\">N1</span><span class=\"ds-num\">0:04</span><span class=\"ds-grow\"></span><span class=\"ds-pad-kbd\">F1</span></span><span class=\"ds-pad-name\">Air horn</span><span class=\"ds-progress\"></span></button>",
-      "css": ".ds-pad { position: relative; display: grid; grid-template-rows: auto 1fr auto; width: 180px; height: 76px; padding: 8px 12px; border: 1px solid var(--color-rule); border-radius: 6px; background: var(--color-paper-3); box-shadow: 0 1px 0 var(--color-rule-strong) inset, 0 2px 0 var(--color-well); color: var(--color-ink); text-align: left; cursor: pointer; overflow: hidden; font-family: var(--font-body); transition: transform 120ms cubic-bezier(0.16,1,0.3,1), background-color 120ms cubic-bezier(0.16,1,0.3,1), border-color 120ms cubic-bezier(0.16,1,0.3,1); } .ds-pad:hover { background: var(--color-paper-4); } .ds-pad:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--color-rule-strong) inset, 0 0 0 var(--color-well); background: var(--color-paper-2); } .ds-pad:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; } .ds-pad.ds-playing { border-color: var(--color-accent); } .ds-pad-status { display: flex; align-items: center; gap: 8px; height: 20px; color: var(--color-neutral); font-size: 0.6875rem; } .ds-grow { flex: 1; } .ds-num { font-family: var(--font-mono); font-stretch: 87.5%; font-variant-numeric: tabular-nums; } .ds-pip { width: 8px; height: 8px; border-radius: 2px; background: var(--led); box-shadow: inset 0 0 0 1px var(--color-rule-strong); } .ds-playing .ds-pip { box-shadow: none; outline: 1px solid var(--led); outline-offset: 1px; } .ds-pad-kbd { height: 18px; padding: 0 5px; display: inline-flex; align-items: center; border: 1px solid var(--color-rule-strong); border-bottom-width: 2px; border-radius: 4px; background: var(--color-paper-2); color: var(--color-muted); font-family: var(--font-mono); font-stretch: 87.5%; font-size: 0.625rem; } .ds-pad-name { grid-row: 3; font-size: 0.875rem; font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; } .ds-progress { position: absolute; left: 0; bottom: 0; width: 42%; height: 2px; background: var(--color-accent); }"
+      "description": "Signature pad: grooved disc with white label (inset encodes length), cue sticker, stamped name, mono data row; spins on air.",
+      "html": "<div class=\"ds-pad\" tabindex=\"0\" style=\"--led: var(--led-azure); --groove: 22%\"><div class=\"ds-disc\"><span class=\"ds-label\"><span class=\"ds-cat\">SD-01</span><span class=\"ds-spindle\"></span></span><span class=\"ds-pip\"></span></div><div class=\"ds-body\"><span class=\"ds-name\">Airhorn</span><span class=\"ds-row\"><b>N1</b> 0:02.4 &middot; restart <span class=\"ds-kbd\">F1</span></span></div></div> <div class=\"ds-pad on\" tabindex=\"0\" style=\"--led: var(--led-rose); --groove: 36%; --p: 140deg\"><div class=\"ds-disc\"><span class=\"ds-label\"><span class=\"ds-cat\">SD-02</span><span class=\"ds-spindle\"></span></span><span class=\"ds-pip\"></span></div><div class=\"ds-body\"><span class=\"ds-name\">Victory sting</span><span class=\"ds-row\"><b>N2</b> 0:08.0 &middot; loop <span class=\"ds-kbd\">F2</span></span></div></div>",
+      "css": ".ds-pad { position: relative; display: inline-grid; grid-template-columns: 86px 140px; align-items: center; column-gap: 16px; height: 112px; padding: 12px; border: 1px solid var(--color-rule); border-radius: 4px; background: var(--color-paper-3); color: var(--color-ink); cursor: pointer; transition: transform 120ms cubic-bezier(0.16,1,0.3,1); } .ds-pad:hover { box-shadow: inset 0 0 0 1px var(--color-rule-strong); } .ds-pad:active { transform: translateY(1px); background: var(--color-paper-2); box-shadow: inset 0 0 0 1px var(--color-ink); } .ds-pad:active .ds-label { background: var(--color-accent); color: var(--color-accent-ink); } .ds-pad.on { border-color: var(--color-accent); } .ds-pad:focus-visible { outline: none; --b: var(--color-focus); background-image: linear-gradient(var(--b),var(--b)),linear-gradient(var(--b),var(--b)),linear-gradient(var(--b),var(--b)),linear-gradient(var(--b),var(--b)),linear-gradient(var(--b),var(--b)),linear-gradient(var(--b),var(--b)),linear-gradient(var(--b),var(--b)),linear-gradient(var(--b),var(--b)); background-repeat: no-repeat; background-size: 12px 2px,2px 12px,12px 2px,2px 12px,12px 2px,2px 12px,12px 2px,2px 12px; background-position: 3px 3px,3px 3px,calc(100% - 3px) 3px,calc(100% - 3px) 3px,3px calc(100% - 3px),3px calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) calc(100% - 3px); } .ds-disc { position: relative; width: 86px; height: 86px; border-radius: 50%; background: repeating-radial-gradient(circle, var(--color-groove) 0 1.2px, var(--color-paper-5) 1.2px 2.4px); box-shadow: inset 0 0 0 1px var(--color-rule); } .ds-label { position: absolute; inset: var(--groove, 18%); display: grid; place-items: center; border-radius: 50%; background: var(--color-label); color: var(--color-label-ink); } .ds-cat { position: absolute; top: 16%; font: 700 0.5625rem var(--font-mono); } .ds-spindle { width: 6px; height: 6px; border-radius: 50%; background: var(--color-groove); } .ds-pip { position: absolute; right: -2px; bottom: 4px; width: 16px; height: 16px; border-radius: 50%; background: var(--led); box-shadow: 0 0 0 2px var(--color-paper-3); } .ds-pad.on .ds-label { animation: ds-spin 1.8s linear infinite; } .ds-pad.on .ds-disc::after { content: ''; position: absolute; inset: -5px; border-radius: 50%; background: conic-gradient(var(--color-accent) 0 var(--p, 0deg), transparent 0); -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px)); mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px)); } @keyframes ds-spin { to { transform: rotate(360deg); } } @media (prefers-reduced-motion: reduce) { .ds-pad.on .ds-label { animation: none; } } .ds-body { display: grid; gap: 4px; min-width: 0; } .ds-name { font: 900 1.5rem/0.92 var(--font-stamp); text-transform: uppercase; letter-spacing: 0.01em; } .ds-row { display: flex; align-items: center; gap: 6px; color: var(--color-neutral); font: 400 0.6875rem var(--font-mono); font-variant-numeric: tabular-nums; } .ds-row b { color: var(--color-muted); } .ds-kbd { margin-left: auto; height: 18px; padding: 0 5px; border: 1px solid var(--color-rule-strong); border-bottom-width: 2px; border-radius: 3px; background: var(--color-paper-2); color: var(--color-muted); font: 0.625rem/16px var(--font-mono); }"
     },
     {
-      "name": "Bank Rail Item",
-      "kind": "nav",
-      "refersTo": "rail-item-current",
-      "description": "Rail row for a bank: lettered plate and square LED, both amber when active.",
-      "html": "<button class=\"ds-rail-item ds-active\"><span class=\"ds-bank-letter\">A</span><span class=\"ds-label\">Match</span><span class=\"ds-bank-led\"></span></button>",
-      "css": ".ds-rail-item { display: flex; align-items: center; gap: 8px; width: 200px; height: 32px; padding: 0 8px; border: 1px solid transparent; border-radius: 6px; background: transparent; color: var(--color-muted); font: 400 0.875rem/1.4 var(--font-body); text-align: left; cursor: pointer; transition: background-color 120ms cubic-bezier(0.16,1,0.3,1), color 120ms cubic-bezier(0.16,1,0.3,1); } .ds-rail-item:hover { background: var(--color-paper-3); color: var(--color-ink); } .ds-rail-item:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; } .ds-rail-item.ds-active { background: var(--color-paper-4); color: var(--color-ink); } .ds-label { flex: 1; } .ds-bank-letter { display: grid; place-items: center; width: 20px; height: 18px; border: 1px solid var(--color-rule-strong); border-radius: 3px; color: var(--color-muted); font-size: 0.625rem; font-weight: 600; } .ds-active .ds-bank-letter { border-color: var(--color-accent); color: var(--color-accent); } .ds-bank-led { width: 6px; height: 6px; border-radius: 2px; background: var(--color-paper-5); } .ds-active .ds-bank-led { background: var(--color-accent); }"
+      "name": "VOID Stamp",
+      "kind": "custom",
+      "refersTo": "pad",
+      "description": "Red stamp on a pressing whose file is missing, kept until the pad is opened.",
+      "html": "<span class=\"ds-void\">Void</span>",
+      "css": ".ds-void { display: inline-block; rotate: -14deg; padding: 0 6px; border: 2px solid var(--color-accent); border-radius: 2px; background: var(--color-paper-3); color: var(--color-accent); font: 900 1.125rem var(--font-stamp); letter-spacing: 0.06em; text-transform: uppercase; }"
     },
     {
-      "name": "Now-playing Chip",
+      "name": "Now-Playing Chip",
       "kind": "chip",
       "refersTo": "chip",
-      "description": "Status-strip chip for a playing clip with LED pip and stop button.",
-      "html": "<span class=\"ds-chip\" style=\"--led: var(--led-rose)\"><span class=\"ds-chip-pip\"></span>Crowd cheer<button class=\"ds-chip-stop\" aria-label=\"Stop\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\"><rect x=\"3\" y=\"3\" width=\"6\" height=\"6\" rx=\"1\" fill=\"currentColor\"/></svg></button></span>",
-      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 6px; height: 24px; max-width: 200px; padding: 0 2px 0 8px; border: 1px solid var(--color-rule-strong); border-radius: 4px; background: var(--color-paper-3); color: var(--color-ink); font: 400 0.75rem/1.4 var(--font-body); } .ds-chip-pip { width: 8px; height: 8px; border-radius: 2px; background: var(--led); } .ds-chip-stop { display: grid; place-items: center; width: 20px; height: 20px; padding: 0; border: 0; border-radius: 3px; background: transparent; color: var(--color-neutral); cursor: pointer; } .ds-chip-stop:hover { background: var(--color-paper-5); color: var(--color-ink); } .ds-chip-stop:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }"
+      "description": "Status-bar chip with the clip's cue sticker.",
+      "html": "<span class=\"ds-chip\" style=\"--led: var(--led-moss)\"><i class=\"ds-chip-pip\"></i>Crowd cheer<button class=\"ds-chip-x\" type=\"button\" aria-label=\"Stop\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"><rect x=\"4\" y=\"4\" width=\"8\" height=\"8\"/></svg></button></span>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 2px 0 8px; border: 1px solid var(--color-rule-strong); border-radius: 3px; background: var(--color-paper-3); color: var(--color-ink); font: 400 0.8125rem var(--font-body); } .ds-chip-pip { width: 8px; height: 8px; border-radius: 50%; background: var(--led); } .ds-chip-x { display: grid; place-items: center; width: 20px; height: 20px; padding: 0; border: 0; border-radius: 3px; background: transparent; color: var(--color-neutral); cursor: pointer; } .ds-chip-x:hover { background: var(--color-paper-5); color: var(--color-ink); } .ds-chip-x:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }"
     }
   ],
   "narrative": {
-    "northStar": "The Sampler on the Desk",
-    "overview": "Sonic Dominion is a piece of pro-audio hardware rendered in a window. Pads are physical keys with a status row on top (LED pip, numpad slot, length, keycap) and an engraved label at the bottom; banks carry hardware letters with their own LED; numbers, times and keys are set in a narrow monospace like silkscreen on a faceplate. The window is dense and exact, built for a person who sets the board up between sessions and then fires it blind from hotkeys while a game has focus.\n\nThe material is warm graphite: one hue (60) stepped in lightness, with 1px rules doing the structural work. Colour is restrained to a single signal amber that means \"live\" and nothing else, plus eight low-chroma LED hues that belong to the user's content. Power shows in details (key travel, LED states, tabular numerals, a meter under each fader), never in decoration. The generic card-grid dashboard is the explicit anti-reference.",
+    "northStar": "The White Label Crate",
+    "overview": "Every sound is a white-label test pressing the user stamped themselves: a black sleeve holding a round white label, filed in a crate of kraft dividers and spun the moment its key is hit. The shell is matte sleeve-black card stock in five weights of board; on it sit three printed materials (cool white label stock, kraft crate brown, one rubber-stamp red) and the user's own saturated cue stickers. Nothing glows and nothing floats; the world is paper, ink and vinyl.\n\nThe system serves a tool fired mid-game, so density is high and motion is functional. The one continuous motion is the signature: the playing pressing's label turns at 33 1/3 rpm while a red stylus arc tracks progress around the disc. Every state is a printed mark rather than a lighting effect: a hairline ring on hover, an inked label on press, a strike-through when disabled, corner brackets on focus. The world rejects the grey rounded-card soundboard dashboard and the neon gamer panel.\n\nA light theme inverts the sleeves (white sleeves, black labels) while the crate kraft and the stamp red stay put. The phone remote carries the same pressings, dividers and stamp at touch scale.",
     "keyCharacteristics": [
-      "Warm graphite surfaces, five elevation steps about 3.5% lightness apart.",
-      "One amber accent, reserved for live and active state.",
-      "Grotesk for the interface, narrow Martian Mono for data and keys only.",
-      "1px rules and tonal steps for structure; soft shadow only on floating overlays.",
-      "Small, square-ish corners (4/6/10px); LEDs are 2px-radius squares.",
-      "Pads behave like keys: a 2px travel on press."
+      "Sleeve-black warm-neutral shell (hue 70, chroma under 0.01) layered by board weight, not shadow.",
+      "Pads are pressings: grooved disc, white label with an SD-nn catalog number, cue-sticker dot, stamped name.",
+      "Groove band width encodes clip length: the label inset runs from 8% (a blip) to 36% (6 s and longer) of the disc.",
+      "Banks are kraft divider cards with one dog-eared corner; the active one is pulled forward in label white.",
+      "Stamp red is a signal, never a decoration.",
+      "Three voices of type: stamped condensed caps, a plain grotesk for UI, a narrow mono for catalog data."
     ],
     "rules": [
-      { "name": "The One Signal Rule", "body": "Amber means live or active. At rest, with nothing playing or focused, the only amber on screen is the active bank's LED and letter; the wordmark LED and meters light only while audio is running.", "section": "colors" },
-      { "name": "The User's Colour Rule", "body": "LED hues are the user's content, not the interface's palette. They never tint a surface, a border, a button or text.", "section": "colors" },
-      { "name": "The Ink Primary Rule", "body": "The primary action is ink, never amber: it rests outlined in `muted` on `paper-4` and fills with ink on hover.", "section": "colors" },
-      { "name": "The Silkscreen Rule", "body": "Mono is for data and keys only. If a string would change when a clip, key or level changes, it is mono; if it is a word, it is grotesk.", "section": "typography" },
-      { "name": "The Tabular Rule", "body": "Every live number uses tabular figures so meters, timers and counts never shift width.", "section": "typography" },
-      { "name": "The Flat Instrument Rule", "body": "Regions are flat and ruled. A shadow means either \"this is a key you press\" or \"this floats above the board\". No glow, no glass, no blur.", "section": "elevation" }
+      {
+        "name": "The One Stamp Rule",
+        "body": "Red is reserved for on air, the active bank, VOID (missing files only), hotkey conflicts, destructive actions and focus. It is never a brand colour, a hover tint on ordinary controls, or a decoration.",
+        "section": "colors"
+      },
+      {
+        "name": "The Sticker Rule",
+        "body": "Cue colours belong to the user's pressings. They never colour chrome, buttons, headings or state.",
+        "section": "colors"
+      },
+      {
+        "name": "The Stamp Is for Names Rule",
+        "body": "Big Shoulders sets user-named things and section heads only (pad, bank, deck, sheet, wordmark, Stop all, VOID). Interface copy stays in Schibsted.",
+        "section": "typography"
+      },
+      {
+        "name": "The Catalog Rule",
+        "body": "Any number a record sleeve would print (catalog, slot, time, gain, key) is mono with tabular figures.",
+        "section": "typography"
+      },
+      {
+        "name": "The Paper Not Light Rule",
+        "body": "No glows, no coloured shadows, no blur. A state shows as ink on paper.",
+        "section": "elevation"
+      }
     ],
     "dos": [
-      "Do step surfaces by lightness on hue 60 (`paper` to `paper-5`) and separate regions with 1px `rule`.",
-      "Do reserve amber for playing, active bank, focus, listening and checked states.",
-      "Do set every number, time, slot and key in Martian Mono at 87.5% width with tabular figures.",
-      "Do build new pads and key-like controls with the status-row-on-top, label-at-bottom anatomy and 2px key travel.",
-      "Do draw LEDs as 8px (pads) or 6px (banks) squares with 2px corners.",
-      "Do keep corners on the 4/6/10px scale."
+      "Do print every state as a mark: hairline ring (hover), inked label (press), strike-through (disabled), corner brackets or a 2px red outline (focus).",
+      "Do keep stamp red to on air, active bank, VOID, conflicts, destructive actions and focus.",
+      "Do set user-named things in Big Shoulders uppercase and catalog data in tabular Martian Mono.",
+      "Do derive the label inset from clip length (8% to 36% of the disc); never fix it per pad.",
+      "Do keep the label spin at 33 1/3 (1.8s per turn) and only while the pressing is on air; stop it under reduced motion.",
+      "Do separate surfaces by board weight and 1px rules."
     ],
     "donts": [
-      "Don't make the primary action amber; primary is ink.",
-      "Don't use LED hues on surfaces, borders, buttons or text.",
-      "Don't add glow, glassmorphism or blur, or decorative gradients; hard-stop gradients that draw a select chevron or a fader fill are fine.",
-      "Don't float content regions with shadows; shadow is for keys and overlays only.",
-      "Don't set words in mono or set labels in tracked uppercase; only the wordmark is tracked.",
-      "Don't fall back to a generic card-grid dashboard look: pads are keys, not cards."
+      "Don't use cue-sticker colours for chrome, headings or state; they belong to the user's pads.",
+      "Don't add glows, coloured shadows, blur or drop shadows on resting pads.",
+      "Don't stamp VOID on anything but a pressing that cannot play.",
+      "Don't set interface copy, labels or helper text in the stamp face.",
+      "Don't round pads or buttons beyond 4px or turn the crate dividers into pills."
     ]
   }
 }
