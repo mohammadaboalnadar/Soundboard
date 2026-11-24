@@ -268,6 +268,8 @@ select.field {
 .fader-wrap { position: relative; }
 
 .transport .spacer { flex: 1; }
+.bus.mic-bus { grid-template-columns: auto minmax(0, 1fr) auto; width: 300px; min-width: 220px; flex: 0 1 300px; }
+.bus.mic-bus.on .bus-name { color: var(--color-ink); }
 .mic-toggle { display: flex; white-space: nowrap; align-items: center; gap: var(--space-2); color: var(--color-muted); font-size: var(--text-xs); }
 .mic-toggle.on { color: var(--color-ink); }
 .stop-all { gap: var(--space-2); }
@@ -683,7 +685,7 @@ select.field {
 .wm-short { display: none; }
 .app.compact { grid-template-columns: minmax(0, 1fr); grid-template-areas: "transport" "deck" "status"; }
 .app.compact .rail, .app.compact .inspector { display: none; }
-.app.compact .bus, .app.compact .mic-toggle, .app.compact .deck-tools, .app.compact .status .sys .item:last-child { display: none; }
+.app.compact .bus, .app.compact .mic-toggle, .app.compact .mic-bus, .app.compact .deck-tools, .app.compact .status .sys .item:last-child { display: none; }
 .app.compact .wm-full { display: none; }
 .app.compact .wm-short { display: inline; }
 .app.compact .wordmark { width: auto; }
@@ -808,6 +810,7 @@ input, textarea { caret-color: var(--color-accent); }
 .deck-tools .sizes { display: flex; gap: var(--space-1); }
 @media (max-width: 1240px) {
   .bus { flex: 1 1 0; width: auto; min-width: 190px; grid-template-columns: auto minmax(84px, 1fr) 56px; }
+  .bus.mic-bus { flex: 0 1 220px; min-width: 170px; grid-template-columns: auto minmax(70px, 1fr) auto; }
   .transport .spacer { flex: 0 0 0; }
   .transport { gap: var(--space-3); }
   .bus .vol { display: none; }

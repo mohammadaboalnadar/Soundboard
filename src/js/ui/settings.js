@@ -2,6 +2,7 @@
 // phone remote, and app behaviour. Opens from the transport (Ctrl+,).
 import { h, icon, setFill } from "./dom.js";
 import { formatKey } from "../keys.js";
+import { micChoices } from "../devices.js";
 
 const DUCK = [
   [0, "Off"],
@@ -67,7 +68,7 @@ export function createSettings(dialog, app) {
     // microphone
     const micSel = h("select", { class: "field", "aria-label": "Microphone" });
     micSel.append(h("option", { value: "default" }, "System default"));
-    app.devices.inputs.forEach((d, i) => d.deviceId !== "default" && d.deviceId !== "communications" && micSel.append(h("option", { value: d.deviceId }, d.label || `Input ${i + 1}`)));
+    micChoices(app.devices.inputs).forEach((d, i) => micSel.append(h("option", { value: d.deviceId }, d.label || `Input ${i + 1}`)));
     micSel.value = [...micSel.options].some((o) => o.value === s.mic.deviceId) ? s.mic.deviceId : "default";
     micSel.addEventListener("change", () => A.setMic({ deviceId: micSel.value }));
     const micGain = h("input", { class: "fader", type: "range", min: "0", max: "2", step: "0.05", value: String(s.mic.gain), "aria-label": "Microphone level" });

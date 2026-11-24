@@ -1,6 +1,7 @@
 // Top strip: monitor + cable outputs (device, fader, meter), mic, theme, stop all.
 import { h, icon, setFill, toast } from "./dom.js";
 import { formatKey } from "../keys.js";
+import { micChoices } from "../devices.js";
 
 export function createTransport(root, app) {
   const { store, engine } = app;
@@ -53,10 +54,25 @@ export function createTransport(root, app) {
   const cable = bus("cable", "Cable", "i-cable");
 
   const micSwitch = h("input", { class: "switch", type: "checkbox", role: "switch", "aria-label": "Send microphone to cable" });
-  const micWrap = h("label", { class: "mic-toggle", title: "Mix your microphone into the cable output" }, icon("i-mic"), h("span", { class: "label" }, "Mic to cable"), micSwitch);
+  const micSel = h("select", { class: "field", "aria-label": "Microphone device" });
+  const micWrap = h(
+    "div",
+    { class: "bus mic-bus", title: "Mix your microphone into the cable output" },
+    h("span", { class: "bus-name" }, icon("i-mic"), h("span", { class: "label" }, "Mic")),
+    micSel,
+    micSwitch
+  );
   micSwitch.addEventListener("change", () => {
     store.update((s) => (s.mic.enabled = micSwitch.checked), "mic");
     engine.setMic(store.state.mic);
+  });
+  micSel.addEventListener("change", () => {
+    if (micSel.value === "__reveal__") {
+      micSel.value = store.state.mic.deviceId || "default";
+      revealLabels();
+      return;
+    }
+    app.actions.setMic({ deviceId: micSel.value });
   });
 
   const compactBtn = h("button", { class: "btn ghost icon", type: "button" }, icon("i-compact"));
@@ -86,6 +102,17 @@ export function createTransport(root, app) {
     const has = [...sel.options].some((o) => o.value === value);
     if (value && !has) sel.append(h("option", { value }, "Unavailable device"));
     sel.value = value || (allowNone ? "" : "default");
+  }
+
+  function fillMic() {
+    micSel.replaceChildren(h("option", { value: "default" }, "System default"));
+    micChoices(devices.inputs).forEach((d, i) => micSel.append(h("option", { value: d.deviceId }, d.label || `Input ${i + 1}`)));
+    if (!devices.labelled) micSel.append(h("option", { value: "__reveal__" }, "Show device names…"));
+    const id = store.state.mic.deviceId || "default";
+    const known = [...micSel.options].some((o) => o.value === id);
+    // a saved microphone that is no longer plugged in falls back to the system default
+    if (!known && devices.labelled) app.actions.setMic({ deviceId: "default" });
+    micSel.value = known ? id : "default";
   }
 
   async function loadDevices() {
@@ -148,6 +175,7 @@ export function createTransport(root, app) {
     const st = engine.outputStatus();
     cable.el.classList.toggle("offline", Boolean(s.outputs.cableId && st.cableError));
     cable.el.title = st.cableError ? `Cable output unavailable: ${st.cableError}` : "Second output, usually a virtual audio cable";
+    fillMic();
     micSwitch.checked = s.mic.enabled;
     micWrap.classList.toggle("on", s.mic.enabled);
     const compactLabel = app.ui.compact ? "Leave compact mode" : "Compact mode: small window that stays on top";
