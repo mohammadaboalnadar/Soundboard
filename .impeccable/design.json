@@ -1,0 +1,170 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-24T00:00:00Z",
+  "title": "Design System: Sonic Dominion",
+  "extensions": {
+    "colorMeta": {
+      "paper": { "role": "neutral", "displayName": "Graphite Paper", "canonical": "oklch(16% 0.008 60)", "tonalRamp": ["oklch(13% 0.007 60)", "oklch(16% 0.008 60)", "oklch(19.5% 0.009 60)", "oklch(23% 0.010 60)", "oklch(26.5% 0.011 60)", "oklch(30% 0.012 60)", "oklch(36% 0.011 60)", "oklch(55% 0.010 60)"] },
+      "paper-2": { "role": "neutral", "displayName": "Graphite 2 (chrome)", "canonical": "oklch(19.5% 0.009 60)" },
+      "paper-3": { "role": "neutral", "displayName": "Graphite 3 (raised)", "canonical": "oklch(23% 0.010 60)" },
+      "paper-4": { "role": "neutral", "displayName": "Graphite 4 (hover/current)", "canonical": "oklch(26.5% 0.011 60)" },
+      "paper-5": { "role": "neutral", "displayName": "Graphite 5 (pressed/track)", "canonical": "oklch(30% 0.012 60)" },
+      "well": { "role": "neutral", "displayName": "Well", "canonical": "oklch(13% 0.007 60)" },
+      "rule": { "role": "neutral", "displayName": "Rule", "canonical": "oklch(28% 0.010 60)" },
+      "rule-strong": { "role": "neutral", "displayName": "Rule Strong", "canonical": "oklch(36% 0.011 60)" },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "oklch(94% 0.007 80)", "tonalRamp": ["oklch(55% 0.010 60)", "oklch(62% 0.010 65)", "oklch(70% 0.009 68)", "oklch(76% 0.008 70)", "oklch(82% 0.008 74)", "oklch(88% 0.007 77)", "oklch(94% 0.007 80)", "oklch(97% 0.005 80)"] },
+      "muted": { "role": "neutral", "displayName": "Muted", "canonical": "oklch(76% 0.008 70)" },
+      "neutral": { "role": "neutral", "displayName": "Neutral", "canonical": "oklch(62% 0.010 65)" },
+      "faint": { "role": "neutral", "displayName": "Faint", "canonical": "oklch(55% 0.010 60)" },
+      "accent": { "role": "primary", "displayName": "Signal Amber", "canonical": "oklch(77% 0.155 64)", "tonalRamp": ["oklch(21% 0.030 60)", "oklch(32% 0.070 62)", "oklch(45% 0.110 63)", "oklch(58% 0.140 63)", "oklch(68% 0.155 64)", "oklch(77% 0.155 64)", "oklch(86% 0.110 66)", "oklch(94% 0.050 70)"] },
+      "accent-ink": { "role": "primary", "displayName": "Amber Ink", "canonical": "oklch(21% 0.030 60)" },
+      "accent-soft": { "role": "primary", "displayName": "Amber Tint", "canonical": "oklch(77% 0.155 64 / 0.14)" },
+      "focus": { "role": "primary", "displayName": "Focus Amber", "canonical": "oklch(82% 0.140 64)" },
+      "danger": { "role": "status", "displayName": "Signal Red", "canonical": "oklch(68% 0.170 28)", "tonalRamp": ["oklch(22% 0.050 28)", "oklch(32% 0.090 28)", "oklch(44% 0.130 28)", "oklch(56% 0.160 28)", "oklch(68% 0.170 28)", "oklch(78% 0.120 28)", "oklch(87% 0.070 28)", "oklch(95% 0.025 28)"] },
+      "danger-soft": { "role": "status", "displayName": "Red Tint", "canonical": "oklch(68% 0.170 28 / 0.14)" },
+      "ok": { "role": "status", "displayName": "Go Green", "canonical": "oklch(74% 0.120 150)" },
+      "led-amber": { "role": "content", "displayName": "LED Amber", "canonical": "oklch(78% 0.14 72)" },
+      "led-ember": { "role": "content", "displayName": "LED Ember", "canonical": "oklch(70% 0.15 42)" },
+      "led-rose": { "role": "content", "displayName": "LED Rose", "canonical": "oklch(72% 0.13 8)" },
+      "led-violet": { "role": "content", "displayName": "LED Violet", "canonical": "oklch(70% 0.12 300)" },
+      "led-azure": { "role": "content", "displayName": "LED Azure", "canonical": "oklch(72% 0.11 245)" },
+      "led-teal": { "role": "content", "displayName": "LED Teal", "canonical": "oklch(75% 0.10 190)" },
+      "led-moss": { "role": "content", "displayName": "LED Moss", "canonical": "oklch(76% 0.12 135)" },
+      "led-sand": { "role": "content", "displayName": "LED Sand", "canonical": "oklch(80% 0.06 85)" }
+    },
+    "typographyMeta": {
+      "headline": { "displayName": "Headline", "purpose": "Deck title, settings sheet title, empty-state heading." },
+      "title": { "displayName": "Title", "purpose": "Engraved pad label and settings section heads." },
+      "body": { "displayName": "Body", "purpose": "Default interface copy." },
+      "control": { "displayName": "Control", "purpose": "Button and menu labels." },
+      "label": { "displayName": "Label", "purpose": "Inspector labels, bus names, status strip, hints; sentence case." },
+      "wordmark": { "displayName": "Wordmark", "purpose": "Product name only; the one tracked, heavy setting." },
+      "data": { "displayName": "Data", "purpose": "Every number, time, slot, dB value and path, tabular." },
+      "keycap": { "displayName": "Keycap", "purpose": "Hotkey keycaps, numpad slots, bank letters." }
+    },
+    "shadows": [
+      { "name": "key-travel", "value": "0 1px 0 var(--color-rule-strong) inset, 0 2px 0 var(--color-well)", "purpose": "Pads only: lit top edge and 2px skirt that collapses when the key is pressed (translateY 2px)." },
+      { "name": "toast", "value": "0 8px 24px var(--color-shadow)", "purpose": "Toasts floating above the status strip." },
+      { "name": "menu", "value": "0 10px 30px var(--color-shadow)", "purpose": "Context menus." },
+      { "name": "palette", "value": "0 24px 60px var(--color-shadow)", "purpose": "Command palette over a scrim." },
+      { "name": "sheet", "value": "-16px 0 40px var(--color-shadow)", "purpose": "Settings sheet sliding in from the right." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Default for every state change and entrance." },
+      { "name": "ease-in", "value": "cubic-bezier(0.7, 0, 0.84, 0)", "purpose": "Exits (toast leaving)." },
+      { "name": "ease-in-out", "value": "cubic-bezier(0.65, 0, 0.35, 1)", "purpose": "Reserved for symmetric moves." },
+      { "name": "dur-micro", "value": "120ms", "purpose": "Hover, press, LED and colour changes." },
+      { "name": "dur-short", "value": "220ms", "purpose": "Chip rise, menu and palette pop, switch knob." },
+      { "name": "dur-long", "value": "420ms", "purpose": "Settings sheet slide-in." },
+      { "name": "reduced-motion", "value": "150ms fades, no key travel", "purpose": "prefers-reduced-motion clamps all animation." }
+    ],
+    "breakpoints": [
+      { "name": "buses-shrink", "value": "1240px" },
+      { "name": "inspector-on-select", "value": "1100px" },
+      { "name": "narrow-columns", "value": "1080px" },
+      { "name": "icon-rail", "value": "900px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Button",
+      "kind": "button",
+      "refersTo": "button",
+      "description": "Default panel-switch button on raised graphite.",
+      "html": "<button class=\"ds-btn\">Import</button>",
+      "css": ".ds-btn { display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 12px; border: 1px solid var(--color-rule-strong); border-radius: 6px; background: var(--color-paper-3); color: var(--color-ink); font: 500 0.8125rem/1.4 var(--font-body); cursor: pointer; transition: background-color 120ms cubic-bezier(0.16,1,0.3,1), border-color 120ms cubic-bezier(0.16,1,0.3,1), transform 120ms cubic-bezier(0.16,1,0.3,1); } .ds-btn:hover { background: var(--color-paper-4); border-color: var(--color-faint); } .ds-btn:active { transform: translateY(1px); background: var(--color-paper-2); } .ds-btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }"
+    },
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one primary action; ink, never amber. Fills with ink on hover.",
+      "html": "<button class=\"ds-btn-primary\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"><path d=\"M8 3v10M3 8h10\"/></svg>Add sounds</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 12px; border: 1px solid var(--color-muted); border-radius: 6px; background: var(--color-paper-4); color: var(--color-ink); font: 500 0.8125rem/1.4 var(--font-body); cursor: pointer; transition: background-color 120ms cubic-bezier(0.16,1,0.3,1), border-color 120ms cubic-bezier(0.16,1,0.3,1), color 120ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-primary:hover { background: var(--color-ink); border-color: var(--color-ink); color: var(--color-paper); } .ds-btn-primary:active { transform: translateY(1px); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Toolbar and secondary actions without fill or outline.",
+      "html": "<button class=\"ds-btn-ghost\">Grid</button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; height: 30px; padding: 0 12px; border: 1px solid transparent; border-radius: 6px; background: transparent; color: var(--color-muted); font: 500 0.8125rem/1.4 var(--font-body); cursor: pointer; transition: background-color 120ms cubic-bezier(0.16,1,0.3,1), color 120ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-ghost:hover { background: var(--color-paper-4); color: var(--color-ink); } .ds-btn-ghost:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }"
+    },
+    {
+      "name": "Field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Recessed well input; amber border on focus.",
+      "html": "<input class=\"ds-field\" placeholder=\"Search sounds\" />",
+      "css": ".ds-field { height: 28px; padding: 0 8px; border: 1px solid var(--color-rule); border-radius: 4px; background: var(--color-well); color: var(--color-ink); font: 400 0.875rem/1.4 var(--font-body); transition: border-color 120ms cubic-bezier(0.16,1,0.3,1); } .ds-field:hover { border-color: var(--color-rule-strong); } .ds-field:focus-visible { outline: none; border-color: var(--color-focus); box-shadow: 0 0 0 1px var(--color-focus); } .ds-field::placeholder { color: var(--color-faint); }"
+    },
+    {
+      "name": "Keycap",
+      "kind": "chip",
+      "refersTo": "kbd",
+      "description": "Hotkey keycap in narrow mono with a 2px bottom edge.",
+      "html": "<span class=\"ds-kbd\">Ctrl+F1</span>",
+      "css": ".ds-kbd { display: inline-flex; align-items: center; height: 18px; padding: 0 5px; border: 1px solid var(--color-rule-strong); border-bottom-width: 2px; border-radius: 4px; background: var(--color-paper-2); color: var(--color-muted); font-family: var(--font-mono); font-stretch: 87.5%; font-size: 0.625rem; font-variant-numeric: tabular-nums; white-space: nowrap; }"
+    },
+    {
+      "name": "Pad",
+      "kind": "custom",
+      "refersTo": "pad",
+      "description": "The signature hardware key: status row on top, engraved label at the bottom, 2px key travel, amber outline and progress while playing.",
+      "html": "<button class=\"ds-pad ds-playing\" style=\"--led: var(--led-teal)\"><span class=\"ds-pad-status\"><span class=\"ds-pip\"></span><span class=\"ds-num\">N1</span><span class=\"ds-num\">0:04</span><span class=\"ds-grow\"></span><span class=\"ds-pad-kbd\">F1</span></span><span class=\"ds-pad-name\">Air horn</span><span class=\"ds-progress\"></span></button>",
+      "css": ".ds-pad { position: relative; display: grid; grid-template-rows: auto 1fr auto; width: 180px; height: 76px; padding: 8px 12px; border: 1px solid var(--color-rule); border-radius: 6px; background: var(--color-paper-3); box-shadow: 0 1px 0 var(--color-rule-strong) inset, 0 2px 0 var(--color-well); color: var(--color-ink); text-align: left; cursor: pointer; overflow: hidden; font-family: var(--font-body); transition: transform 120ms cubic-bezier(0.16,1,0.3,1), background-color 120ms cubic-bezier(0.16,1,0.3,1), border-color 120ms cubic-bezier(0.16,1,0.3,1); } .ds-pad:hover { background: var(--color-paper-4); } .ds-pad:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--color-rule-strong) inset, 0 0 0 var(--color-well); background: var(--color-paper-2); } .ds-pad:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; } .ds-pad.ds-playing { border-color: var(--color-accent); } .ds-pad-status { display: flex; align-items: center; gap: 8px; height: 20px; color: var(--color-neutral); font-size: 0.6875rem; } .ds-grow { flex: 1; } .ds-num { font-family: var(--font-mono); font-stretch: 87.5%; font-variant-numeric: tabular-nums; } .ds-pip { width: 8px; height: 8px; border-radius: 2px; background: var(--led); box-shadow: inset 0 0 0 1px var(--color-rule-strong); } .ds-playing .ds-pip { box-shadow: none; outline: 1px solid var(--led); outline-offset: 1px; } .ds-pad-kbd { height: 18px; padding: 0 5px; display: inline-flex; align-items: center; border: 1px solid var(--color-rule-strong); border-bottom-width: 2px; border-radius: 4px; background: var(--color-paper-2); color: var(--color-muted); font-family: var(--font-mono); font-stretch: 87.5%; font-size: 0.625rem; } .ds-pad-name { grid-row: 3; font-size: 0.875rem; font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; } .ds-progress { position: absolute; left: 0; bottom: 0; width: 42%; height: 2px; background: var(--color-accent); }"
+    },
+    {
+      "name": "Bank Rail Item",
+      "kind": "nav",
+      "refersTo": "rail-item-current",
+      "description": "Rail row for a bank: lettered plate and square LED, both amber when active.",
+      "html": "<button class=\"ds-rail-item ds-active\"><span class=\"ds-bank-letter\">A</span><span class=\"ds-label\">Match</span><span class=\"ds-bank-led\"></span></button>",
+      "css": ".ds-rail-item { display: flex; align-items: center; gap: 8px; width: 200px; height: 32px; padding: 0 8px; border: 1px solid transparent; border-radius: 6px; background: transparent; color: var(--color-muted); font: 400 0.875rem/1.4 var(--font-body); text-align: left; cursor: pointer; transition: background-color 120ms cubic-bezier(0.16,1,0.3,1), color 120ms cubic-bezier(0.16,1,0.3,1); } .ds-rail-item:hover { background: var(--color-paper-3); color: var(--color-ink); } .ds-rail-item:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; } .ds-rail-item.ds-active { background: var(--color-paper-4); color: var(--color-ink); } .ds-label { flex: 1; } .ds-bank-letter { display: grid; place-items: center; width: 20px; height: 18px; border: 1px solid var(--color-rule-strong); border-radius: 3px; color: var(--color-muted); font-size: 0.625rem; font-weight: 600; } .ds-active .ds-bank-letter { border-color: var(--color-accent); color: var(--color-accent); } .ds-bank-led { width: 6px; height: 6px; border-radius: 2px; background: var(--color-paper-5); } .ds-active .ds-bank-led { background: var(--color-accent); }"
+    },
+    {
+      "name": "Now-playing Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Status-strip chip for a playing clip with LED pip and stop button.",
+      "html": "<span class=\"ds-chip\" style=\"--led: var(--led-rose)\"><span class=\"ds-chip-pip\"></span>Crowd cheer<button class=\"ds-chip-stop\" aria-label=\"Stop\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\"><rect x=\"3\" y=\"3\" width=\"6\" height=\"6\" rx=\"1\" fill=\"currentColor\"/></svg></button></span>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 6px; height: 24px; max-width: 200px; padding: 0 2px 0 8px; border: 1px solid var(--color-rule-strong); border-radius: 4px; background: var(--color-paper-3); color: var(--color-ink); font: 400 0.75rem/1.4 var(--font-body); } .ds-chip-pip { width: 8px; height: 8px; border-radius: 2px; background: var(--led); } .ds-chip-stop { display: grid; place-items: center; width: 20px; height: 20px; padding: 0; border: 0; border-radius: 3px; background: transparent; color: var(--color-neutral); cursor: pointer; } .ds-chip-stop:hover { background: var(--color-paper-5); color: var(--color-ink); } .ds-chip-stop:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Sampler on the Desk",
+    "overview": "Sonic Dominion is a piece of pro-audio hardware rendered in a window. Pads are physical keys with a status row on top (LED pip, numpad slot, length, keycap) and an engraved label at the bottom; banks carry hardware letters with their own LED; numbers, times and keys are set in a narrow monospace like silkscreen on a faceplate. The window is dense and exact, built for a person who sets the board up between sessions and then fires it blind from hotkeys while a game has focus.\n\nThe material is warm graphite: one hue (60) stepped in lightness, with 1px rules doing the structural work. Colour is restrained to a single signal amber that means \"live\" and nothing else, plus eight low-chroma LED hues that belong to the user's content. Power shows in details (key travel, LED states, tabular numerals, a meter under each fader), never in decoration. The generic card-grid dashboard is the explicit anti-reference.",
+    "keyCharacteristics": [
+      "Warm graphite surfaces, five elevation steps about 3.5% lightness apart.",
+      "One amber accent, reserved for live and active state.",
+      "Grotesk for the interface, narrow Martian Mono for data and keys only.",
+      "1px rules and tonal steps for structure; soft shadow only on floating overlays.",
+      "Small, square-ish corners (4/6/10px); LEDs are 2px-radius squares.",
+      "Pads behave like keys: a 2px travel on press."
+    ],
+    "rules": [
+      { "name": "The One Signal Rule", "body": "Amber means live or active. At rest, with nothing playing or focused, the only amber on screen is the active bank's LED and letter; the wordmark LED and meters light only while audio is running.", "section": "colors" },
+      { "name": "The User's Colour Rule", "body": "LED hues are the user's content, not the interface's palette. They never tint a surface, a border, a button or text.", "section": "colors" },
+      { "name": "The Ink Primary Rule", "body": "The primary action is ink, never amber: it rests outlined in `muted` on `paper-4` and fills with ink on hover.", "section": "colors" },
+      { "name": "The Silkscreen Rule", "body": "Mono is for data and keys only. If a string would change when a clip, key or level changes, it is mono; if it is a word, it is grotesk.", "section": "typography" },
+      { "name": "The Tabular Rule", "body": "Every live number uses tabular figures so meters, timers and counts never shift width.", "section": "typography" },
+      { "name": "The Flat Instrument Rule", "body": "Regions are flat and ruled. A shadow means either \"this is a key you press\" or \"this floats above the board\". No glow, no glass, no blur.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do step surfaces by lightness on hue 60 (`paper` to `paper-5`) and separate regions with 1px `rule`.",
+      "Do reserve amber for playing, active bank, focus, listening and checked states.",
+      "Do set every number, time, slot and key in Martian Mono at 87.5% width with tabular figures.",
+      "Do build new pads and key-like controls with the status-row-on-top, label-at-bottom anatomy and 2px key travel.",
+      "Do draw LEDs as 8px (pads) or 6px (banks) squares with 2px corners.",
+      "Do keep corners on the 4/6/10px scale."
+    ],
+    "donts": [
+      "Don't make the primary action amber; primary is ink.",
+      "Don't use LED hues on surfaces, borders, buttons or text.",
+      "Don't add glow, glassmorphism or blur, or decorative gradients; hard-stop gradients that draw a select chevron or a fader fill are fine.",
+      "Don't float content regions with shadows; shadow is for keys and overlays only.",
+      "Don't set words in mono or set labels in tracked uppercase; only the wordmark is tracked.",
+      "Don't fall back to a generic card-grid dashboard look: pads are keys, not cards."
+    ]
+  }
+}
