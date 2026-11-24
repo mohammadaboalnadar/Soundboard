@@ -371,12 +371,20 @@ select.field {
 .pad.missing .pad-name { color: var(--color-neutral); }
 .pad.dragging { opacity: 0.35; }
 .pad.insert-before { box-shadow: -3px 0 0 -1px var(--color-accent); }
-.pad-top { display: flex; align-items: flex-start; gap: var(--space-2); min-width: 0; }
+/* status row: LED, slot, length ... keycap */
+.pad-status { display: flex; align-items: center; gap: var(--space-2); min-width: 0; height: 20px; color: var(--color-neutral); font-size: var(--text-2xs); }
+.pad-status .grow { flex: 1; }
+.pad-status .warn { color: var(--color-danger); font-family: var(--font-body); font-size: var(--text-2xs); white-space: nowrap; }
+/* the engraved label sits at the bottom of the key */
+.pad-label { grid-row: 3; display: flex; align-items: flex-end; gap: var(--space-2); min-width: 0; }
+.pad-label .mode { display: inline-flex; color: var(--color-faint); }
+.pad-label .mode .i { width: 14px; height: 14px; }
 .pad-name {
   flex: 1;
   min-width: 0;
   font-size: var(--text-md);
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   line-height: 1.25;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -385,12 +393,7 @@ select.field {
   overflow-wrap: anywhere;
 }
 .pads[data-size="s"] .pad-name { -webkit-line-clamp: 1; font-size: var(--text-sm); }
-.pad .kbd { margin-top: 1px; }
 .kbd.conflict { border-color: var(--color-danger); color: var(--color-danger); }
-.pad-foot { display: flex; align-items: center; gap: var(--space-2); color: var(--color-neutral); font-size: var(--text-2xs); }
-.pad-foot .dur { flex: 1; }
-.pad-foot .i { width: 14px; height: 14px; }
-.pad-foot .warn { color: var(--color-danger); font-family: var(--font-body); font-size: var(--text-2xs); }
 .pad-progress {
   position: absolute;
   left: 0;
@@ -406,7 +409,7 @@ select.field {
 .pads.list { grid-template-columns: minmax(0, 1fr); gap: 0; }
 .pads.list .pad {
   grid-template-rows: none;
-  grid-template-columns: 8px minmax(0, 1fr) 64px 80px 32px;
+  grid-template-columns: 8px minmax(0, 1fr) auto 64px 80px 24px;
   column-gap: var(--space-5);
   align-items: center;
   height: 40px;
@@ -418,11 +421,15 @@ select.field {
 .pads.list .pad:hover { background: var(--color-paper-2); }
 .pads.list .pad[aria-selected="true"] { background: var(--color-paper-3); }
 .pads.list .pad.playing { border-color: var(--color-rule); }
-.pads.list .pip { order: -1; }
-.pads.list .pad-name { -webkit-line-clamp: 1; }
-.pads.list .pad-foot { display: contents; }
-.pads.list .pad-gap { display: none; }
-.pads.list .pad-foot > :last-child { justify-self: end; }
+/* list rows: LED | name | keycap | length | gain | mode */
+.pads.list .pad-status, .pads.list .pad-label { display: contents; }
+.pads.list .pip { order: 1; }
+.pads.list .pad-name { order: 2; -webkit-line-clamp: 1; font-weight: 500; }
+.pads.list .kbd { order: 3; justify-self: end; }
+.pads.list .dur, .pads.list .warn { order: 4; }
+.pads.list .gain { order: 5; }
+.pads.list .mode { order: 6; justify-self: end; }
+.pads.list .slot, .pads.list .pad-status .grow { display: none; }
 .pads.list .pad-progress { height: 1px; }
 
 .empty {
@@ -816,11 +823,11 @@ input, textarea { caret-color: var(--color-accent); }
 
 /* ---------- narrow windows: the grid is the instrument; editor only when a pad is selected ---------- */
 @media (max-width: 1100px) {
-  .app.no-inspector { grid-template-columns: var(--rail-w) minmax(0, 1fr) 0; }
-  .app.no-inspector .inspector { display: none; }
+  .app.no-inspector:not(.compact) { grid-template-columns: var(--rail-w) minmax(0, 1fr) 0; }
+  .app.no-inspector:not(.compact) .inspector { display: none; }
 }
 @media (max-width: 900px) {
-  .app.no-inspector { grid-template-columns: 64px minmax(0, 1fr) 0; }
+  .app.no-inspector:not(.compact) { grid-template-columns: 64px minmax(0, 1fr) 0; }
 }
 
 /* compact mode: lettered bank keys next to the title */
@@ -849,3 +856,8 @@ input, textarea { caret-color: var(--color-accent); }
 .status .item.warn { color: var(--color-danger); }
 .status button.item { border: 0; background: transparent; padding: 0; font: inherit; cursor: pointer; }
 .status button.item:hover { text-decoration: underline; text-underline-offset: 3px; }
+.app.compact .deck-title:has(.bank-keys > *) .title-letter { display: none; }
+.pad-status .dur { min-width: 0; overflow: hidden; white-space: nowrap; }
+.pad-status .kbd, .pad-status .slot, .pad-status .pip { flex: none; }
+.kbd-empty { display: none; }
+.pads.list .kbd-empty { display: block; order: 3; }

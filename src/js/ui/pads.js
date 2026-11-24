@@ -104,23 +104,22 @@ export function createPads(root, app) {
         style: { "--led": led(snd.color) },
         dataset: { id: snd.id }
       },
+      // A hardware key: status row (LED, slot, length, keycap) on top, the engraved label at the bottom.
       h(
         "div",
-        { class: "pad-top" },
-        h("span", { class: "pad-name" }, name),
-        snd.key ? h("span", { class: `kbd${conflict ? " conflict" : ""}`, title: conflict ? "This hotkey isn’t active: another app owns it, or Numpad slots or push-to-talk use it" : "" }, formatKey(snd.key)) : null
-      ),
-      h("span", { class: "pad-gap" }),
-      h(
-        "div",
-        { class: "pad-foot" },
+        { class: "pad-status" },
         h("span", { class: "pip", "aria-hidden": "true" }),
         slot ? h("span", { class: "slot num", title: `Numpad ${slot}` }, `N${slot}`) : null,
-        missing
-          ? h("span", { class: "warn" }, "File missing")
-          : h("span", { class: "dur num" }, fmtDuration(snd.end - snd.start)),
-        store.state.view === "list" ? h("span", { class: "num" }, fmtDb(snd.gain)) : null,
-        h("span", { title: MODE_LABEL[snd.mode] }, icon(MODE_ICON[snd.mode]))
+        missing ? h("span", { class: "warn" }, "File missing") : h("span", { class: "dur num" }, fmtDuration(snd.end - snd.start)),
+        store.state.view === "list" ? h("span", { class: "gain num" }, fmtDb(snd.gain)) : null,
+        h("span", { class: "grow" }),
+        snd.key ? h("span", { class: `kbd${conflict ? " conflict" : ""}`, title: conflict ? "This hotkey isn’t active: another app owns it, or Numpad slots or push-to-talk use it" : "" }, formatKey(snd.key)) : h("span", { class: "kbd-empty", "aria-hidden": "true" })
+      ),
+      h(
+        "div",
+        { class: "pad-label" },
+        h("span", { class: "pad-name" }, name),
+        h("span", { class: "mode", title: MODE_LABEL[snd.mode] }, icon(MODE_ICON[snd.mode]))
       ),
       bar
     );
