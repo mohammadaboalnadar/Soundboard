@@ -17,6 +17,7 @@ import { createStatus } from "./ui/status.js";
 import { createSettings } from "./ui/settings.js";
 import { createRecorder } from "./ui/recorder.js";
 import { createTour } from "./ui/tour.js";
+import { createSetup } from "./ui/setup.js";
 import { createUpdates } from "./ui/updates.js";
 
 const STOP_ALL = "__stop_all__";
@@ -408,6 +409,11 @@ async function main() {
   A.openSettings = () => settings.open();
   A.record = () => recorder.start();
   const tour = createTour(app);
+  const setup = createSetup(app);
+  A.startSetup = () => {
+    settings.isOpen() && document.getElementById("settings").close();
+    setup.start();
+  };
   const updates = createUpdates(app);
   A.checkUpdates = () => updates.check({ manual: true });
   A.startTour = () => {
@@ -548,7 +554,7 @@ async function main() {
       } else if (e.ctrlKey && (k === "," || e.code === "Comma")) {
         e.preventDefault();
         A.openSettings();
-      } else if (typing || palette.isOpen() || settings.isOpen() || tour.isOpen()) {
+      } else if (typing || palette.isOpen() || settings.isOpen() || tour.isOpen() || setup.isOpen()) {
         return;
       } else if (e.key === "Escape") {
         engine.stopAll();

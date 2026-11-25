@@ -3,6 +3,7 @@
 import { h, icon, led, fmtDuration, openMenu, fmtDb } from "./dom.js";
 import { formatKey } from "../keys.js";
 import { baseName, bankLetter, slotSounds } from "../model.js";
+import { findCable } from "../devices.js";
 
 const MODE_LABEL = { restart: "Restart", overlap: "Overlap", toggle: "Toggle", loop: "Loop", hold: "Hold" };
 
@@ -238,7 +239,7 @@ export function createPads(root, app) {
     const s = store.state;
     notice.replaceChildren();
     if (s.outputs.cableId || s.cableTipDismissed || ui.compact) return;
-    const found = app.devices.outputs.find((d) => /cable|vb-audio|voicemeeter|virtual/i.test(d.label));
+    const found = findCable(app.devices.outputs);
     const dismiss = h("button", { class: "btn ghost", type: "button" }, "Not now");
     dismiss.addEventListener("click", () => store.update((x) => (x.cableTipDismissed = true), "outputs"));
     let action = null;
@@ -255,7 +256,9 @@ export function createPads(root, app) {
     } else {
       text = "To play sounds into Discord or a game, install a free virtual cable such as VB-CABLE, then pick it under Cable above and as your mic in the voice app.";
     }
-    notice.append(h("div", { class: "notice" }, icon("i-cable"), h("div", { class: "notice-copy" }, h("strong", {}, "Send sounds into voice chat"), h("span", {}, text)), action, dismiss));
+    const guide = h("button", { class: "btn", type: "button" }, "Guide me");
+    guide.addEventListener("click", () => app.actions.startSetup());
+    notice.append(h("div", { class: "notice" }, icon("i-cable"), h("div", { class: "notice-copy" }, h("strong", {}, "Send sounds into voice chat"), h("span", {}, text)), action, guide, dismiss));
   }
 
   function render() {

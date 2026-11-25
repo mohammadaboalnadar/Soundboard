@@ -18,6 +18,7 @@ function tauriPlatform(T) {
     setCloseToTray: (on) => invoke("set_close_to_tray", { on }),
     setMemoryLow: (low) => invoke("set_memory_low", { low }),
     appVersion: () => invoke("app_version"),
+    openUrl: (url) => invoke("open_url", { url }),
     updateCheck: () => invoke("update_check"),
     updateInstall: () => invoke("update_install"),
     onUpdateProgress: (fn) => T.event.listen("update-progress", (e) => fn(e.payload)),
@@ -153,6 +154,9 @@ function mockPlatform() {
     async setCompact() {},
     async setCloseToTray() {},
     async setMemoryLow() {},
+    async openUrl(url) {
+      window.open(url, "_blank", "noopener");
+    },
     async appVersion() {
       return "3.1.0";
     },

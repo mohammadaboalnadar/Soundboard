@@ -33,6 +33,7 @@ export function createPalette(dialog, app) {
       { label: "Set Stop all hotkey", meta: "Command", run: () => app.actions.captureKey("__stop_all__") },
       { label: "Record from mic", meta: "Ctrl R", run: () => app.actions.record() },
       { label: "Open settings", meta: "Ctrl ,", run: () => app.actions.openSettings() },
+      { label: "Voice chat setup", meta: "Command", run: () => app.actions.startSetup() },
       { label: "Show the tour", meta: "Command", run: () => app.actions.startTour() },
       { label: "Check for updates", meta: "Command", run: () => app.actions.checkUpdates() },
       { label: app.ui.compact ? "Leave compact mode" : "Compact mode", meta: "Command", run: () => app.actions.setCompact(!app.ui.compact) },

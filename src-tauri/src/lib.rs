@@ -245,6 +245,28 @@ fn apply_memory_level(app: &AppHandle, low: bool) {
     let _ = (app, low);
 }
 
+/// Pages the app may open in the default browser (the setup guide's download link).
+fn url_allowed(url: &str) -> bool {
+    url == "https://vb-audio.com/Cable/" || url == "https://vb-audio.com/Cable/index.htm"
+}
+
+#[tauri::command]
+fn open_url(url: String) -> Result<(), String> {
+    if !url_allowed(&url) {
+        return Err("That address can't be opened from here.".into());
+    }
+    #[cfg(windows)]
+    {
+        use std::os::windows::process::CommandExt;
+        std::process::Command::new("rundll32")
+            .args(["url.dll,FileProtocolHandler", &url])
+            .creation_flags(0x0800_0000) // no console window
+            .spawn()
+            .map_err(|e| e.to_string())?;
+    }
+    Ok(())
+}
+
 #[tauri::command]
 fn set_close_to_tray(state: tauri::State<'_, AppState>, on: bool) {
     state.close_to_tray.store(on, Ordering::Relaxed);
@@ -363,6 +385,7 @@ pub fn run() {
             set_compact,
             set_close_to_tray,
             set_memory_low,
+            open_url,
             updates::app_version,
             updates::update_check,
             updates::update_install,
@@ -383,4 +406,14 @@ pub fn run() {
                 }
             }
         });
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn only_the_cable_page_opens() {
+        assert!(super::url_allowed("https://vb-audio.com/Cable/"));
+        assert!(!super::url_allowed("https://vb-audio.com.evil.example/"));
+        assert!(!super::url_allowed("file:///C:/Windows/System32/calc.exe"));
+    }
 }

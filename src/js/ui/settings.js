@@ -126,6 +126,7 @@ export function createSettings(dialog, app) {
         row("Close to tray", "The close button hides the window; hotkeys keep working.", sw(s.closeToTray, (on) => A.setCloseToTray(on), "Close to tray")),
         row("Theme", "", seg([["dark", "Dark"], ["light", "Light"]], s.theme, (v) => A.setTheme(v), "Theme")),
         row("Updates", app.version ? `You have version ${app.version}. New versions are offered here when they come out.` : "New versions are offered here when they come out.", updatesBtn()),
+        row("Voice chat setup", "Finds your virtual cable, picks your microphone, tests the cable and shows what to set in Discord.", setupBtn()),
         row("Tour", "The six-step walkthrough from your first launch.", tourBtn()),
         row("Audio cache", "Clips kept decoded for instant playback. Lower uses less memory; long clips always stream.", seg(CACHE.map((v) => [v, `${v} MB`]), s.cacheMB, (v) => A.setCacheMB(v), "Audio cache"))
       )
@@ -135,6 +136,12 @@ export function createSettings(dialog, app) {
   function updatesBtn() {
     const b = h("button", { class: "btn", type: "button" }, "Check for updates");
     b.addEventListener("click", () => A.checkUpdates());
+    return b;
+  }
+
+  function setupBtn() {
+    const b = h("button", { class: "btn", type: "button" }, "Run setup");
+    b.addEventListener("click", () => A.startSetup());
     return b;
   }
 
