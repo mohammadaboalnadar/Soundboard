@@ -6,6 +6,8 @@ The lightweight soundboard for streaming and voice chat. Fire clips from global 
 
 The core is Rust ([Tauri 2](https://tauri.app)) running on the WebView2 that ships with Windows, with audio on the Web Audio API. There's no bundled browser and no GPU process, and the decoded-audio cache has a fixed budget. The installer is about 1.5 MB.
 
+<a href="https://ko-fi.com/omarshalby"><img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Support Sonic Dominion on Ko-fi"></a>
+
 ## Features
 
 **Playing**
@@ -97,6 +99,10 @@ Settings from the earlier Electron "Soundboard" (`%APPDATA%\soundboard-app\setti
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Support
+
+Sonic Dominion is free. If it saved your Discord call, you can buy us a coffee on [Ko-fi](https://ko-fi.com/omarshalby).
 
 ## License
 
