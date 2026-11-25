@@ -1,6 +1,6 @@
 [package]
 name = "sonic-dominion"
-version = "3.3.0"
+version = "3.4.0"
 description = "Sonic Dominion: the lightweight soundboard"
 edition = "2021"
 license = "MIT"
@@ -27,6 +27,7 @@ serde_json = "1"
 windows-sys = { version = "0.59", features = ["Win32_UI_Input_KeyboardAndMouse"] }
 webview2-com = "0.39"
 windows-core = "0.62"
+windows = { version = "0.62", features = ["Win32_Media_Audio", "Win32_System_Com"] }
 
 [dev-dependencies]
 tempfile = "3"

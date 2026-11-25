@@ -1,3 +1,4 @@
+mod clip;
 mod hotkeys;
 mod ptt;
 mod remote;
@@ -127,6 +128,30 @@ fn save_recording(app: AppHandle, request: tauri::ipc::Request<'_>) -> Result<St
         .map(|d| d.as_millis())
         .unwrap_or_default();
     let path = dir.join(format!("recording-{stamp}.webm"));
+    std::fs::write(&path, bytes).map_err(|e| e.to_string())?;
+    let s = path.to_string_lossy().into_owned();
+    allow(&app, std::slice::from_ref(&s));
+    Ok(s)
+}
+
+// ---------- clip that ----------
+
+#[tauri::command]
+fn clip_set(clip: tauri::State<'_, clip::Clip>, enabled: bool, seconds: u32) {
+    clip.set(enabled, seconds);
+}
+
+/// Save what the clip buffer holds as a WAV under %APPDATA%/<app>/recordings.
+#[tauri::command(async)]
+fn clip_save(app: AppHandle, clip: tauri::State<'_, clip::Clip>) -> Result<String, String> {
+    let bytes = clip.take_wav()?;
+    let dir = app.path().app_data_dir().map_err(|e| e.to_string())?.join("recordings");
+    std::fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
+    let stamp = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_millis())
+        .unwrap_or_default();
+    let path = dir.join(format!("clip-{stamp}.wav"));
     std::fs::write(&path, bytes).map_err(|e| e.to_string())?;
     let s = path.to_string_lossy().into_owned();
     allow(&app, std::slice::from_ref(&s));
@@ -342,6 +367,7 @@ pub fn run() {
         .plugin(tauri_plugin_autostart::init(tauri_plugin_autostart::MacosLauncher::LaunchAgent, Some(vec!["--minimized"])))
         .manage(hotkeys::Hotkeys::default())
         .manage(remote::Remote::default())
+        .manage(clip::Clip::default())
         .manage(updates::PendingUpdate::default())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .manage(AppState { close_to_tray: AtomicBool::new(true), ..Default::default() })
@@ -379,6 +405,8 @@ pub fn run() {
             allow_paths,
             check_paths,
             save_recording,
+            clip_set,
+            clip_save,
             set_hotkeys,
             ptt_configure,
             ptt_set,
@@ -403,6 +431,9 @@ pub fn run() {
                 release_ptt(app);
                 if let Some(r) = app.try_state::<remote::Remote>() {
                     r.stop();
+                }
+                if let Some(c) = app.try_state::<clip::Clip>() {
+                    c.stop();
                 }
             }
         });

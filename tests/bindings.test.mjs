@@ -25,6 +25,16 @@ test("stop-all outranks slots and sounds", () => {
   assert.ok(r.blocked.has("a"));
 });
 
+test("clip key registers only while Clip that is on, and outranks sounds", () => {
+  const sounds = [{ id: "a", key: "F9" }];
+  const off = resolveBindings(st({ clip: { enabled: false, key: "F9" }, sounds }), SLOTS);
+  assert.equal(off.map.__clip__, undefined);
+  assert.equal(off.map.a, "F9");
+  const on = resolveBindings(st({ clip: { enabled: true, key: "F9" }, sounds }), SLOTS);
+  assert.equal(on.map.__clip__, "F9");
+  assert.ok(on.blocked.has("a"));
+});
+
 test("PTT key blocks any binding on the same main key", () => {
   const r = resolveBindings(st({ slotKeys: true, ptt: { key: "Numpad2" }, stopAllKey: "Ctrl+Numpad2", sounds: [{ id: "a", key: "Ctrl+F13" }, { id: "b", key: "F14" }] }), SLOTS);
   assert.ok(r.blocked.has("__slot_2"));

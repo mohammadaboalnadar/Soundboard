@@ -22,6 +22,7 @@ import { createUpdates } from "./ui/updates.js";
 
 const STOP_ALL = "__stop_all__";
 const PTT_KEY = "__ptt__";
+const CLIP = "__clip__";
 const SLOT_IDS = Array.from({ length: SLOT_COUNT }, (_, i) => `__slot_${i + 1}`);
 const BANK_NEXT = "__bank_next";
 const BANK_PREV = "__bank_prev";
@@ -67,7 +68,7 @@ async function main() {
       queueMicrotask(() => store.emit("view"));
     }
     ui.selectedId = id;
-    if (ui.capture && ui.capture !== STOP_ALL && ui.capture !== PTT_KEY) A.cancelCapture();
+    if (ui.capture && ui.capture !== STOP_ALL && ui.capture !== PTT_KEY && ui.capture !== CLIP) A.cancelCapture();
     store.emit(quiet ? "select-quiet" : "select");
   };
 
@@ -159,7 +160,7 @@ async function main() {
     if (paths?.length) await A.addPaths(paths);
   };
 
-  A.addPaths = async (paths, { names = [] } = {}) => {
+  A.addPaths = async (paths, { names = [], folderId: into } = {}) => {
     const known = new Set(S().sounds.map((s) => s.path.toLowerCase()));
     const fresh = paths.filter((p) => !known.has(p.toLowerCase()) && /\.(mp3|wav|ogg|oga|opus|flac|m4a|aac|webm)$/i.test(p));
     if (!fresh.length) {
@@ -168,7 +169,7 @@ async function main() {
     }
     await platform.allowPaths(fresh);
     // new sounds land in the bank on screen; from All / Favorites / Recent they go to Unsorted
-    const folderId = S().folders.some((f) => f.id === ui.board) ? ui.board : "";
+    const folderId = into !== undefined ? into : S().folders.some((f) => f.id === ui.board) ? ui.board : "";
     const added = fresh.map((p, i) => ({ ...newSound(p, 0), folderId, ...(names[i] ? { name: names[i] } : {}) }));
     store.update((s) => s.sounds.push(...added), "sounds");
     if (added.length === 1) A.select(added[0].id);
@@ -288,6 +289,41 @@ async function main() {
     store.update((s) => (s.ptt = next), "settings");
   };
 
+  // ---------- clip that ----------
+
+  A.setClip = async (patch) => {
+    const next = { ...S().clip, ...patch };
+    try {
+      await platform.clipSet(next.enabled, next.seconds);
+    } catch (e) {
+      toast(`Clip that: ${e}`, { error: true });
+      return;
+    }
+    store.update((s) => (s.clip = next), "keys");
+  };
+
+  let clipping = false;
+  A.saveClip = async () => {
+    if (clipping) return;
+    clipping = true;
+    try {
+      const path = await platform.clipSave();
+      const name = `Clip ${S().sounds.filter((x) => /^Clip \d+$/.test(x.name)).length + 1}`;
+      // with banks, clips collect in a "Clips" bank; without banks they stay unsorted
+      let folderId = "";
+      if (S().folders.length) {
+        folderId = S().folders.find((f) => f.name.trim().toLowerCase() === "clips")?.id || uid();
+        if (!S().folders.some((f) => f.id === folderId)) store.update((s) => s.folders.push({ id: folderId, name: "Clips", collapsed: false }), "folders");
+      }
+      const added = await A.addPaths([path], { names: [name], folderId });
+      if (added.length) toast(`Saved the last ${S().clip.seconds} seconds as “${name}”. Trim it, then give it a key.`, { ms: 4000 });
+    } catch (e) {
+      toast(String(e?.message || e), { error: true });
+    } finally {
+      clipping = false;
+    }
+  };
+
   A.setCacheMB = (mb) => {
     store.update((s) => (s.cacheMB = mb), "settings");
     engine.setCacheMB(mb);
@@ -365,6 +401,7 @@ async function main() {
     ui.capture = id;
     platform.setHotkeys({}); // release global keys so the window can see the press
     if (id === STOP_ALL) toast("Press the key combination for Stop all. Esc cancels.", { ms: 4000 });
+    if (id === CLIP) toast("Press the key that saves a clip. Esc cancels.", { ms: 4000 });
     store.emit("keys");
   };
 
@@ -383,13 +420,16 @@ async function main() {
       return;
     }
     store.update((s) => {
-      if (id === STOP_ALL) {
-        s.stopAllKey = acc;
+      // one key does one thing: taking a key clears it from the others
+      if (id === STOP_ALL || id === CLIP) {
+        if (id === STOP_ALL) s.stopAllKey = acc;
+        else s.clip = { ...s.clip, key: acc };
         if (acc) s.sounds = s.sounds.map((x) => (x.key === acc ? { ...x, key: "" } : x));
       } else {
         s.sounds = assignKey(s.sounds, id, acc);
-        if (acc && s.stopAllKey === acc) s.stopAllKey = "";
       }
+      if (acc && id !== STOP_ALL && s.stopAllKey === acc) s.stopAllKey = "";
+      if (acc && id !== CLIP && s.clip.key === acc) s.clip = { ...s.clip, key: "" };
     }, "keys");
     ui.capture = "";
     syncHotkeys(true);
@@ -507,6 +547,7 @@ async function main() {
 
   await platform.onHotkey(({ id, state }) => {
     if (id === STOP_ALL) return state === "down" && engine.stopAll();
+    if (id === CLIP) return state === "down" && A.saveClip();
     if (id === BANK_NEXT || id === BANK_PREV) return state === "down" && A.cycleBank(id === BANK_NEXT ? 1 : -1);
     const slot = SLOT_IDS.indexOf(id);
     if (slot >= 0) {
@@ -690,6 +731,7 @@ async function main() {
   if (S().ptt.key) platform.pttConfigure(S().ptt.key).catch(() => {});
   if (S().mic.enabled) engine.setMic(S().mic);
   if (S().remote.enabled) A.setRemote(true);
+  if (S().clip.enabled) platform.clipSet(true, S().clip.seconds).catch(() => {});
   if (platform.kind === "mock" && new URLSearchParams(location.search).has("compact")) A.setCompact(true);
   if (platform.kind === "mock" && new URLSearchParams(location.search).get("play")) {
     const name = new URLSearchParams(location.search).get("play");

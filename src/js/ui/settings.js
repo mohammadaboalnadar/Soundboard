@@ -12,6 +12,9 @@ const DUCK = [
 ];
 const LEAD = [0, 60, 120, 200, 300];
 const CACHE = [32, 64, 128, 256];
+const CLIP_SECONDS = [10, 20, 30, 60];
+// 16-bit stereo at 48 kHz
+const clipMB = (sec) => ((sec * 48000 * 4) / 1048576).toFixed(1);
 
 export function createSettings(dialog, app) {
   const { store, ui } = app;
@@ -23,7 +26,7 @@ export function createSettings(dialog, app) {
   dialog.append(h("header", { class: "sheet-head" }, h("h2", {}, "Settings"), close), body);
   dialog.addEventListener("click", (e) => e.target === dialog && dialog.close());
   dialog.addEventListener("close", () => {
-    if (ui.capture === "__ptt__" || ui.capture === "__stop_all__") A.cancelCapture();
+    if (ui.capture === "__ptt__" || ui.capture === "__stop_all__" || ui.capture === "__clip__") A.cancelCapture();
   });
 
   const row = (title, hint, control) =>
@@ -119,6 +122,22 @@ export function createSettings(dialog, app) {
         row("Push-to-talk key", app.pttConflict ? "This key is also one of your hotkeys here, so that hotkey is switched off. Pick a key nothing else uses." : "Hold this key for you while a sound plays into the cable. Use the same key as Discord. Mouse 4 and 5 work too.", h("div", { class: "key-pair" }, keyButton("__ptt__", s.ptt.key, "Off"), s.ptt.key ? clearPtt() : null)),
         row("Lead-in", "Time for the voice app to open the mic before the sound starts.", seg(LEAD.map((v) => [v, `${v} ms`]), s.ptt.leadMs, (v) => A.setPtt({ leadMs: v }), "Lead-in"))
       ),
+      section(
+        "Clip that",
+        row(
+          "Keep the last few seconds",
+          s.clip.enabled
+            ? `Listening to your default speakers or headphones. Uses ${clipMB(s.clip.seconds)} MB while on.`
+            : "Keeps what just played on your default speakers or headphones (Discord, the game), so one key turns it into a pad. Off uses no memory.",
+          sw(s.clip.enabled, (on) => A.setClip({ enabled: on }), "Clip that")
+        ),
+        ...(s.clip.enabled
+          ? [
+              row("Length", `${s.clip.seconds} seconds uses ${clipMB(s.clip.seconds)} MB.`, seg(CLIP_SECONDS.map((v) => [v, `${v} s`]), s.clip.seconds, (v) => A.setClip({ seconds: v }), "Clip length")),
+              row("Clip key", "Works from any app, even in a game.", h("div", { class: "key-pair" }, keyButton("__clip__", s.clip.key, "Set key"), clipNowBtn()))
+            ]
+          : [])
+      ),
       section("Phone remote", ...remoteRows),
       section(
         "App",
@@ -136,6 +155,12 @@ export function createSettings(dialog, app) {
   function updatesBtn() {
     const b = h("button", { class: "btn", type: "button" }, "Check for updates");
     b.addEventListener("click", () => A.checkUpdates());
+    return b;
+  }
+
+  function clipNowBtn() {
+    const b = h("button", { class: "btn", type: "button" }, "Clip now");
+    b.addEventListener("click", () => A.saveClip());
     return b;
   }
 

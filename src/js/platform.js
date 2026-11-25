@@ -12,6 +12,8 @@ function tauriPlatform(T) {
     setHotkeys: (map) => invoke("set_hotkeys", { map }),
     fileUrl: (path) => convertFileSrc(path),
     saveRecording: (bytes) => invoke("save_recording", bytes),
+    clipSet: (enabled, seconds) => invoke("clip_set", { enabled, seconds }),
+    clipSave: () => invoke("clip_save"),
     pttConfigure: (key) => invoke("ptt_configure", { key }),
     pttSet: (down) => invoke("ptt_set", { down }),
     setCompact: (on) => invoke("set_compact", { on }),
@@ -147,6 +149,12 @@ function mockPlatform() {
     async saveRecording(bytes) {
       const p = `C:\\Users\\you\\AppData\\Roaming\\Sonic Dominion\\recordings\\recording-${Date.now()}.webm`;
       urls.set(p, URL.createObjectURL(new Blob([bytes], { type: "audio/webm" })));
+      return p;
+    },
+    async clipSet() {},
+    async clipSave() {
+      const p = `C:\\Users\\you\\AppData\\Roaming\\Sonic Dominion\\recordings\\clip-${Date.now()}.wav`;
+      urls.set(p, URL.createObjectURL(wavBlob(30, (t) => 0.4 * Math.sin(2 * Math.PI * 180 * t) * (Math.sin(t * 3) > 0 ? 1 : 0.1))));
       return p;
     },
     async pttConfigure() {},

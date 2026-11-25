@@ -1,7 +1,7 @@
 // One collision pass over every global binding: Stop all, Numpad slots / bank keys,
 // and per-sound hotkeys, plus the auto push-to-talk key (which we press ourselves,
 // so anything sharing its main key would fire on every push-to-talk).
-// Priority: Stop all > slots > sounds in board order. Pure, unit-tested.
+// Priority: Stop all > Clip that > slots > sounds in board order. Pure, unit-tested.
 
 const MOD_ORDER = ["Ctrl", "Alt", "Shift", "Super"];
 
@@ -45,6 +45,7 @@ export function resolveBindings(state, slotMap) {
   };
 
   claim("__stop_all__", state.stopAllKey);
+  if (state.clip?.enabled) claim("__clip__", state.clip.key);
   if (state.slotKeys) for (const [id, acc] of Object.entries(slotMap)) claim(id, acc);
   for (const s of state.sounds) claim(s.id, s.key);
   return { map, blocked, pttConflict };

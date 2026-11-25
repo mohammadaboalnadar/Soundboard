@@ -37,6 +37,7 @@ export function defaultSettings() {
     outputs: { monitorId: "default", cableId: "", monitorVol: 1, cableVol: 1 },
     mic: { enabled: false, deviceId: "default", gain: 1, duck: 0 },
     ptt: { key: "", leadMs: 120 },
+    clip: { enabled: false, seconds: 30, key: "" },
     remote: { enabled: false, port: 7878, pin: "" },
     slotKeys: false,
     closeToTray: true,
@@ -139,6 +140,7 @@ export function normalizeSettings(raw) {
   const m = raw.mic || {};
   const p = raw.ptt || {};
   const r = raw.remote || {};
+  const c = raw.clip || {};
   const pinOk = /^\d{6}$/.test(str(r.pin));
   const folders = (Array.isArray(raw.folders) ? raw.folders : []).map((f) => ({
     id: str(f && f.id) || uid(),
@@ -174,6 +176,7 @@ export function normalizeSettings(raw) {
       duck: clamp(num(m.duck, 0), -40, 0)
     },
     ptt: { key: str(p.key), leadMs: clamp(Math.round(num(p.leadMs, 120)), 0, 500) },
+    clip: { enabled: Boolean(c.enabled), seconds: clamp(Math.round(num(c.seconds, 30)), 5, 60), key: str(c.key) },
     remote: {
       enabled: Boolean(r.enabled) && pinOk,
       port: clamp(Math.round(num(r.port, 7878)), 1024, 65535),

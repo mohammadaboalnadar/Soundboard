@@ -3800,7 +3800,7 @@ dependencies = [
 
 [[package]]
 name = "sonic-dominion"
-version = "3.3.0"
+version = "3.4.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -3814,6 +3814,7 @@ dependencies = [
  "tempfile",
  "tiny_http",
  "webview2-com",
+ "windows",
  "windows-core",
  "windows-sys 0.59.0",
 ]

@@ -32,6 +32,9 @@ export function createPalette(dialog, app) {
       { label: s.view === "grid" ? "Show as list" : "Show as pads", meta: "Command", run: () => store.update((x) => (x.view = x.view === "grid" ? "list" : "grid"), "view") },
       { label: "Set Stop all hotkey", meta: "Command", run: () => app.actions.captureKey("__stop_all__") },
       { label: "Record from mic", meta: "Ctrl R", run: () => app.actions.record() },
+      s.clip.enabled
+        ? { label: `Clip that: save the last ${s.clip.seconds} seconds`, meta: s.clip.key ? formatKey(s.clip.key) : "Command", run: () => app.actions.saveClip() }
+        : { label: "Turn on Clip that", meta: "Command", run: () => app.actions.setClip({ enabled: true }) },
       { label: "Open settings", meta: "Ctrl ,", run: () => app.actions.openSettings() },
       { label: "Voice chat setup", meta: "Command", run: () => app.actions.startSetup() },
       { label: "Show the tour", meta: "Command", run: () => app.actions.startTour() },
