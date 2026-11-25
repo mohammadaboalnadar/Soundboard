@@ -1,5 +1,6 @@
 mod clip;
 mod hotkeys;
+mod mouse;
 mod ptt;
 mod remote;
 mod settings;

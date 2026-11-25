@@ -38,12 +38,12 @@ pub fn handle(app: &AppHandle, shortcut: &Shortcut, event: ShortcutEvent) {
     let state = app.state::<Hotkeys>();
     let owner = state.inner.lock().unwrap().active.get(&shortcut.id()).map(|(_, id)| id.clone());
     if let Some(id) = owner {
-        let state = match event.state() {
-            ShortcutState::Pressed => "down",
-            ShortcutState::Released => "up",
-        };
-        let _ = app.emit("hotkey", HotkeyEvent { id, state });
+        emit(app, id, event.state() == ShortcutState::Pressed);
     }
+}
+
+pub fn emit(app: &AppHandle, id: String, down: bool) {
+    let _ = app.emit("hotkey", HotkeyEvent { id, state: if down { "down" } else { "up" } });
 }
 
 pub fn set(app: &AppHandle, map: HashMap<String, String>) -> SetResult {
@@ -53,11 +53,16 @@ pub fn set(app: &AppHandle, map: HashMap<String, String>) -> SetResult {
 
     // desired: shortcut id -> (shortcut, sound id); first owner wins on duplicates
     let mut desired: HashMap<u32, (Shortcut, String)> = HashMap::new();
+    let mut mouse: HashMap<u16, String> = HashMap::new();
     let mut failed = Vec::new();
     let mut ids: Vec<_> = map.into_iter().collect();
     ids.sort();
     for (sound_id, acc) in ids {
         if acc.is_empty() {
+            continue;
+        }
+        if let Some(b) = crate::mouse::button(&acc) {
+            mouse.entry(b).or_insert(sound_id);
             continue;
         }
         match parse(&acc) {
@@ -88,6 +93,7 @@ pub fn set(app: &AppHandle, map: HashMap<String, String>) -> SetResult {
             Err(_) => failed.push(sound_id),
         }
     }
+    crate::mouse::set(app, mouse);
     SetResult { failed }
 }
 

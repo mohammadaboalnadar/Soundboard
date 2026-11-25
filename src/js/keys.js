@@ -84,6 +84,7 @@ export function formatKey(acc) {
       if (/^Numpad\d$/.test(part)) return `Num ${part.slice(6)}`;
       if (NUMPAD_LABEL[part]) return `Num ${NUMPAD_LABEL[part]}`;
       if (part === "Super") return "Win";
+      if (/^Mouse\d$/.test(part)) return `Mouse ${part.slice(5)}`;
       return part;
     })
     .join(" ");

@@ -32,6 +32,7 @@ test("formatKey: compact labels", () => {
   assert.equal(formatKey("Numpad1"), "Num 1");
   assert.equal(formatKey("NumpadAdd"), "Num +");
   assert.equal(formatKey(""), "");
+  assert.equal(formatKey("Mouse4"), "Mouse 4");
 });
 
 test("fromLegacyKey: electron accelerators", () => {

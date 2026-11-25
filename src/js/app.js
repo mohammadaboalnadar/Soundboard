@@ -605,13 +605,13 @@ async function main() {
     },
     true
   );
-  // mouse side buttons can be the push-to-talk key
+  // mouse side buttons work for every key: push-to-talk, Clip that, Stop all and pads
   addEventListener(
     "pointerdown",
     (e) => {
-      if (ui.capture === PTT_KEY && (e.button === 3 || e.button === 4)) {
+      if (ui.capture && (e.button === 3 || e.button === 4)) {
         e.preventDefault();
-        A.setKey(PTT_KEY, e.button === 3 ? "Mouse4" : "Mouse5");
+        A.setKey(ui.capture, e.button === 3 ? "Mouse4" : "Mouse5");
       }
     },
     true
