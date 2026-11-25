@@ -96,7 +96,10 @@ export function createTransport(root, app) {
     sel.append(h("option", { value: "default" }, "System default"));
     list.forEach((d, i) => {
       if (d.deviceId === "default" || d.deviceId === "communications") return;
-      sel.append(h("option", { value: d.deviceId }, d.label || `Output ${i + 1}`));
+      // VB-CABLE installs a second pipe called "16ch". Nothing is hidden or changed for the user,
+      // but the name says it is a different cable from the usual CABLE Input.
+      const name = d.label || `Output ${i + 1}`;
+      sel.append(h("option", { value: d.deviceId }, /cable in 16ch/i.test(name) ? `${name} · separate cable` : name));
     });
     if (!devices.labelled) sel.append(h("option", { value: "__reveal__" }, "Show device names…"));
     const has = [...sel.options].some((o) => o.value === value);
@@ -133,7 +136,9 @@ export function createTransport(root, app) {
   let triedReveal = false;
   async function adoptCable() {
     const id = store.state.outputs.cableId;
-    if (id && devices.outputs.some((d) => d.deviceId === id)) return;
+    // Only repair a saved cable that has gone missing (an upgrade or a new device id). Someone
+    // who left the cable Off, or chose any device that still exists, is never changed.
+    if (!id || id === "default" || devices.outputs.some((d) => d.deviceId === id)) return;
     if (!devices.labelled) {
       if (triedReveal) return;
       triedReveal = true;
