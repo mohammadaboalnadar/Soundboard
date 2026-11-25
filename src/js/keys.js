@@ -67,6 +67,17 @@ export function acceleratorFromEvent(e) {
   return parts.join("+");
 }
 
+/** Side-button chord from the modifiers held and the side buttons pressed (4 and/or 5). */
+export function mouseChord(mods, buttons) {
+  const parts = [];
+  if (mods.ctrlKey) parts.push("Ctrl");
+  if (mods.altKey) parts.push("Alt");
+  if (mods.shiftKey) parts.push("Shift");
+  if (mods.metaKey) parts.push("Super");
+  for (const b of [4, 5]) if (buttons.has(b)) parts.push(`Mouse${b}`);
+  return buttons.size ? parts.join("+") : "";
+}
+
 const NUMPAD_LABEL = {
   NumpadAdd: "+",
   NumpadSubtract: "-",

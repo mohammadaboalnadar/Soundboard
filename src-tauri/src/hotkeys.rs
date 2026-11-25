@@ -53,7 +53,7 @@ pub fn set(app: &AppHandle, map: HashMap<String, String>) -> SetResult {
 
     // desired: shortcut id -> (shortcut, sound id); first owner wins on duplicates
     let mut desired: HashMap<u32, (Shortcut, String)> = HashMap::new();
-    let mut mouse: HashMap<u16, String> = HashMap::new();
+    let mut mouse: Vec<(crate::mouse::Combo, String)> = Vec::new();
     let mut failed = Vec::new();
     let mut ids: Vec<_> = map.into_iter().collect();
     ids.sort();
@@ -61,8 +61,10 @@ pub fn set(app: &AppHandle, map: HashMap<String, String>) -> SetResult {
         if acc.is_empty() {
             continue;
         }
-        if let Some(b) = crate::mouse::button(&acc) {
-            mouse.entry(b).or_insert(sound_id);
+        if let Some(c) = crate::mouse::combo(&acc) {
+            if !mouse.iter().any(|(m, _)| *m == c) {
+                mouse.push((c, sound_id));
+            }
             continue;
         }
         match parse(&acc) {

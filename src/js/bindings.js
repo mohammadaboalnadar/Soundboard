@@ -8,9 +8,10 @@ const MOD_ORDER = ["Ctrl", "Alt", "Shift", "Super"];
 export function canonicalKey(acc) {
   if (!acc) return "";
   const parts = acc.split("+");
-  const key = parts.pop();
   const mods = MOD_ORDER.filter((m) => parts.includes(m));
-  return [...mods, key].join("+");
+  const rest = parts.filter((p) => !MOD_ORDER.includes(p));
+  if (rest.every((p) => /^Mouse\d$/.test(p))) rest.sort(); // Mouse4+Mouse5 == Mouse5+Mouse4
+  return [...mods, ...rest].join("+");
 }
 
 export function mainKey(acc) {

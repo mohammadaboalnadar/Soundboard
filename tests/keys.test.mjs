@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { acceleratorFromEvent, formatKey, assignKey, fromLegacyKey } from "../src/js/keys.js";
+import { acceleratorFromEvent, formatKey, assignKey, fromLegacyKey, mouseChord } from "../src/js/keys.js";
 
 const ev = (o) => ({ ctrlKey: false, altKey: false, shiftKey: false, metaKey: false, ...o });
 
@@ -33,6 +33,13 @@ test("formatKey: compact labels", () => {
   assert.equal(formatKey("NumpadAdd"), "Num +");
   assert.equal(formatKey(""), "");
   assert.equal(formatKey("Mouse4"), "Mouse 4");
+  assert.equal(formatKey("Ctrl+Mouse4+Mouse5"), "Ctrl Mouse 4 Mouse 5");
+});
+
+test("mouseChord: modifiers first, buttons in order", () => {
+  assert.equal(mouseChord({}, new Set([5, 4])), "Mouse4+Mouse5");
+  assert.equal(mouseChord({ ctrlKey: true, shiftKey: true }, new Set([4])), "Ctrl+Shift+Mouse4");
+  assert.equal(mouseChord({ ctrlKey: true }, new Set()), "");
 });
 
 test("fromLegacyKey: electron accelerators", () => {

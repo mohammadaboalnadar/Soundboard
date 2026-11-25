@@ -9,6 +9,7 @@ test("canonicalKey orders modifiers; mainKey strips them", () => {
   assert.equal(canonicalKey("Shift+Ctrl+A"), "Ctrl+Shift+A");
   assert.equal(canonicalKey("Alt+Super+Ctrl+F1"), "Ctrl+Alt+Super+F1");
   assert.equal(mainKey("Ctrl+Shift+F13"), "F13");
+  assert.equal(canonicalKey("Mouse5+Ctrl+Mouse4"), "Ctrl+Mouse4+Mouse5");
 });
 
 test("duplicate sound keys: first wins, later blocked", () => {

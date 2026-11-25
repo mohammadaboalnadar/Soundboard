@@ -4,7 +4,7 @@ import { platform } from "./platform.js";
 import { createStore } from "./store.js";
 import { createEngine, ANALYZE_MAX_SECONDS } from "./engine.js";
 import { newSound, uid, baseName, bankLetter, slotSounds, cycleBank, SLOT_COUNT } from "./model.js";
-import { acceleratorFromEvent, assignKey } from "./keys.js";
+import { acceleratorFromEvent, assignKey, mouseChord } from "./keys.js";
 import { resolveBindings } from "./bindings.js";
 import { autoLevelGain } from "./peaks.js";
 import { toast } from "./ui/dom.js";
@@ -605,13 +605,34 @@ async function main() {
     },
     true
   );
-  // mouse side buttons work for every key: push-to-talk, Clip that, Stop all and pads
+  // mouse side buttons work for every key: push-to-talk, Clip that, Stop all and pads.
+  // Hold both (and/or modifiers) for a chord; it is saved when the last button is released.
+  // Mouse events, not pointer events: a second button pressed while one is held fires no pointerdown.
+  const chord = { held: new Set(), buttons: new Set(), mods: {} };
   addEventListener(
-    "pointerdown",
+    "mousedown",
     (e) => {
-      if (ui.capture && (e.button === 3 || e.button === 4)) {
-        e.preventDefault();
-        A.setKey(ui.capture, e.button === 3 ? "Mouse4" : "Mouse5");
+      if (!ui.capture || (e.button !== 3 && e.button !== 4)) return;
+      e.preventDefault();
+      const b = e.button === 3 ? 4 : 5;
+      if (!chord.held.size) {
+        chord.buttons.clear();
+        chord.mods = { ctrlKey: e.ctrlKey, altKey: e.altKey, shiftKey: e.shiftKey, metaKey: e.metaKey };
+      }
+      chord.held.add(b);
+      chord.buttons.add(b);
+    },
+    true
+  );
+  addEventListener(
+    "mouseup",
+    (e) => {
+      if (e.button !== 3 && e.button !== 4) return;
+      e.preventDefault(); // no Back / Forward navigation
+      chord.held.delete(e.button === 3 ? 4 : 5);
+      if (ui.capture && !chord.held.size && chord.buttons.size) {
+        A.setKey(ui.capture, mouseChord(chord.mods, chord.buttons));
+        chord.buttons.clear();
       }
     },
     true

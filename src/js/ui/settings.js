@@ -134,7 +134,7 @@ export function createSettings(dialog, app) {
         ...(s.clip.enabled
           ? [
               row("Length", `${s.clip.seconds} seconds uses ${clipMB(s.clip.seconds)} MB.`, seg(CLIP_SECONDS.map((v) => [v, `${v} s`]), s.clip.seconds, (v) => A.setClip({ seconds: v }), "Clip length")),
-              row("Clip key", "Works from any app, even in a game. A key or mouse side button (Mouse 4 or 5).", h("div", { class: "key-pair" }, keyButton("__clip__", s.clip.key, "Set key"), clipNowBtn()))
+              row("Clip key", "Works from any app, even in a game. A key, a mouse side button, or both side buttons together.", h("div", { class: "key-pair" }, keyButton("__clip__", s.clip.key, "Set key"), clipNowBtn()))
             ]
           : [])
       ),
