@@ -1,12 +1,35 @@
 <p align="center"><img src="src-tauri/icons/128x128@2x.png" width="128" alt="Sonic Dominion logo"></p>
 
-# Sonic Dominion
+<h1 align="center">Sonic Dominion</h1>
 
-The lightweight soundboard for streaming and voice chat. Fire clips from global hotkeys while you're in a game, and send them to your headphones and a virtual audio cable at the same time.
+<p align="center"><b>The free, tiny soundboard for Discord, games and streaming.</b><br>Built in Rust. A 2 MB installer, about 10 MB for the app itself.</p>
 
-The core is Rust ([Tauri 2](https://tauri.app)) running on the WebView2 that ships with Windows, with audio on the Web Audio API. There's no bundled browser and no GPU process, and the decoded-audio cache has a fixed budget. The installer is about 1.5 MB.
+<p align="center">
+  <a href="https://github.com/mohammadaboalnadar/Soundboard/releases/latest"><img src="https://img.shields.io/github/v/release/mohammadaboalnadar/Soundboard?style=for-the-badge&label=Download&color=e5322d" alt="Download the latest release"></a>
+  <img src="https://img.shields.io/badge/Windows-10%20%7C%2011-1b1b1f?style=for-the-badge&logo=windows" alt="Windows 10 and 11">
+  <img src="https://img.shields.io/badge/Rust-Tauri%202-1b1b1f?style=for-the-badge&logo=rust" alt="Rust and Tauri 2">
+  <img src="https://img.shields.io/badge/License-MIT-1b1b1f?style=for-the-badge" alt="MIT license">
+  <a href="https://ko-fi.com/omarshalby"><img src="https://img.shields.io/badge/Support%20us%20on-Ko--fi-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white" alt="Support us on Ko-fi"></a>
+</p>
 
-<a href="https://ko-fi.com/omarshalby"><img src="https://img.shields.io/badge/Support%20us%20on-Ko--fi-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white" alt="Support us on Ko-fi"></a>
+<p align="center"><img src="docs/media/demo.gif" width="900" alt="Sonic Dominion playing pads, switching banks, trimming a sound and finding one with Ctrl K"></p>
+
+Fire sounds from global hotkeys or your mouse side buttons while you're in a game, and send them to your headphones and into Discord at the same time. Missed the moment? **Clip that** turns the last seconds of what you just heard into a pad with one key.
+
+The core is Rust ([Tauri 2](https://tauri.app)) running on the WebView2 that ships with Windows, with audio on the Web Audio API. There's no bundled browser and no GPU process, and the decoded-audio cache has a fixed budget.
+
+## Download
+
+Get **Sonic Dominion_x.y.z_x64-setup.exe** from the [latest release](https://github.com/mohammadaboalnadar/Soundboard/releases/latest) and run it. It installs for your user only (no admin prompt) and updates itself after that.
+
+To play sounds into Discord you need a virtual cable such as the free [VB-CABLE](https://vb-audio.com/Cable/). The built-in **Voice chat setup** finds it, tests it and tells you what to set in Discord.
+
+<table>
+  <tr>
+    <td align="center" width="50%"><img src="docs/media/setup-test.png" width="420" alt="Voice chat setup testing the virtual cable and showing PASS"><br><sub>Voice chat setup tests the cable for you</sub></td>
+    <td align="center" width="50%"><img src="docs/media/phone-remote.png" width="220" alt="Phone remote showing banks and pads"><br><sub>Phone remote over Wi-Fi, with a PIN</sub></td>
+  </tr>
+</table>
 
 ## Features
 
@@ -15,13 +38,15 @@ The core is Rust ([Tauri 2](https://tauri.app)) running on the WebView2 that shi
 - Play modes per sound: restart, overlap, toggle, loop, or hold (plays only while the key is down).
 - **Banks with Numpad slots:** Num 1–9 play the first nine pads of the active bank, and Num + / Num − switch banks, like a hardware sampler.
 - Global hotkeys from any app, including numpad and key release. If a hotkey is taken, the pad shows it.
+- **Mouse side buttons:** Mouse 4 and Mouse 5 work as hotkeys, alone, together, or with Ctrl, Alt, Shift or Win.
+- **Clip that:** keeps the last 10–60 seconds of what plays on your speakers or headphones. One key saves it as a new pad, ready to trim and replay. Off by default; about 5.5 MB while on.
 - A now-playing strip where you can stop each voice on its own, plus Stop all (hotkey, tray, or Esc in the window).
 
 **Routing**
 - Two outputs, *Monitor* (headphones) and *Cable* (for example VB-CABLE into Discord or OBS), each with its own device, level, meter and limiter.
 - Mic to cable, with optional ducking so clips cut through your voice.
 - **Auto push-to-talk:** holds your Discord PTT key (or Mouse 4/5) while a clip plays into the cable, with an adjustable lead-in.
-- A first-run card finds your virtual cable and sets it up in one click.
+- **Voice chat setup:** a four-step guide finds your virtual cable, picks your microphone, plays a test tone through the cable and shows what to set in Discord.
 
 **Editing**
 - Waveform trim and fade handles, or exact values.
@@ -50,7 +75,7 @@ The core is Rust ([Tauri 2](https://tauri.app)) running on the WebView2 that shi
 
 ## Memory
 
-Measured on Windows 11 with 20 clips loaded: about **150 MB private memory** for the whole process tree (app + WebView2). Most of that is the WebView2 runtime itself; the app process is under 7 MB.
+Measured on Windows 11 with 20 clips loaded: about **150 MB private memory** for the whole process tree (app + WebView2). Most of that is the WebView2 runtime itself; the app process is about 10 MB.
 
 - The engine keeps only the **trimmed part** of each clip, decoded once, in an LRU cache with a byte budget (64 MB by default, adjustable in Settings). Clips that are playing are never evicted.
 - Clips over about 12 MB decoded (roughly a minute of stereo audio) **stream** from disk instead.
