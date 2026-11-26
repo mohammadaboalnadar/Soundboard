@@ -100,8 +100,12 @@ npm run ui         # UI only, in a browser with demo data: http://localhost:5174
 
 Installed copies check GitHub Releases at startup and every 6 hours and offer new versions in a small card (Update now / Later). To ship one:
 
-1. Bump `version` in `src-tauri/tauri.conf.json`, `src-tauri/Cargo.toml` and `package.json`.
-2. Run `npm run release -- --notes "What changed"`. It builds, signs with `~/.tauri/sonic-dominion.key`, writes `latest.json` and publishes the GitHub release.
+1. Bump `version` in `src-tauri/tauri.conf.json`, `src-tauri/Cargo.toml` and `package.json`, and push to `main`.
+2. On GitHub, open **Actions → Release → Run workflow**, write what changed, and run it. It runs the tests, builds and signs the installer on a GitHub Windows machine, writes `latest.json` and publishes the release. Untick **Publish** for a test build: the installer is then only attached to the run.
+
+The signing key lives in the repository secret `TAURI_SIGNING_PRIVATE_KEY`. To release from your own machine instead, run `npm run release -- --notes "What changed"` with the key at `~/.tauri/sonic-dominion.key`.
+
+Every push and pull request also runs the JavaScript and Rust tests (**Actions → Tests**).
 
 Keep the signing key safe and backed up: without it, installed copies cannot verify (and will refuse) future updates.
 

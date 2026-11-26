@@ -1,0 +1,60 @@
+# Build, sign and publish a release from GitHub's servers.
+# Bump the version first (tauri.conf.json, Cargo.toml, package.json), push it,
+# then run this from the Actions tab: Release -> Run workflow.
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      notes:
+        description: What changed (shown to users in the update card)
+        required: true
+        type: string
+      publish:
+        description: Publish the release (untick for a test build only)
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      - name: Tests
+        run: |
+          npm test
+          cargo test --manifest-path src-tauri/Cargo.toml
+      - name: Build, sign and publish
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ""
+          GH_TOKEN: ${{ github.token }}
+          NOTES: ${{ inputs.notes }}
+          PUBLISH: ${{ inputs.publish }}
+        run: |
+          if (-not $env:TAURI_SIGNING_PRIVATE_KEY) { throw "The TAURI_SIGNING_PRIVATE_KEY secret is not set" }
+          $releaseArgs = @("tools/release.mjs", "--notes", $env:NOTES, "--repo", "${{ github.repository }}")
+          if ($env:PUBLISH -ne "true") { $releaseArgs += "--dry-run" }
+          node @releaseArgs
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: installer
+          path: dist-release/
