@@ -5,7 +5,7 @@
 <p align="center"><b>The free, tiny soundboard for Discord, games and streaming.</b><br>Built in Rust. A 2 MB installer, about 10 MB for the app itself.</p>
 
 <p align="center">
-  <a href="https://github.com/mohammadaboalnadar/Soundboard/releases/latest"><img src="https://img.shields.io/github/v/release/mohammadaboalnadar/Soundboard?style=for-the-badge&label=Download&color=e5322d" alt="Download the latest release"></a>
+  <a href="https://github.com/Shalby-Industries/sonic-dominion/releases/latest"><img src="https://img.shields.io/github/v/release/Shalby-Industries/sonic-dominion?style=for-the-badge&label=Download&color=e5322d" alt="Download the latest release"></a>
   <img src="https://img.shields.io/badge/Windows-10%20%7C%2011-1b1b1f?style=for-the-badge&logo=windows" alt="Windows 10 and 11">
   <img src="https://img.shields.io/badge/Rust-Tauri%202-1b1b1f?style=for-the-badge&logo=rust" alt="Rust and Tauri 2">
   <img src="https://img.shields.io/badge/License-MIT-1b1b1f?style=for-the-badge" alt="MIT license">
@@ -20,7 +20,7 @@ The core is Rust ([Tauri 2](https://tauri.app)) running on the WebView2 that shi
 
 ## Download
 
-Get **Sonic Dominion_x.y.z_x64-setup.exe** from the [latest release](https://github.com/mohammadaboalnadar/Soundboard/releases/latest) and run it. It installs for your user only (no admin prompt) and updates itself after that.
+Get **Sonic Dominion_x.y.z_x64-setup.exe** from the [latest release](https://github.com/Shalby-Industries/sonic-dominion/releases/latest) and run it. It installs for your user only (no admin prompt) and updates itself after that.
 
 To play sounds into Discord you need a virtual cable such as the free [VB-CABLE](https://vb-audio.com/Cable/). The built-in **Voice chat setup** finds it, tests it and tells you what to set in Discord.
 

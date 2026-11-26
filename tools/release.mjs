@@ -2,7 +2,7 @@
 //
 //   npm run release -- --notes "What changed"        build + publish to GitHub
 //   npm run release -- --notes "..." --dry-run       build + latest.json only
-//   --repo owner/name   publish to another repository (default: mohammadaboalnadar/Soundboard)
+//   --repo owner/name   publish to another repository (default: Shalby-Industries/sonic-dominion)
 //
 // Needs: the signing key at ~/.tauri/sonic-dominion.key (or TAURI_SIGNING_PRIVATE_KEY),
 // the GitHub CLI logged in, and the version already bumped in src-tauri/tauri.conf.json.
@@ -15,7 +15,7 @@ const root = resolve(new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-
 const args = process.argv.slice(2);
 const dry = args.includes("--dry-run");
 const repoAt = args.indexOf("--repo");
-const REPO = repoAt >= 0 ? args[repoAt + 1] : "mohammadaboalnadar/Soundboard";
+const REPO = repoAt >= 0 ? args[repoAt + 1] : "Shalby-Industries/sonic-dominion";
 const skipBuild = args.includes("--skip-build"); // reuse the last build, e.g. to publish the same version to a second repo
 const notesAt = args.indexOf("--notes");
 const notes = notesAt >= 0 ? args[notesAt + 1] : "";
